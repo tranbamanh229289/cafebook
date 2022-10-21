@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-end",
-    padding: 20
+    paddingRight: 20
   },
   text: {
     color: "#808080"

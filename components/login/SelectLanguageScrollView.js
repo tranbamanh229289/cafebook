@@ -87,7 +87,7 @@ export const SelectLanguageScrollView = ({
   return (
     <ScrollView style={styles.container} key="container-scrollview">
       {listLanguage.map((e, id) => (
-        <>
+        <View key={`wrapping-${id}`}>
           <View key={e.id} style={styles.item}>
             <Text style={styles.text} key={`language-${id}`}>{e.data}</Text>
             <Pressable
@@ -106,7 +106,7 @@ export const SelectLanguageScrollView = ({
             </Pressable>
           </View>
           <View style={styles.br} key={`br-${id}`}/>
-        </>
+        </View>
       ))}
     </ScrollView>
   );
