@@ -38,5 +38,10 @@ export default {
     Maroon: '#800000',
     White: '#ffffff',
     LightGrey: '#D3D3D3',
-    DeepSkyBlue: '#00BFFF'
+    DeepSkyBlue: '#00BFFF',
+    MainBlue: '#236fdd',
+    Gray95: '#f2f2f2',
+    BackgroundIcon: '#f2f1f7',
+    TouchableHighlightBorderWhite: "#d6d6d6",
+    greenIcon: "#47bc65"
 }

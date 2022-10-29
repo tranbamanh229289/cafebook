@@ -38,14 +38,14 @@ export const MoreLanguageBar = () => {
         <Text style={styles.text}>{secondLanguage}</Text>
       </Pressable>
       <DotIconView />
-      <TouchableHighlight style={{borderRadius: 6}}
+      <TouchableHighlight
+        style={styles.TouchableHighlight}
+        underlayColor={color.TouchableHighlightBorderWhite}
         onPress={() => {
           setModalVisible(true);
         }}
       >
-        <View style={styles.TouchableHighlight}>
-          <Text style={{ color: "#1462de"}}>Xem thêm...</Text>
-        </View>
+        <Text style={{ color: "#1462de" }}>Xem thêm...</Text>
       </TouchableHighlight>
       <SelectLanguageModal
         modalVisible={modalVisible}
@@ -66,12 +66,11 @@ const styles = StyleSheet.create({
     color: "#666666",
   },
   TouchableHighlight: {
-    backgroundColor: color.White,
     height: 20,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     width: 90,
     borderRadius: 6,
-  }
+  },
 });

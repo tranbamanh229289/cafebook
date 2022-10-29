@@ -11,7 +11,9 @@ const fetchFonts = () => {
     "asap-semi": require("./assets/fonts/Asap-SemiBold.ttf"),
     "asap-italic": require("./assets/fonts/Asap-Italic.ttf"),
     "asap-regular": require("./assets/fonts/Asap-Regular.ttf"),
-    "Cochin": require("./assets/fonts/Cochin.ttf")
+    "Cochin": require("./assets/fonts/Cochin.ttf"),
+    "klavika-bold-italic": require("./assets/fonts/klavika-bold-italic.otf"),
+    "klavika-bold": require("./assets/fonts/klavika-bold.otf")
   });
 };
 
