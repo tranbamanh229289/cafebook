@@ -5,9 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  StatusBar,
   ScrollView,
   TouchableHighlight,
+  StatusBar,
 } from "react-native";
 import { FirstOpenAppAnimated } from "../../animation/FirstOpenAppAnimated";
 import { BreakLineBody } from "../../components/login/BreakLineBody";
@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
         <FirstOpenAppAnimated setFirstOpen={setFirstOpen} />
       ) : (
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor={firstOpen?color.White:'transparent'} translucent={true} />
+          <StatusBar backgroundColor="transparent" translucent={true}/>
           <View style={styles.imageContainer}>
             <ImageBackground
               source={require("../../assets/TopBackgroundLoginScreen.jpg")}
@@ -37,9 +37,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.moreLanguage}>
               <MoreLanguageBar />
             </View>
-            <View
-              style={styles.inputContainer}
-            >
+            <View style={styles.inputContainer}>
               <InputField placeholder="Số điện thoại hoặc email" />
               <InputField
                 placeholder="Mật khẩu"
@@ -48,68 +46,40 @@ export default function LoginScreen({ navigation }) {
               />
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('HomeScreen');
+                  navigation.navigate("HomeTab");
                 }}
-                style={{
-                  width: "90%",
-                  borderRadius: 4,
-                  height: 42,
-                  backgroundColor: "#236fdd",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "4%",
-                }}
+                style={styles.loginButton}
               >
                 <Text
-                  style={{
-                    fontSize: 16,
-                    color: color.White,
-                    fontWeight: "700",
-                    fontFamily: "Cochin",
-                  }}
+                  style={styles.loginButtonText}
                 >
                   Đăng nhập
                 </Text>
               </TouchableOpacity>
-              <TouchableHighlight onPress={()=>{}} 
-              style={{borderRadius: 8, justifyContent: "center", alignItems: "center", flexDirection: "column"}}
+              <TouchableHighlight
+                underlayColor={color.TouchableHighlightBorderWhite}
+                onPress={() => {}}
+                style={styles.forgotPWButton}
               >
-                <View 
-                style={{backgroundColor: "#ffffff", padding: 6, height: 30, width: 130, borderRadius: 8}}
-                >
-                  <Text 
-                  style={{color: "#2061c4", fontWeight: "bold", fontFamily: "Cochin", fontSize: 14}}
-                  >Quên mật khẩu?
+                  <Text
+                    style={styles.forgotPWText}
+                  >
+                    Quên mật khẩu?
                   </Text>
-                </View>
               </TouchableHighlight>
             </View>
           </View>
           <View style={styles.footerContainer}>
-            <BreakLineBody/>
+            <BreakLineBody />
             <TouchableOpacity
-                style={{
-                  marginTop: "9%",
-                  width: "65%",
-                  borderRadius: 4,
-                  height: 34,
-                  backgroundColor: "#30a24b",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "4%",
-                }}
+              style={styles.createNewAccountButton}
+            >
+              <Text
+                style={styles.createNewAccountText}
               >
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: color.White,
-                    fontWeight: "700",
-                    fontFamily: "Cochin",
-                  }}
-                >
-                  Tạo tài khoản caFebook mới
-                </Text>
-              </TouchableOpacity>
+                Tạo tài khoản caFebook mới
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       )}
@@ -119,7 +89,6 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
     flexDirection: "column",
     backgroundColor: color.White,
   },
@@ -132,7 +101,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     flex: 1,
@@ -150,4 +119,51 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
+  loginButton: {
+    width: "90%",
+    borderRadius: 4,
+    height: 42,
+    backgroundColor: color.MainBlue,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "4%",
+  },
+  loginButtonText: {
+      fontSize: 16,
+      color: color.White,
+      fontWeight: "700",
+      fontFamily: "Cochin",
+  },
+  forgotPWButton: {
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    backgroundColor: color.White,
+    padding: 6,
+    height: 30,
+    width: 130,
+  },
+  forgotPWText: {
+    color: "#2061c4",
+    fontWeight: "bold",
+    fontFamily: "Cochin",
+    fontSize: 14,
+  },
+  createNewAccountButton: {
+    marginTop: "9%",
+    width: "65%",
+    borderRadius: 4,
+    height: 34,
+    backgroundColor: "#30a24b",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "4%",
+  },
+  createNewAccountText: {
+    fontSize: 14,
+    color: color.White,
+    fontWeight: "700",
+    fontFamily: "Cochin",
+  }
 });

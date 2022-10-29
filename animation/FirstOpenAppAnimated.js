@@ -7,6 +7,8 @@ import {
   Dimensions
 } from "react-native";
 import { useEffect, useRef } from "react";
+import {CachedImage} from "../utils/cache/CachedImage";
+import { CloudImage } from "../constants/CloudImage";
 
 export const FirstOpenAppAnimated = ({ setFirstOpen }) => {
   const { height } = Dimensions.get("screen");
@@ -27,6 +29,7 @@ export const FirstOpenAppAnimated = ({ setFirstOpen }) => {
         <Image
           style={styles.tinyLogo}
           source={require("../assets/FacebookIconLoginScreen.png")}
+          cacheKey="FacebookIconLoginScreen"
         />
       </Animated.View>
     </SafeAreaView>

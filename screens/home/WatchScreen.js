@@ -1,9 +1,9 @@
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 
-export const HomeScreen = ({navigation}) => {
+export const WatchScreen = () => {
     return (
         <View style={{justifyContent: "center", alignItems: "center", flexDirection: "column", height: "100%"}}>
-            <Text>This is Home screen</Text>
+            <Text>This is Watch screen</Text>
         </View>
     );
 }
