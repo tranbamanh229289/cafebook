@@ -43,5 +43,6 @@ export default {
     Gray95: '#f2f2f2',
     BackgroundIcon: '#f2f1f7',
     TouchableHighlightBorderWhite: "#d6d6d6",
-    greenIcon: "#47bc65"
+    greenIcon: "#47bc65",
+    GrayText: "#767676"
 }

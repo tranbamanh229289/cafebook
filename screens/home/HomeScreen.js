@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, StatusBar, BackHandler, ScrollView, FlatList, StyleSheet, Animated } from "react-native";
 import { ListHeader } from "../../components/home-screen/ListHeader";
+import color from "../../constants/color/color";
 
 const DATA = [
   {
@@ -38,17 +39,23 @@ export const HomeScreen = ({ navigation, route , setHeaderVisible, scrollY}) => 
   const renderItem = ({ item }) => (
     <Item title={item.title} />
   );
+  
+  const ItemSeparatorComponent = () => (
+    <View style={{height: 10}}/>
+  );
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" translucent={false}/>
       <Animated.FlatList
+        contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         data={DATA}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         refreshing={refresh}
         ListHeaderComponent={ListHeader}
+        ItemSeparatorComponent={ItemSeparatorComponent}
         onRefresh={()=>{
           console.log("refreshed");
         }}
@@ -77,13 +84,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: color.White,
     padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
     height: 500
   },
   title: {
     fontSize: 32,
   },
+  contentContainerStyle: {
+    backgroundColor: "#f2f2f2"
+  }
 });
