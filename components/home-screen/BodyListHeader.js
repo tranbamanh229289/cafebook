@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import color from "../../constants/color/color";
 import { SwitchButton } from "./SwitchButton";
 
@@ -64,9 +64,9 @@ const ItemSeparatorComponent = () => (
 );
 
 const Item = ({ title, uri }) => (
-  <View style={styles.item}>
+  <TouchableOpacity style={styles.item}>
     <ImageBackground source={{uri: uri}} style={styles.image} resizeMode="cover" imageStyle={styles.imageStyle}/>
-  </View>
+  </TouchableOpacity>
 );
 
 export const BodyListHeader = () => {

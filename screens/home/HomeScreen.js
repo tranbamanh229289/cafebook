@@ -1,7 +1,8 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
-import { View, Text, StatusBar, BackHandler, ScrollView, FlatList, StyleSheet, Animated } from "react-native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, StatusBar, BackHandler, ScrollView, FlatList, StyleSheet, Animated, Dimensions } from "react-native";
 import { ListHeader } from "../../components/home-screen/ListHeader";
+import { Post } from "../../components/home-screen/Post";
 import color from "../../constants/color/color";
 
 const DATA = [
@@ -21,27 +22,31 @@ const DATA = [
 
 const Item = ({ title }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
+    <Post/>
   </View>
 );
 
-export const HomeScreen = ({ navigation, route , setHeaderVisible, scrollY}) => {
+const {height} = Dimensions.get("screen");
+
+export const HomeScreen = memo(({ navigation, route , setHeaderVisible, scrollY}) => {
   const [refresh, setRefresh] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       setHeaderVisible(true);
+      scrollY.setValue(0);
       return () => {
         setHeaderVisible(false);
       };
     }, [])
   );
-
+  
   const renderItem = ({ item }) => (
     <Item title={item.title} />
   );
   
   const ItemSeparatorComponent = () => (
-    <View style={{height: 10}}/>
+    <View style={{height: 10 , backgroundColor: color.BackgroundGray}}/>
   );
 
   return (
@@ -77,7 +82,7 @@ export const HomeScreen = ({ navigation, route , setHeaderVisible, scrollY}) => 
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -85,13 +90,12 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: color.White,
-    padding: 20,
-    height: 500
+
   },
   title: {
     fontSize: 32,
   },
   contentContainerStyle: {
-    backgroundColor: "#f2f2f2"
+    backgroundColor: color.BackgroundGray
   }
 });

@@ -9,7 +9,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { StyleSheet, Animated, Dimensions } from "react-native";
+import { StyleSheet, Animated, Dimensions, View } from "react-native";
 import { FriendScreen } from "../../screens/home/FriendScreen";
 import { WatchScreen } from "../../screens/home/WatchScreen";
 import { NewfeedScreen } from "../../screens/home/NewfeedScreen";
@@ -19,26 +19,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CollapsibleHeader } from "../../components/home-screen/CollapsibleHeader";
 
 const Tab = createMaterialTopTabNavigator();
-const height = Dimensions.get("window").height + 100;
+const height = Dimensions.get("window").height + 80;
 
 export const TabBarNavigator = () => {
-  const [headerVisible, setHeaderVisible] = useState(true);
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const [headerVisible,setHeaderVisible] = useState(true);
+  
+  let scrollY = useRef(new Animated.Value(0)).current;
   const clampedScrollY = scrollY.interpolate({
-    inputRange: [-0.7, 0.7],
-    outputRange: [-0.12, 0.12],
+    inputRange: [0, 1],
+    outputRange: [0, 1],
     extrapolateLeft: "clamp",
   });
 
   const minusScrollY = Animated.multiply(clampedScrollY, -1);
-
+  
   const translateY = Animated.diffClamp(minusScrollY, -55, 0);
 
   return (
-    <Animated.View style={[styles.container, { transform: [{translateY: headerVisible ? translateY : 0}]}]}>
-      {headerVisible && <CollapsibleHeader scrollY={scrollY} />}
+    <View style={styles.container}>
+      {/* <Animated.View style={{elevation: 4, zIndex: 100,transform: [{translateY: headerVisible ? translateY : 0}]}}> */}
+        {headerVisible  && <CollapsibleHeader/>}
+      {/* </Animated.View> */}
       <Tab.Navigator
         backBehavior="history"
+        initialLayout={{width: Dimensions.get('window').width}}
         screenOptions={() => ({
           tabBarItemStyle: !headerVisible
             ? styles.tabBarItemContainerHeaderInvisible
@@ -101,7 +105,7 @@ export const TabBarNavigator = () => {
           })}
         />
       </Tab.Navigator>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -153,7 +157,7 @@ const Menu = <SimpleLineIcons name="menu" size={size} color="black" />;
 const styles = StyleSheet.create({
   container: {
     backgroundColor:color.White,
-    height: height,
+    height: "100%",
   },
   tabBarItemContainer: {
     flexDirection: "column",

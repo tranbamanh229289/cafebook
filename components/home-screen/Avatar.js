@@ -1,18 +1,14 @@
 import { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
+
+const Default = () => <Image style={styles.container} source={require("../../assets/default-avatar.jpg")}/>;
+
 export const Avatar = ({source}) => {
-    let src = require("../../assets/default-avatar.jpg");
-    useEffect(()=>{
-        if (source!=="undefined") {
-            src = source;
-        }
-    },[])
-    
+    const Uri = () => (<Image style={styles.container} source={{uri: source}}/>);
 
     return (
-        <Image style={styles.container} source={src}/>
-            
+        source!==undefined ?  <Uri/> : <Default/>
     );
 }
 
