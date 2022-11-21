@@ -50,4 +50,7 @@ export default {
     TextGray: "#5a5a5a",
     TextTinyGray: "#5d5d5d",
     IconGray: "#676769",
+    HeaderBorderColor: "#cecece",
+    StatusBarBackgroundBlur: "#021E43",
+    TextMainBlue: "#1462de",
 }

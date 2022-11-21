@@ -9,7 +9,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { StyleSheet, Animated, Dimensions, View } from "react-native";
+import { StyleSheet, Animated, Dimensions, View, StatusBar } from "react-native";
 import { FriendScreen } from "../../screens/home/FriendScreen";
 import { WatchScreen } from "../../screens/home/WatchScreen";
 import { NewfeedScreen } from "../../screens/home/NewfeedScreen";
@@ -37,6 +37,7 @@ export const TabBarNavigator = () => {
 
   return (
     <View style={styles.container}>
+      {/* <StatusBar barStyle="dark-content" backgroundColor={color.White}/> */}
       {/* <Animated.View style={{elevation: 4, zIndex: 100,transform: [{translateY: headerVisible ? translateY : 0}]}}> */}
         {headerVisible  && <CollapsibleHeader/>}
       {/* </Animated.View> */}
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: "#cecece",
+    borderBottomColor: color.HeaderBorderColor,
   },
   tabBarStyle: {
     elevation: 0,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, StyleSheet, Pressable, Text, View, StatusBar } from "react-native";
+import { Modal, StyleSheet, Pressable, Text, View, StatusBar, NativeModules } from "react-native";
 import color from "../../constants/color/color";
 import { SelectLanguageScrollView } from "./SelectLanguageScrollView";
 
@@ -7,11 +7,10 @@ export const SelectLanguageModal = ({ modalVisible, setModalVisible }) => {
   const [selectedIndex, setSelectedIndex] = useState(2);
   return (
       <Modal visible={modalVisible} transparent={true}>
-        <StatusBar backgroundColor="#021E43" animated/>
         <View style={styles.container}>
           <View style={styles.modalView}>
             <SelectLanguageScrollView setModalVisible={setModalVisible} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>
-            <Pressable style={styles.cancel} onPress={() => setModalVisible(!modalVisible)}>
+            <Pressable style={styles.cancel} onPress={() => {setModalVisible(!modalVisible); StatusBar.setBackgroundColor("transparent");}}>
               <Text style={styles.text}>HỦY</Text>
           </Pressable>
           </View>

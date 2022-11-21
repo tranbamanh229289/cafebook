@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableHighlight,
+  StatusBar,
 } from "react-native";
 import { useState } from "react";
 import { DotIconView } from "./DotIconView";
@@ -43,9 +44,10 @@ export const MoreLanguageBar = () => {
         underlayColor={color.TouchableHighlightBorderWhite}
         onPress={() => {
           setModalVisible(true);
+          StatusBar.setBackgroundColor(color.StatusBarBackgroundBlur);
         }}
       >
-        <Text style={{ color: "#1462de" }}>Xem thêm...</Text>
+        <Text style={styles.textHighlight}>Xem thêm...</Text>
       </TouchableHighlight>
       <SelectLanguageModal
         modalVisible={modalVisible}
@@ -73,4 +75,7 @@ const styles = StyleSheet.create({
     width: 90,
     borderRadius: 6,
   },
+  textHighlight: {
+    color: color.TextMainBlue
+  }
 });

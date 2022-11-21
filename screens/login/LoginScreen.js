@@ -25,7 +25,6 @@ export default function LoginScreen({ navigation }) {
         <FirstOpenAppAnimated setFirstOpen={setFirstOpen} />
       ) : (
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="transparent" translucent={true}/>
           <View style={styles.imageContainer}>
             <ImageBackground
               source={require("../../assets/TopBackgroundLoginScreen.jpg")}
@@ -71,7 +70,7 @@ export default function LoginScreen({ navigation }) {
           </View>
           <View style={styles.footerContainer}>
             <BreakLineBody />
-            <TouchableOpacity
+            <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")}
               style={styles.createNewAccountButton}
             >
               <Text
