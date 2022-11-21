@@ -13,7 +13,13 @@ const fetchFonts = () => {
     "asap-regular": require("./assets/fonts/Asap-Regular.ttf"),
     "Cochin": require("./assets/fonts/Cochin.ttf"),
     "klavika-bold-italic": require("./assets/fonts/klavika-bold-italic.otf"),
-    "klavika-bold": require("./assets/fonts/klavika-bold.otf")
+    "klavika-bold": require("./assets/fonts/klavika-bold.otf"),
+    "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
+    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Light": require("./assets/fonts/Roboto-Light.ttf"),
+    "Roboto-Condensed": require("./assets/fonts/Roboto-Condensed.ttf"),
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-BoldCondensed": require("./assets/fonts/Roboto-BoldCondensed.ttf"),
   });
 };
 

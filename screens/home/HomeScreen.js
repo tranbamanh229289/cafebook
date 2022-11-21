@@ -51,7 +51,7 @@ export const HomeScreen = memo(({ navigation, route , setHeaderVisible, scrollY}
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" translucent={false}/>
+      {/* <StatusBar barStyle="dark-content" translucent={false}/> */}
       <Animated.FlatList
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}

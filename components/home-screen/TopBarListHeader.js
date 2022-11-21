@@ -2,15 +2,17 @@ import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from "re
 import color from "../../constants/color/color";
 import { Avatar } from "./Avatar";
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
 export const TopBarListHeader = () => {
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.avatar}>
                 <Avatar />
             </TouchableOpacity >
             <View style={styles.postViewButton}>
-                <TouchableHighlight style={styles.touchableHighlight} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
+                <TouchableHighlight style={styles.touchableHighlight} onPress={()=>{navigation.navigate('CreatePost')}} underlayColor={color.TouchableHighlightBorderWhite}>
                         <Text style={styles.text}>What's on your mind?</Text>
                 </TouchableHighlight>
             </View>
