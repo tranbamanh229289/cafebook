@@ -53,4 +53,12 @@ export default {
     HeaderBorderColor: "#cecece",
     StatusBarBackgroundBlur: "#021E43",
     TextMainBlue: "#1462de",
+    IconBackgroundGray: "#e6e7ec",
+    MenuBackgroundGray: "#f1f2f4",
+    BrGray: "#f3f4f9",
+    Purple: "#ff80d5",
+    Orange: "#ff8000",
+    Red: "#ff1a1a",
+    BorderTopGray: "#e0e1e3",
+    SettingIconGray: "#b6cbd6"
 }
