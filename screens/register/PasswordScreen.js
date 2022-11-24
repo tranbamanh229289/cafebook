@@ -1,27 +1,28 @@
-import { useNavigation } from "@react-navigation/native";
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FloatingLabelTextInput } from "../../components/register/FloatingLabelTextInput";
 import color from "../../constants/color/color";
 
-export const NameScreen = () => {
-    const navigation = useNavigation();
+export const PasswordScreen = ({navigation}) => {
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <View style={styles.container}>
+            <View style={{flex: 1}}/>
             <View style={styles.textContainer}>
-                <Text style={styles.header}>What's your name?</Text>
-                <Text style={styles.sub}>Enter the name you use in real life.</Text>
+                <Text style={styles.header}>Choose a password</Text>
+                <Text style={styles.sub}>Create a password with at least 6 characters. It should be something others couldn't guess.</Text>
             </View>
+            <View style={{flex: 1}}/>
             <View style={styles.inputContainer}>
-                <FloatingLabelTextInput placeholder="First Name"/>
-                <FloatingLabelTextInput placeholder="Last Name"/>
+                <FloatingLabelTextInput placeholder="Password" width="90%" fullWidth={true}/>
             </View>
+            <View style={{flex: 1}}/>
             <View style={styles.nextButton}>
-                <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("BirthDayScreen")}>
+                <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("TermAndPrivacyScreen")}>
                     <Text style={styles.buttonText}>Next</Text>
                 </TouchableOpacity>
             </View>
-        </KeyboardAvoidingView>
-    )
+            <View style={{flex: 7}}/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -33,14 +34,13 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 3,
         justifyContent: "flex-end",
-        alignItems: "center"  
+        alignItems: "center",
     },
     inputContainer: {
-        flex: 4,
-        flexDirection: "row",
-        flexWrap: "nowrap",
-        justifyContent: "space-evenly",
+        flex: 2,
+        justifyContent: "flex-start",
         alignItems: "center",
+        flexDirection: "column"
     },
     header: {
         fontSize: 18,
@@ -48,11 +48,13 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium"
     },
     sub: {
+        textAlign: "center",
         color: color.GrayText,
         fontSize: 14,
+        width: "90%",
     },
     nextButton: {
-        flex: 8,
+        flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
     },
@@ -67,4 +69,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: color.White
     },
+    textHighlight: {
+        color: color.MainBlue,
+        fontFamily: "Roboto-Medium"
+    },
+    br: {
+        height: 10,
+    }
 });

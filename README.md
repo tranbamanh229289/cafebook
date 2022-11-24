@@ -10,3 +10,9 @@
 1. Install dependencies: `npm install --legacy-peer-deps`.
 1. run: `expo start`.
 1. Scan QR code on Expo app.
+
+# Create development builds
+1. `npm install -g eas-cli`
+1. `npx expo install expo-dev-client`
+1. `eas build --profile development --platform android`
+1. `expo start --dev-client`

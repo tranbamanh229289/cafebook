@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as Font from "expo-font";
 import { LoginSplashAnimation } from "./animation/LoginSplashAnimation";
 import { Navigator } from "./navigations/Navigator";
+import 'expo-dev-client';
 
 const fetchFonts = () => {
   return Font.loadAsync({

@@ -8,8 +8,15 @@ import { CreatePost } from "../screens/home/CreatePost";
 import { MessagingScreen } from "../screens/home/MessagingScreen";
 import { SearchScreen } from "../screens/home/SearchScreen";
 import LoginScreen from "../screens/login/LoginScreen";
+import { BirthDayScreen } from "../screens/register/BirthdayScreen";
+import { ConfirmScreen } from "../screens/register/ConfirmScreen";
 import { CreateAccountScreen } from "../screens/register/CreateAccountScreen";
+import { EmailAddressScreen} from "../screens/register/EmailAdressScreen";
+import { GenderScreen } from "../screens/register/GenderScreen";
+import { MobileNumberScreen } from "../screens/register/MobileNumberScreen";
 import { NameScreen } from "../screens/register/NameScreen";
+import { PasswordScreen } from "../screens/register/PasswordScreen";
+import { TermAndPrivacyScreen } from "../screens/register/TermAndPrivacyScreen";
 import { TabBarNavigator } from "./top-tab-bar/TabBarNavigator";
 
 const Stack = createNativeStackNavigator();
@@ -43,7 +50,7 @@ export const Navigator = () => {
               borderTopWidth: 1,
               borderTopColor: color.HeaderBorderColor
             },
-            statusBarColor: "transparent",
+            statusBarColor: color.White,
             statusBarStyle: "dark",
           })}
         />
@@ -62,7 +69,140 @@ export const Navigator = () => {
               borderTopWidth: 1,
               borderTopColor: color.HeaderBorderColor
             },
-            statusBarColor: "transparent",
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="BirthDayScreen"
+          component={BirthDayScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Birthday",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="GenderScreen"
+          component={GenderScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Gender",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="MobileNumberScreen"
+          component={MobileNumberScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Mobile number",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="EmailAddressScreen"
+          component={EmailAddressScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Email address",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="PasswordScreen"
+          component={PasswordScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Password",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="TermAndPrivacyScreen"
+          component={TermAndPrivacyScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Terms & Privacy",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark"
+          })}
+        />
+        <Stack.Screen
+          name="ConfirmScreen"
+          component={ConfirmScreen}
+          options={()=>({
+            headerShown: true,
+            title: "Confirmation",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "normal",
+            },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
             statusBarStyle: "dark"
           })}
         />
@@ -73,7 +213,7 @@ export const Navigator = () => {
             header: () => null,
             headerBackVisible: false,
             headerShadowVisible: false,
-            statusBarColor: "transparent",
+            statusBarColor: color.White,
             statusBarStyle: "dark"
           })}
         />
