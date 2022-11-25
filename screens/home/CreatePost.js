@@ -34,65 +34,108 @@ export const CreatePost = () => {
         }
     }
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Avatar width={46} height={46}/>
-                <View style={styles.headerRight}>
-                    <Text style={styles.name}>Nguyễn Sơn</Text>
-                    <View style={styles.headerButton}>
-                        <TouchableHighlight style={styles.TouchableHighlightHeader} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                            <View style={styles.wrapItem}>
-                                <FriendIcon/>
-                                <Text style={styles.tinyText}> Public </Text>
-                                <DownIcon/>
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={[styles.TouchableHighlightHeader, {marginLeft: 5}]} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                            <View style={styles.wrapItem}>
-                                <PlusIcon/>
-                                <Text style={styles.tinyText}> Album </Text>
-                                <DownIcon/>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Avatar width={46} height={46} />
+          <View style={styles.headerRight}>
+            <Text style={styles.name}>Nguyễn Sơn</Text>
+            <View style={styles.headerButton}>
+              <TouchableHighlight
+                style={styles.TouchableHighlightHeader}
+                onPress={() => {}}
+                underlayColor={color.TouchableHighlightBorderWhite}
+              >
+                <View style={styles.wrapItem}>
+                  <FriendIcon />
+                  <Text style={styles.tinyText}> Public </Text>
+                  <DownIcon />
                 </View>
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={[styles.TouchableHighlightHeader, { marginLeft: 5 }]}
+                onPress={() => {}}
+                underlayColor={color.TouchableHighlightBorderWhite}
+              >
+                <View style={styles.wrapItem}>
+                  <PlusIcon />
+                  <Text style={styles.tinyText}> Album </Text>
+                  <DownIcon />
+                </View>
+              </TouchableHighlight>
             </View>
-            <View style={styles.textInput}>
-                <Animated.View style={{
-                    flex: 1,
-                    transform: [{scale: animatedValue.interpolate({
-                    inputRange: [0 , 2],
-                    outputRange: [1, 0.85],
-                    extrapolate: "clamp"
-                })}]}}>
-                    <TextInput placeholder="What's on your mind?" multiline={true} style={styles.input} onContentSizeChange={onContentSizeChange} onFocus={()=> setFirstFocus(true)}/>
-                </Animated.View>
-            </View>
-            {
-                firstFocus ? 
-            <View style={styles.bottomButton}>
-                <TouchableHighlight style={styles.iconButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                    <ImageIcon/>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.iconButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                    <TagIcon/>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.iconButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                    <SmileIcon/>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.iconButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                    <LocationIcon/>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.iconButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-                    <MoreIcon/>
-                </TouchableHighlight>
-            </View>
-            :
-            <ScrollView style={styles.scrollViewBottomContainer} showsVerticalScrollIndicator={false}>
-                <ScrollViewBottom/>
-            </ScrollView>
-}
+          </View>
         </View>
+        <View style={styles.textInput}>
+          <Animated.View
+            style={{
+              flex: 1,
+              transform: [
+                {
+                  scale: animatedValue.interpolate({
+                    inputRange: [0, 2],
+                    outputRange: [1, 0.85],
+                    extrapolate: "clamp",
+                  }),
+                },
+              ],
+            }}
+          >
+            <TextInput
+              placeholder="What's on your mind?"
+              multiline={true}
+              style={styles.input}
+              onContentSizeChange={onContentSizeChange}
+              onFocus={() => setFirstFocus(true)}
+            />
+          </Animated.View>
+        </View>
+        {firstFocus ? (
+          <View style={styles.bottomButton}>
+            <TouchableHighlight
+              style={styles.iconButton}
+              onPress={() => {}}
+              underlayColor={color.TouchableHighlightBorderWhite}
+            >
+              <ImageIcon />
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.iconButton}
+              onPress={() => {}}
+              underlayColor={color.TouchableHighlightBorderWhite}
+            >
+              <TagIcon />
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.iconButton}
+              onPress={() => {}}
+              underlayColor={color.TouchableHighlightBorderWhite}
+            >
+              <SmileIcon />
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.iconButton}
+              onPress={() => {}}
+              underlayColor={color.TouchableHighlightBorderWhite}
+            >
+              <LocationIcon />
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.iconButton}
+              onPress={() => {}}
+              underlayColor={color.TouchableHighlightBorderWhite}
+            >
+              <MoreIcon />
+            </TouchableHighlight>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.scrollViewBottomContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <ScrollViewBottom />
+          </ScrollView>
+        )}
+      </View>
     );
 }
 
