@@ -243,6 +243,13 @@ export const Navigator = () => {
               fontSize: 18,
               fontWeight: "normal",
             },
+            headerShadowVisible: false,     
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor
+            },
+            statusBarColor: color.White,
+            statusBarStyle: "dark",
             headerRight: () => <CreatePostHeaderRight/>
           })}
         />

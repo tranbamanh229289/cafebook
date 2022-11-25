@@ -60,5 +60,6 @@ export default {
     Orange: "#ff8000",
     Red: "#ff1a1a",
     BorderTopGray: "#e0e1e3",
-    SettingIconGray: "#b6cbd6"
+    SettingIconGray: "#b6cbd6",
+    BorderTinyButtonGray: "#d9d9d9",
 }
