@@ -5,7 +5,9 @@ import { Dimensions, StyleSheet, Text, View, Animated, Easing } from "react-nati
 import { CreatePostHeaderRight, CreatePostRightBarHeader } from "../components/home-screen/CreatePostHeaderRight";
 import color from "../constants/color/color";
 import { CreatePost } from "../screens/home/CreatePost";
-import { MessagingScreen } from "../screens/home/MessagingScreen";
+import { MessagingScreen } from "../screens/message/MessagingScreen";
+import { CreateMessageScreen } from "../screens/message/CreateMessageScreen";
+import { SearchChatScreen } from "../screens/message/SearchChatScreen";
 import { SearchScreen } from "../screens/home/SearchScreen";
 import LoginScreen from "../screens/login/LoginScreen";
 import { BirthDayScreen } from "../screens/register/BirthdayScreen";
@@ -228,6 +230,22 @@ export const Navigator = () => {
         <Stack.Screen
           name="Message"
           component={MessagingScreen}
+          options={() => ({
+            headerShown: false,
+            headerTransparent: true,
+          })}
+        />
+        <Stack.Screen
+          name="CreateMessage"
+          component={CreateMessageScreen}
+          options={() => ({
+            headerShown: false,
+            headerTransparent: true,
+          })}
+        />
+         <Stack.Screen
+          name="SearchChat"
+          component={SearchChatScreen}
           options={() => ({
             headerShown: false,
             headerTransparent: true,
