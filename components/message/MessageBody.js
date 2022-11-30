@@ -153,13 +153,12 @@ export const MessageBody = (scrollY) => {
         onRefresh={() => {
           console.log("refreshed");
         }}
-
         scrollEventThrottle={16}
         onEndReached={() => {
           setRefresh(true);
           setTimeout(() => {
             setData([{
-              lastMessageTime: "2021-03-28T22:04:07.268Z",
+              lastMessageTime: "2022-03-28T22:04:07.268Z",
               name: "Robin Dibbert DDS",
               avatar:
                 "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",

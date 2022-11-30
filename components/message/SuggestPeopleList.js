@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import color from "../../constants/color/color";
 import { Avatar } from "../home-screen/Avatar";
@@ -64,12 +64,19 @@ const Item = ({ name, uri}) => (
 );
 
 export const SuggestPeopleList = () => {
+  const [people, setPeople] = useState([]);
+
+  useEffect(()=>{
+    console.log("request people");
+    setPeople(People)
+  },[]);
+  
   const renderItem = ({ item }) => <Item uri={item.avatarUrl} name={item.name}/>;
   return (
     <View style={styles.container}>
       <FlatList contentContainerStyle={styles.contentContainerStyle}
           showsHorizontalScrollIndicator={false}
-          data={People}
+          data={people}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           horizontal
