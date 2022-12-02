@@ -48,7 +48,7 @@ export const MessageCard = ({
     }
   };
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
       <Avatar source={avatar} width={60} height={60} style={styles.avatar} />
       <View style={styles.messageCardRight}>
         <Text style={styles.messageCardName}>{convertLastMessage(name)}</Text>
@@ -61,7 +61,7 @@ export const MessageCard = ({
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

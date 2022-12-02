@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 import color from "../../constants/color/color";
 import { Avatar } from "../../components/home-screen/Avatar";
 import { SearchInput } from "../../components/message/SearchInput";
@@ -112,32 +118,22 @@ const RESULT_DATA = [
   },
 ];
 
-const Item = ({ id, name, avatar }) => (
-  <TouchableOpacity style={styles.item}>
-    <Avatar source={avatar} />
-    <Text style={styles.name}>{name}</Text>
-  </TouchableOpacity>
-);
-
 export const SearchChatScreen = ({ navigation, route }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-    const [valid, setValid] = useState(false);
-  const renderItem = (item) => {
-    return <Item id={item.item.id} name={item.item.name} avatar={item.item.avatar} />;
-  };
+  const [valid, setValid] = useState(false);
 
   const searchChange = (text) => {
     //console.log(text);
     setSearchTerm(text);
   };
-  const clearSearch = ()=>{
+  const clearSearch = () => {
     setSearchTerm("");
     setValid(false);
-  }
+  };
 
   useEffect(() => {
-    console.log("searchTerm changed to " + searchTerm);
+    //console.log("searchTerm changed to " + searchTerm);
     if (searchTerm.trim() === "") {
       //get suggest people list
       setValid(false);
@@ -150,15 +146,34 @@ export const SearchChatScreen = ({ navigation, route }) => {
   }, [searchTerm]);
 
   return (
-    <View
-      style={styles.container}
-    >
-      <SearchInput setSearchTerm={searchChange} valid={valid} clearSearch={clearSearch} />
+    <View style={styles.container}>
+      <SearchInput
+        setSearchTerm={searchChange}
+        valid={valid}
+        clearSearch={clearSearch}
+      />
       <FlatList
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={valid?null:<Text style={styles.suggestText}>SUGGEST</Text>}
-        renderItem={renderItem}
+        ListHeaderComponent={
+          valid ? null : <Text style={styles.suggestText}>SUGGEST</Text>
+        }
+        renderItem={(props) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                //console.log(props.item.id);
+                navigation.navigate("Chat", {
+                  itemId: props.item.id,
+                });
+              }}
+              style={styles.item}
+            >
+              <Avatar source={props.item.avatar} />
+              <Text style={styles.name}>{props.item.name}</Text>
+            </TouchableOpacity>
+          );
+        }}
         keyExtractor={(item) => item.id}
         data={searchResult}
       />
@@ -166,29 +181,28 @@ export const SearchChatScreen = ({ navigation, route }) => {
   );
 };
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: color.White,
-    },
-    item: {
-        padding: 12,
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-    },
-    name: {
-        paddingStart: 12,
-        fontSize: 16,
-        fontWeight: "600",
-    },
-    suggestText: {
-        paddingHorizontal: 12,
-        paddingTop: 24,
-        paddingBottom: 12,
-        color: color.IconGray,
-    },
-    contentContainerStyle: {
-        backgroundColor: color.White,
-    },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: color.White,
+  },
+  item: {
+    padding: 12,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  name: {
+    paddingStart: 12,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  suggestText: {
+    paddingHorizontal: 12,
+    paddingTop: 24,
+    paddingBottom: 12,
+    color: color.IconGray,
+  },
+  contentContainerStyle: {
+    backgroundColor: color.White,
+  },
+});

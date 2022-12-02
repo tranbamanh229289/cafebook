@@ -10,12 +10,12 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import color from "../../constants/color/color";
 import { useNavigation } from "@react-navigation/native";
-import { MessageTop} from "./MessageTop";
-import { MessageCard} from "./MessageCard";
-
+import { MessageTop } from "./MessageTop";
+import { MessageCard } from "./MessageCard";
 
 const DATA = [
   {
@@ -103,35 +103,17 @@ const DATA = [
     name: "Robin Dibbert DDS",
     avatar:
       "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",
-    lastMessage: "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",
+    lastMessage:
+      "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",
     id: "11",
   },
 ];
 
-const Item = ({ id, name, avatar, lastMessage, lastMessageTime }) => (
-  <MessageCard
-    id={id}
-    name={name}
-    avatar={avatar}
-    lastMessage={lastMessage}
-    lastMessageTime={lastMessageTime}
-  />
-);
-
 const { height } = Dimensions.get("screen");
 
-export const MessageBody = (scrollY) => {
-   
-  const renderItem = (item) => {
-    return (
-    <Item
-      id={item.item.id}
-      name={item.item.name}
-      avatar={item.item.avatar}
-      lastMessage={item.item.lastMessage}
-      lastMessageTime={item.item.lastMessageTime}
-    />);
-    };
+export const MessageBody = () => {
+  const navigation = useNavigation();
+
   const [refresh, setRefresh] = useState(false);
   const [data, setData] = useState(DATA);
 
@@ -145,10 +127,27 @@ export const MessageBody = (scrollY) => {
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         data={data}
-        renderItem={renderItem}
+        renderItem={(props) => (
+          <TouchableOpacity
+            onPress={() => {
+              //console.log(props.item.id);
+              navigation.navigate("Chat", {
+                itemId: props.item.id,
+              });
+            }}
+          >
+            <MessageCard
+              id={props.item.id}
+              name={props.item.name}
+              avatar={props.item.avatar}
+              lastMessage={props.item.lastMessage}
+              lastMessageTime={props.item.lastMessageTime}
+            />
+          </TouchableOpacity>
+        )}
         keyExtractor={(item) => item.id}
         refreshing={refresh}
-        ListHeaderComponent={ MessageTop}
+        ListHeaderComponent={MessageTop}
         ItemSeparatorComponent={ItemSeparatorComponent}
         onRefresh={() => {
           console.log("refreshed");
@@ -157,14 +156,17 @@ export const MessageBody = (scrollY) => {
         onEndReached={() => {
           setRefresh(true);
           setTimeout(() => {
-            setData([{
-              lastMessageTime: "2022-03-28T22:04:07.268Z",
-              name: "Robin Dibbert DDS",
-              avatar:
-                "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",
-              lastMessage: "lastMessage 11",
-              id: "12"+Math.random().toString(),
-            },...data]);
+            setData([
+              {
+                lastMessageTime: "2022-03-28T22:04:07.268Z",
+                name: "Robin Dibbert DDS",
+                avatar:
+                  "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/754.jpg",
+                lastMessage: "lastMessage 11",
+                id: "12" + Math.random().toString(),
+              },
+              ...data,
+            ]);
             setRefresh(false);
           }, 1000);
         }}
