@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import * as Font from "expo-font";
 import { LoginSplashAnimation } from "./animation/LoginSplashAnimation";
 import { Navigator } from "./navigations/Navigator";
-import { store } from "./redux/store/store";
-import { Provider } from "react-redux";
 import 'expo-dev-client';
+import { Provider } from "react-redux";
+import { store } from "./redux/store/store";
 
 const fetchFonts = () => {
   return Font.loadAsync({

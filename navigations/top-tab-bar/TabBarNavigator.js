@@ -9,7 +9,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { StyleSheet, Animated, Dimensions, View, StatusBar } from "react-native";
+import { StyleSheet, Animated, Dimensions, View, StatusBar, Platform } from "react-native";
 import { FriendScreen } from "../../screens/home/FriendScreen";
 import { WatchScreen } from "../../screens/home/WatchScreen";
 import { NewfeedScreen } from "../../screens/home/NewfeedScreen";
@@ -17,9 +17,11 @@ import { NotificationScreen } from "../../screens/home/NotificationScreen";
 import { MenuScreen } from "../../screens/home/MenuScreen";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CollapsibleHeader } from "../../components/home-screen/CollapsibleHeader";
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const Tab = createMaterialTopTabNavigator();
 const height = Dimensions.get("window").height + 80;
+const STATUSBARHEIGHT = Platform.OS == 'android' ? StatusBar.currentHeight : getStatusBarHeight()
 
 export const TabBarNavigator = () => {
   const [headerVisible,setHeaderVisible] = useState(true);
@@ -157,6 +159,7 @@ const Menu = <SimpleLineIcons name="menu" size={size} color="black" />;
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: STATUSBARHEIGHT,
     backgroundColor:color.White,
     height: "100%",
   },
