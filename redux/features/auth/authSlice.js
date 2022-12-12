@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axiosClient from '../../utils/axiosClient'
-import { loginMessage } from '../../utils/message/responseMessage'
+import axiosClient from '../../../utils/axiosClient'
+import { loginMessage } from '../../../utils/message/responseMessage'
 
 const initialState = {
     data:{},

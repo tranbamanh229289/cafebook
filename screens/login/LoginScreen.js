@@ -16,7 +16,7 @@ import { BreakLineBody } from "../../components/login/BreakLineBody";
 import { InputField } from "../../components/login/InputField";
 import { MoreLanguageBar } from "../../components/login/MoreLanguageBar";
 import color from "../../constants/color/color";
-import { login } from "../../redux/auth/auth";
+import { login } from "../../redux/features/auth/authSlice";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch()
