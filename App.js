@@ -3,6 +3,8 @@ import * as Font from "expo-font";
 import { LoginSplashAnimation } from "./animation/LoginSplashAnimation";
 import { Navigator } from "./navigations/Navigator";
 import 'expo-dev-client';
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -37,5 +39,5 @@ export default function App() {
       });
     }
   }, [[fontLoaded]]);
-  return <>{!fontLoaded ? <LoginSplashAnimation /> : <Navigator />}</>;
+  return <Provider store={store}>{!fontLoaded ? <LoginSplashAnimation /> : <Navigator />}</Provider>;
 }

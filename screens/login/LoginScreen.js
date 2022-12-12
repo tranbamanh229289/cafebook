@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,48 @@ import {
   ScrollView,
   TouchableHighlight,
   StatusBar,
+  Alert,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { FirstOpenAppAnimated } from "../../animation/FirstOpenAppAnimated";
 import { BreakLineBody } from "../../components/login/BreakLineBody";
 import { InputField } from "../../components/login/InputField";
 import { MoreLanguageBar } from "../../components/login/MoreLanguageBar";
 import color from "../../constants/color/color";
+import { login } from "../../redux/slice/authSlice";
 
 export default function LoginScreen({ navigation }) {
+  const dispatch = useDispatch()
+  const code = useSelector(state=>state.auth.loading)
   const [firstOpen, setFirstOpen] = useState(true);
   useEffect(() => {}, []);
+
+  const [account, setAccount] = useState({
+    phoneNumber: '',
+    password: ''
+  })
+
+  const changeAccount = useCallback((key)=> {
+    return (val)=> {
+      setAccount(prev => {
+        return {
+          ...prev,
+          [key]: val,
+        }
+      })
+    }
+  }, [account])
+
+  const handleLogin = useCallback(()=> {
+    dispatch(login(account))
+    console.log(code, "hehe")
+    // Alert.alert(error.title, error.content, [
+    //   {
+    //     text: "hủy"
+    //   }
+    // ])
+    navigation.navigate("HomeTab")
+  }, [account])
 
   return (
     <>
@@ -37,16 +69,17 @@ export default function LoginScreen({ navigation }) {
               <MoreLanguageBar />
             </View>
             <View style={styles.inputContainer}>
-              <InputField placeholder="Số điện thoại hoặc email" />
+              <InputField placeholder="Số điện thoại hoặc email" keyName="phoneNumber" val={account.phoneNumber} onChange={changeAccount}/>
               <InputField
                 placeholder="Mật khẩu"
                 secured={true}
                 isLastInputField={true}
+                keyName="password"
+                val={account.password}
+                onChange={changeAccount}
               />
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("HomeTab");
-                }}
+                onPress={handleLogin}
                 style={styles.loginButton}
               >
                 <Text
