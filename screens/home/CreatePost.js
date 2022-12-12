@@ -1,4 +1,4 @@
-import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard } from "react-native";
 import { Avatar } from "../../components/home-screen/Avatar";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -9,30 +9,53 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { EmojiKeyboard } from "rn-emoji-keyboard";
 
 export const CreatePost = () => {
     const [firstFocus, setFirstFocus] = useState(false);
+    const [openEmoji, setOpenemoji] = useState(false);
     const animatedValue = new Animated.Value(0);
-    Animated.timing(animatedValue, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: false,
-    }).start();
+
     const onContentSizeChange = (e) => {
+      const { height} = e.nativeEvent.contentSize;
+      console.log(height);
+      console.log(animatedValue);
+      if (height < 200) {
         Animated.timing(animatedValue, {
-            toValue: e.nativeEvent.contentSize.height >= 116 ? 1 : 0,
+            toValue: height >= 116  ? 1 : 0,
             duration: 200,
             useNativeDriver: false,
         }).start();
-        if (e.nativeEvent.contentSize.height > 116) {
-            Animated.timing(animatedValue, {
-            toValue: e.nativeEvent.contentSize.height >= 200 ? 2 : 1,
-            duration: 200,
-            useNativeDriver: false,
-            }).start();
-        }
+      }
+        
+      if (height >= 200 && height<250) {
+          Animated.timing(animatedValue, {
+          toValue: height >= 200 ? 2 : 1,
+          duration: 200,
+          useNativeDriver: false,
+          }).start();
+      }
     }
+
+    const handleOnEmojiSelected = (selected) => {
+    }
+
+    useEffect(() => {
+      const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+        if (openEmoji === true) {
+          setOpenemoji(false);
+        }
+      });
+      const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      });
+  
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }, [openEmoji]);
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -109,6 +132,7 @@ export const CreatePost = () => {
               style={styles.iconButton}
               onPress={() => {}}
               underlayColor={color.TouchableHighlightBorderWhite}
+              onPressOut={()=> {setOpenemoji((prev)=>!prev); Keyboard.dismiss()}}
             >
               <SmileIcon />
             </TouchableHighlight>
@@ -135,6 +159,8 @@ export const CreatePost = () => {
             <ScrollViewBottom />
           </ScrollView>
         )}
+        { openEmoji && <EmojiKeyboard onRequestClose={()=>{setOpenemoji(false)}} onEmojiSelected={handleOnEmojiSelected} disabledCategories={["travel_places","search","flags","food_drink","objects","symbols"]} 
+          enableCategoryChangeAnimation={true} expandable={false} enableRecentlyUsed emojiSize={20}/>}
       </View>
     );
 }
