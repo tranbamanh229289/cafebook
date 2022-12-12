@@ -4,7 +4,7 @@ import { LoginSplashAnimation } from "./animation/LoginSplashAnimation";
 import { Navigator } from "./navigations/Navigator";
 import 'expo-dev-client';
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { store } from "./redux/store/store";
 
 const fetchFonts = () => {
   return Font.loadAsync({
