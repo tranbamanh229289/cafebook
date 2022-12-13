@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, TextInput, StyleSheet, Pressable, Touchable, TouchableOpacity } from "react-native";
 import { EyeOpen } from "./EyeOpen";
 
-export const InputField = ({ secured, placeholder, isLastInputField, keyName, val, onChange }) => {
+export const InputField = ({ secured, placeholder, isLastInputField, keyName, val, onChangeVal }) => {
   const [onFocus, setOnFocus] = useState(false);
   const [pressed, setPressed] = useState(false);
   return (
@@ -21,7 +21,7 @@ export const InputField = ({ secured, placeholder, isLastInputField, keyName, va
             secureTextEntry
             placeholder={placeholder}
             style={styles.textSecure}
-            onChangeText={onChange(keyName)}
+            onChangeText={onChangeVal(keyName)}
             onPressIn={() => {
               setPressed(true);
             }}
@@ -44,7 +44,7 @@ export const InputField = ({ secured, placeholder, isLastInputField, keyName, va
           value={val}
           placeholder={placeholder}
           style={styles.text}
-          onChangeText={onChange(keyName)}
+          onChangeText={onChangeVal(keyName)}
           onPressIn={() => {
             setPressed(true);
           }}

@@ -10,7 +10,7 @@ import {
 import color from "../../constants/color/color";
 import { EvilIcons } from "@expo/vector-icons";
 
-export const FloatingLabelTextInput = ({ placeholder, width, fullWidth,  keyboardType}) => {
+export const FloatingLabelTextInput = ({ placeholder, width, fullWidth,  keyboardType, keyName, val, onChangeVal}) => {
   const [value, setValue] = useState("");
   const [onFocus, setOnFocus] = useState(false);
   const animatedValue = new Animated.Value(value === "" ? 0 : 1);
@@ -43,15 +43,12 @@ export const FloatingLabelTextInput = ({ placeholder, width, fullWidth,  keyboar
           },
         ]}
       >
-        {placeholder}
       </Animated.Text>
       <View style={styles.inputField}>
         <TextInput
           style={[styles.text, fullWidth===true && {width: "95%"}]}
-          onChangeText={(value) => {
-            setValue(value);
-          }}
-          value={value}
+          onChangeText={onChangeVal(keyName)}
+          value={val}
           onBlur={() => {
             setOnFocus(false);
           }}
@@ -59,6 +56,7 @@ export const FloatingLabelTextInput = ({ placeholder, width, fullWidth,  keyboar
             setOnFocus(true);
           }}
           keyboardType={keyboardType!==undefined ? keyboardType : "default"}
+          placeholder={placeholder}
         />
         {value !== '' && <Pressable onPress={()=>{setValue('')}}><EvilIcons name="close" size={20} color="black" /></Pressable>}
       </View>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosClient = (method, url, data, params) => {
-    const baseURL = 'http://192.168.15.101:5000/it4788/' 
+    const baseURL = 'http://192.168.0.105:5000/it4788/' 
     return axios({
         baseURL: baseURL,
         method: method,
