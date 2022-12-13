@@ -143,7 +143,7 @@ export const CreatePost = () => {
               <ScrollView style={styles.selectedImageScrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.selectedImagesContainer}>
                   { images.map((e, i) => (
-                    <View style={styles.selectedView}>
+                    <View style={styles.selectedView} key={`selected-view-${i}`}>
                       <TouchableOpacity style={styles.closeButton} key={`close-button-${i}`} onPress={() => {handleCloseImage(i)}}>
                         <CloseIcon/>
                       </TouchableOpacity>
