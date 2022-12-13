@@ -1,4 +1,4 @@
-import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard, Image } from "react-native";
 import { Avatar } from "../../components/home-screen/Avatar";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -11,16 +11,43 @@ import { Entypo } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import { EmojiKeyboard } from "rn-emoji-keyboard";
+import * as ImagePicker from 'expo-image-picker'; 
 
 export const CreatePost = () => {
+    const [images, setImages] = useState([]);
     const [firstFocus, setFirstFocus] = useState(false);
     const [openEmoji, setOpenemoji] = useState(false);
     const animatedValue = new Animated.Value(0);
 
+    const pickImage = async () => {
+      // No permissions request is necessary for launching the image library
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        aspect: [4, 3],
+        quality: 1,
+        allowsMultipleSelection: true,
+        allowsEditing: false,
+        base64: true
+      });
+  
+      // console.log(result);
+  
+      if (!result.cancelled && result.selected === undefined) {
+        setImages((prev) => [...prev , result.uri]);
+      }
+      else if (!result.cancelled && result.selected !== undefined) {
+        result.selected.map((e) => {
+          setImages((prev) => [...prev, e.uri])
+        });
+      }
+    };
+
+    const handleCloseImage = (i) => {
+      setImages((prev) => [...prev.slice(0,i), ...prev.slice(i+1)]);
+    }
+
     const onContentSizeChange = (e) => {
       const { height} = e.nativeEvent.contentSize;
-      console.log(height);
-      console.log(animatedValue);
       if (height < 200) {
         Animated.timing(animatedValue, {
             toValue: height >= 116  ? 1 : 0,
@@ -111,12 +138,26 @@ export const CreatePost = () => {
               onFocus={() => setFirstFocus(true)}
             />
           </Animated.View>
+          {
+            images.length > 0 && 
+              <ScrollView style={styles.selectedImageScrollView} showsVerticalScrollIndicator={false}>
+                <View style={styles.selectedImagesContainer}>
+                  { images.map((e, i) => (
+                    <View style={styles.selectedView}>
+                      <TouchableOpacity style={styles.closeButton} key={`close-button-${i}`} onPress={() => {handleCloseImage(i)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image key={`selected-image-${i}`} source={{ uri: e }} style={styles.selectedImage} />
+                    </View>))}
+                </View>
+              </ScrollView>
+          }
         </View>
         {firstFocus ? (
           <View style={styles.bottomButton}>
             <TouchableHighlight
               style={styles.iconButton}
-              onPress={() => {}}
+              onPress={pickImage}
               underlayColor={color.TouchableHighlightBorderWhite}
             >
               <ImageIcon />
@@ -178,6 +219,7 @@ const UpIcon = () => <AntDesign name="up" size={Size + 3} color={color.IconGray}
 const LiveVideoIcon = () => <Entypo name="video-camera" size={Size + 12} color={color.PaleVioletRed} />;
 const CameraIcon = () => <AntDesign name="camera" size={Size + 12} color={color.PaleVioletRed} />;
 const GIFIcon = () => <MaterialIcons name="gif" size={Size + 12} color={color.PaleGreen} />;
+const CloseIcon = () => <AntDesign name="closecircleo" size={24} color={color.IconGray} />;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -225,6 +267,29 @@ const styles = StyleSheet.create({
         marginTop: 10,
         flex: 1,
         paddingHorizontal: 10,
+    },
+    selectedImagesContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+    },
+    selectedImage: {
+      width: 150,
+      height: 150,
+    },
+    selectedView: {
+      width: 150,
+      height: 150,
+      marginBottom: 5,
+      marginRight: 5,
+    },
+    selectedImageScrollView: {
+      height: 150,
+    },
+    closeButton: {
+      position: "absolute",
+      top: 5,
+      right: 5,
+      zIndex: 100,
     },
     input: {
         fontSize: 24,
