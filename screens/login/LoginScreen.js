@@ -47,7 +47,8 @@ export default function LoginScreen({ navigation }) {
         text: "hủy"
       }
     ])
-    // navigation.navigate("HomeTab")
+
+    navigation.navigate("HomeTab")
   }
 
   return (
