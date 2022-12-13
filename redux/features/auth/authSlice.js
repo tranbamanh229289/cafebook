@@ -45,10 +45,10 @@ const authSlice = createSlice({
             newState.code = action.payload.code
             if(action.payload.code == 1004){
                 if(action.payload.details == "phoneNumber") {
-                    newState.error = loginMessage.ERROR_USER
+                    newState.error = loginMessage.USER_INVALID
                 }
                 if(action.payload.details == "password") {
-                    newState.error = loginMessage.ERROR_PASSWORD
+                    newState.error = loginMessage.PASSWORD_INVALID
                 }
             }
             return newState
