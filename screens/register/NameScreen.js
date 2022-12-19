@@ -1,10 +1,28 @@
 import { useNavigation } from "@react-navigation/native";
+import { useState, useCallback } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { FloatingLabelTextInput } from "../../components/register/FloatingLabelTextInput";
 import color from "../../constants/color/color";
 
 export const NameScreen = () => {
     const navigation = useNavigation();
+    const [name, setName] = useState({
+        firstName: '',
+        lastName:'',
+    })
+
+    console.log(name)
+    const changeName = useCallback((keyName)=> {
+        return (val)=> {
+            setName(prev=> {
+                return {
+                    ...prev,
+                    [keyName]: val,
+                }
+            })
+        }
+    }, [name])
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <View style={styles.textContainer}>
@@ -12,8 +30,8 @@ export const NameScreen = () => {
                 <Text style={styles.sub}>Enter the name you use in real life.</Text>
             </View>
             <View style={styles.inputContainer}>
-                <FloatingLabelTextInput placeholder="First Name"/>
-                <FloatingLabelTextInput placeholder="Last Name"/>
+                <FloatingLabelTextInput placeholder="First Name" keyName="firstName" val={name.firstName} onChangeVal= {changeName} />
+                <FloatingLabelTextInput placeholder="Last Name" keyName="lastName" val={name.lastName} onChangeVal= {changeName} />
             </View>
             <View style={styles.nextButton}>
                 <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("BirthDayScreen")}>

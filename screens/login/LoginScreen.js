@@ -20,7 +20,7 @@ import { login } from "../../redux/features/auth/authSlice";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch()
-  const code = useSelector(state=>state.auth.loading)
+  const error = useSelector(state=> state.auth.error)
   const [firstOpen, setFirstOpen] = useState(true);
   useEffect(() => {}, []);
 
@@ -40,11 +40,11 @@ export default function LoginScreen({ navigation }) {
     }
   }, [account])
 
-  const handleLogin = useCallback(()=> {
+  const handleLogin = ()=> {
     dispatch(login(account))
     console.log(code, "hehe")
     navigation.navigate("HomeTab")
-  }, [account])
+  }
 
   return (
     <>
@@ -64,14 +64,14 @@ export default function LoginScreen({ navigation }) {
               <MoreLanguageBar />
             </View>
             <View style={styles.inputContainer}>
-              <InputField placeholder="Số điện thoại hoặc email" keyName="phoneNumber" val={account.phoneNumber} onChange={changeAccount}/>
+              <InputField placeholder="Số điện thoại hoặc email" keyName="phoneNumber" val={account.phoneNumber} onChangeVal={changeAccount}/>
               <InputField
                 placeholder="Mật khẩu"
                 secured={true}
                 isLastInputField={true}
                 keyName="password"
                 val={account.password}
-                onChange={changeAccount}
+                onChangeVal={changeAccount}
               />
               <TouchableOpacity
                 onPress={handleLogin}
