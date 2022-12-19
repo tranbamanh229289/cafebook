@@ -42,12 +42,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = ()=> {
     dispatch(login(account))
-    Alert.alert(error.title, error.content, [
-      {
-        text: "hủy"
-      }
-    ])
-
+    console.log(code, "hehe")
     navigation.navigate("HomeTab")
   }
 
