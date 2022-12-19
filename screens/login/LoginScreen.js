@@ -43,11 +43,6 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = useCallback(()=> {
     dispatch(login(account))
     console.log(code, "hehe")
-    // Alert.alert(error.title, error.content, [
-    //   {
-    //     text: "hủy"
-    //   }
-    // ])
     navigation.navigate("HomeTab")
   }, [account])
 

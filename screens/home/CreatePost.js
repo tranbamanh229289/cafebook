@@ -1,4 +1,4 @@
-import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard, Image } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard, Image, Dimensions } from "react-native";
 import { Avatar } from "../../components/home-screen/Avatar";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -12,6 +12,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import { EmojiKeyboard } from "rn-emoji-keyboard";
 import * as ImagePicker from 'expo-image-picker'; 
+
+const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
 export const CreatePost = () => {
     const [images, setImages] = useState([]);
@@ -55,7 +57,6 @@ export const CreatePost = () => {
             useNativeDriver: false,
         }).start();
       }
-        
       if (height >= 200 && height<250) {
           Animated.timing(animatedValue, {
           toValue: height >= 200 ? 2 : 1,
@@ -115,10 +116,11 @@ export const CreatePost = () => {
             </View>
           </View>
         </View>
-        <View style={styles.textInput}>
-          <Animated.View
-            style={{
-              flex: 1,
+        <View style={[styles.textInput]}>
+          <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+          >
+            <Animated.View style={[ images.length === 0 && {flex: 1}, {
               transform: [
                 {
                   scale: animatedValue.interpolate({
@@ -128,30 +130,121 @@ export const CreatePost = () => {
                   }),
                 },
               ],
-            }}
-          >
-            <TextInput
+            }]}>
+              <TextInput
               placeholder="What's on your mind?"
               multiline={true}
               style={styles.input}
               onContentSizeChange={onContentSizeChange}
               onFocus={() => setFirstFocus(true)}
-            />
-          </Animated.View>
-          {
-            images.length > 0 && 
-              <ScrollView style={styles.selectedImageScrollView} showsVerticalScrollIndicator={false}>
-                <View style={styles.selectedImagesContainer}>
-                  { images.map((e, i) => (
-                    <View style={styles.selectedView} key={`selected-view-${i}`}>
-                      <TouchableOpacity style={styles.closeButton} key={`close-button-${i}`} onPress={() => {handleCloseImage(i)}}>
+              />
+            </Animated.View>
+            {images.length === 1 && 
+            <View style={{height: DEVICE_HEIGHT * 2 / 3}}>
+              <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, {flex: 1}]}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
+                      <CloseIcon/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
+                  </View>
+              </View>
+            </View>}
+            {images.length === 2 && 
+            <View style={{height: DEVICE_HEIGHT * 1 / 2}}>
+              <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, {flex: 1}]}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
+                      <CloseIcon/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
+                  </View>
+                  <View style={[styles.selectedView, {flex: 1}]}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
+                      <CloseIcon/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
+                  </View>
+              </View>
+            </View>
+            }
+            {(images.length > 2 && images.length <= 4) && 
+            <View style={{height: DEVICE_HEIGHT * 1 / 2}}>
+              <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, {flex: 2}]}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
+                      <CloseIcon/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
+                  </View>
+                  <View style={{flexDirection: "column", flex: 1}}>
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
                         <CloseIcon/>
                       </TouchableOpacity>
-                      <Image key={`selected-image-${i}`} source={{ uri: e }} style={styles.selectedImage} />
-                    </View>))}
+                      <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
+                    </View>
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(2)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[2] }} style={styles.selectedImage}/>
+                    </View>
+                    {
+                    images.length === 4 &&
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(3)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[3] }} style={styles.selectedImage}/>
+                    </View>
+                    }
+                  </View>
+              </View>
+            </View>
+            }
+            {images.length >= 5 &&
+            <View style={{height: DEVICE_HEIGHT * 0.42, flexDirection: "column"}}>
+                <View style={{flex: 4, flexDirection: "row"}}>
+                  <View style={[styles.selectedView, {flex: 1}]}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
+                      <CloseIcon/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
+                  </View>
+                  <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
+                    </View>
                 </View>
-              </ScrollView>
-          }
+                <View style={{flex: 3}}>
+                  <View style={{flexDirection: "row", flex: 1}}>
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(2)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[2] }} style={styles.selectedImage}/>
+                    </View>
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(3)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[3] }} style={styles.selectedImage}/>
+                    </View>
+                    <View style={[styles.selectedView, {flex: 1}]}>
+                      {images.length > 5 && <View style={styles.selectedImageViewCenter}><Text style={styles.selectedImageTextCenter}>+{images.length  - 4}</Text></View>}
+                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(4)}}>
+                        <CloseIcon/>
+                      </TouchableOpacity>
+                      <Image source={{ uri: images[4] }} style={styles.selectedImage}/>
+                    </View>
+                  </View>
+                </View>  
+            </View>
+            }
+          </ScrollView>
         </View>
         {firstFocus ? (
           <View style={styles.bottomButton}>
@@ -221,125 +314,138 @@ const CameraIcon = () => <AntDesign name="camera" size={Size + 12} color={color.
 const GIFIcon = () => <MaterialIcons name="gif" size={Size + 12} color={color.PaleGreen} />;
 const CloseIcon = () => <AntDesign name="closecircleo" size={24} color={color.IconGray} />;
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: color.White,
-    },
-    header: {
-        height: 76,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 10,
-
-    },
-    headerRight: {
-        marginLeft: 10,
-        flexDirection: "column",
-        justifyContent: "center",
-    },
-    name: {
-        fontFamily: "Roboto-Bold",
-        fontSize: 16
-    },
-    headerButton: {
-        flexDirection: "row",
-        width: 150,
-    },
-    TouchableHighlightHeader: {
-        height: 26,
-        justifyContent: "center",
-        marginTop: 5,
-        borderWidth: 0.5,
-        padding: 5,
-        borderRadius: 6,
-        borderColor: color.BorderTinyButtonGray,
-    },
-    tinyText: {
-        color: color.GrayText,
-        fontFamily: "Roboto-Medium",
-        fontSize: 12
-    },
-    wrapItem: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    textInput: {
-        marginTop: 10,
-        flex: 1,
-        paddingHorizontal: 10,
-    },
-    selectedImagesContainer: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-    },
-    selectedImage: {
-      width: 150,
-      height: 150,
-    },
-    selectedView: {
-      width: 150,
-      height: 150,
-      marginBottom: 5,
-      marginRight: 5,
-    },
-    selectedImageScrollView: {
-      height: 150,
-    },
-    closeButton: {
-      position: "absolute",
-      top: 5,
-      right: 5,
-      zIndex: 100,
-    },
-    input: {
-        fontSize: 24,
-        textAlignVertical: "top",
-        fontFamily: "Roboto-Light",
-        height: "100%",
-    },
-    bottomButton: {
-        height: 46,
-        borderTopColor: color.BorderTinyButtonGray,
-        borderTopWidth: 0.5,
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-        padding: 3,
-        
-    },
-    iconButton: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        borderRadius: 6
-    },
-    scrollViewBottom: {
-        flex: 1,
-        flexDirection: "column",
-    },
-    scrollViewIconButton: {
-        flexDirection: "row",
-        height: 50,
-        alignItems: "center",
-        borderBottomColor: color.BorderTinyButtonGray,
-        borderBottomWidth: 0.5,
-        paddingHorizontal: 10,
-    },
-    scrollViewButtonText: {
-        fontFamily: "Roboto-Medium",
-        fontSize: 16,
-        marginLeft: 10,
-    },
-    scrollViewBottomContainer: {
-        flex: 1,
-    }
+  container: {
+    flex: 1,
+    backgroundColor: color.White,
+  },
+  header: {
+    height: 76,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  headerRight: {
+    marginLeft: 10,
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  name: {
+    fontFamily: "Roboto-Bold",
+    fontSize: 16,
+  },
+  headerButton: {
+    flexDirection: "row",
+    width: 150,
+  },
+  TouchableHighlightHeader: {
+    height: 26,
+    justifyContent: "center",
+    marginTop: 5,
+    borderWidth: 0.5,
+    padding: 5,
+    borderRadius: 6,
+    borderColor: color.BorderTinyButtonGray,
+  },
+  tinyText: {
+    color: color.GrayText,
+    fontFamily: "Roboto-Medium",
+    fontSize: 12,
+  },
+  wrapItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  textInput: {
+    flex: 1,
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  selectedImagesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    flex: 1,
+  },
+  selectedImage: {
+    flex: 1,
+  },
+  selectedView: {
+    padding: 1,
+  },
+  selectedImageView: {
+    marginTop: 5,
+    height: 320,
+    borderWidth: 1,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    zIndex: 100,
+  },
+  input: {
+    fontSize: 24,
+    textAlignVertical: "top",
+    fontFamily: "Roboto-Light",
+    flex: 1,
+  },
+  bottomButton: {
+    borderTopColor: color.BorderTinyButtonGray,
+    borderTopWidth: 0.5,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    padding: 3,
+    height: 50,
+  },
+  iconButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
+    borderRadius: 6,
+  },
+  scrollViewBottom: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  scrollViewIconButton: {
+    flexDirection: "row",
+    height: 50,
+    alignItems: "center",
+    borderBottomColor: color.BorderTinyButtonGray,
+    borderBottomWidth: 0.5,
+    paddingHorizontal: 10,
+  },
+  scrollViewButtonText: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  scrollViewBottomContainer: {
+    flex: 1,
+  },
+  selectedImageTextCenter: {
+    color: color.White,
+    fontSize: 24
+  },
+  selectedImageViewCenter: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    zIndex: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: color.Black,
+    opacity: 0.5,
+    top: 1,
+    left: 1,
+  },
 });
 
 const ScrollViewBottom = () => (
   <View style={styles.scrollViewBottom}>
-    <View style={[styles.scrollViewIconButton, {justifyContent: "center"}]}>
-        <UpIcon/>
+    <View style={[styles.scrollViewIconButton, { justifyContent: "center" }]}>
+      <UpIcon />
     </View>
     <TouchableHighlight
       onPress={() => {}}
