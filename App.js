@@ -5,6 +5,8 @@ import { Navigator } from "./navigations/Navigator";
 import 'expo-dev-client';
 import { Provider } from "react-redux";
 import { store } from "./redux/store/store";
+import { SearchScreen } from "./screens/home/SearchScreen";
+import { SearchHistory } from "./screens/home/SearchHistory";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -39,5 +41,6 @@ export default function App() {
       });
     }
   }, [[fontLoaded]]);
-  return <Provider store={store}>{!fontLoaded ? <LoginSplashAnimation /> : <Navigator />}</Provider>;
+   return <Provider store={store}>{!fontLoaded ? <LoginSplashAnimation /> : <Navigator />}</Provider>;
+  // return <SearchHistory/>;
 }
