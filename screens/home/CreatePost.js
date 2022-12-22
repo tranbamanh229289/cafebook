@@ -1,4 +1,4 @@
-import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard, Image, Dimensions } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View, Keyboard, Image, Dimensions, Modal, BackHandler, StatusBar } from "react-native";
 import { Avatar } from "../../components/home-screen/Avatar";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -12,6 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import { EmojiKeyboard } from "rn-emoji-keyboard";
 import * as ImagePicker from 'expo-image-picker'; 
+import { OnBackPressModal } from "../../components/home-screen/OnBackPressModal";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
@@ -20,6 +21,26 @@ export const CreatePost = () => {
     const [firstFocus, setFirstFocus] = useState(false);
     const [openEmoji, setOpenemoji] = useState(false);
     const animatedValue = new Animated.Value(0);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+      const backAction = () => {
+        if (!modalVisible) {
+          StatusBar.setBackgroundColor(color.StatusBarBackgroundCreatePostBlur);
+          StatusBar.setBarStyle("light-content");
+          setModalVisible(true);
+          return true;
+        }
+        return false;
+      };
+  
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+  
+      return () => backHandler.remove();
+    }, []);
 
     const pickImage = async () => {
       // No permissions request is necessary for launching the image library
@@ -29,7 +50,7 @@ export const CreatePost = () => {
         quality: 1,
         allowsMultipleSelection: true,
         allowsEditing: false,
-        base64: true
+        // base64: true
       });
   
       // console.log(result);
@@ -84,8 +105,19 @@ export const CreatePost = () => {
       };
     }, [openEmoji]);
 
+
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <OnBackPressModal setModalVisible={setModalVisible}/>
+        </Modal>
         <View style={styles.header}>
           <Avatar width={46} height={46} />
           <View style={styles.headerRight}>
@@ -117,133 +149,243 @@ export const CreatePost = () => {
           </View>
         </View>
         <View style={[styles.textInput]}>
-          <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-          >
-            <Animated.View style={[ images.length === 0 && {flex: 1}, {
-              transform: [
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Animated.View
+              style={[
+                images.length === 0 && { flex: 1 },
                 {
-                  scale: animatedValue.interpolate({
-                    inputRange: [0, 2],
-                    outputRange: [1, 0.85],
-                    extrapolate: "clamp",
-                  }),
+                  transform: [
+                    {
+                      scale: animatedValue.interpolate({
+                        inputRange: [0, 2],
+                        outputRange: [1, 0.85],
+                        extrapolate: "clamp",
+                      }),
+                    },
+                  ],
                 },
-              ],
-            }]}>
+              ]}
+            >
               <TextInput
-              placeholder="What's on your mind?"
-              multiline={true}
-              style={styles.input}
-              onContentSizeChange={onContentSizeChange}
-              onFocus={() => setFirstFocus(true)}
+                placeholder="What's on your mind?"
+                multiline={true}
+                style={styles.input}
+                onContentSizeChange={onContentSizeChange}
+                onFocus={() => setFirstFocus(true)}
               />
             </Animated.View>
-            {images.length === 1 && 
-            <View style={{height: DEVICE_HEIGHT * 2 / 3}}>
-              <View style={styles.selectedImagesContainer}>
-                  <View style={[styles.selectedView, {flex: 1}]}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
-                      <CloseIcon/>
+            {images.length === 1 && (
+              <View style={{ height: (DEVICE_HEIGHT * 2) / 3 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(0);
+                      }}
+                    >
+                      <CloseIcon />
                     </TouchableOpacity>
-                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
                   </View>
-              </View>
-            </View>}
-            {images.length === 2 && 
-            <View style={{height: DEVICE_HEIGHT * 1 / 2}}>
-              <View style={styles.selectedImagesContainer}>
-                  <View style={[styles.selectedView, {flex: 1}]}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
-                      <CloseIcon/>
-                    </TouchableOpacity>
-                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
-                  </View>
-                  <View style={[styles.selectedView, {flex: 1}]}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
-                      <CloseIcon/>
-                    </TouchableOpacity>
-                    <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
-                  </View>
-              </View>
-            </View>
-            }
-            {(images.length > 2 && images.length <= 4) && 
-            <View style={{height: DEVICE_HEIGHT * 1 / 2}}>
-              <View style={styles.selectedImagesContainer}>
-                  <View style={[styles.selectedView, {flex: 2}]}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
-                      <CloseIcon/>
-                    </TouchableOpacity>
-                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
-                  </View>
-                  <View style={{flexDirection: "column", flex: 1}}>
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
-                        <CloseIcon/>
-                      </TouchableOpacity>
-                      <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
-                    </View>
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(2)}}>
-                        <CloseIcon/>
-                      </TouchableOpacity>
-                      <Image source={{ uri: images[2] }} style={styles.selectedImage}/>
-                    </View>
-                    {
-                    images.length === 4 &&
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(3)}}>
-                        <CloseIcon/>
-                      </TouchableOpacity>
-                      <Image source={{ uri: images[3] }} style={styles.selectedImage}/>
-                    </View>
-                    }
-                  </View>
-              </View>
-            </View>
-            }
-            {images.length >= 5 &&
-            <View style={{height: DEVICE_HEIGHT * 0.42, flexDirection: "column"}}>
-                <View style={{flex: 4, flexDirection: "row"}}>
-                  <View style={[styles.selectedView, {flex: 1}]}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(0)}}>
-                      <CloseIcon/>
-                    </TouchableOpacity>
-                    <Image source={{ uri: images[0] }} style={styles.selectedImage}/>
-                  </View>
-                  <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(1)}}>
-                        <CloseIcon/>
-                      </TouchableOpacity>
-                      <Image source={{ uri: images[1] }} style={styles.selectedImage}/>
-                    </View>
                 </View>
-                <View style={{flex: 3}}>
-                  <View style={{flexDirection: "row", flex: 1}}>
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(2)}}>
-                        <CloseIcon/>
+              </View>
+            )}
+            {images.length === 2 && (
+              <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(0);
+                      }}
+                    >
+                      <CloseIcon />
+                    </TouchableOpacity>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(1);
+                      }}
+                    >
+                      <CloseIcon />
+                    </TouchableOpacity>
+                    <Image
+                      source={{ uri: images[1] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                </View>
+              </View>
+            )}
+            {images.length > 2 && images.length <= 4 && (
+              <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 2 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(0);
+                      }}
+                    >
+                      <CloseIcon />
+                    </TouchableOpacity>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={{ flexDirection: "column", flex: 1 }}>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => {
+                          handleCloseImage(1);
+                        }}
+                      >
+                        <CloseIcon />
                       </TouchableOpacity>
-                      <Image source={{ uri: images[2] }} style={styles.selectedImage}/>
+                      <Image
+                        source={{ uri: images[1] }}
+                        style={styles.selectedImage}
+                      />
                     </View>
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(3)}}>
-                        <CloseIcon/>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => {
+                          handleCloseImage(2);
+                        }}
+                      >
+                        <CloseIcon />
                       </TouchableOpacity>
-                      <Image source={{ uri: images[3] }} style={styles.selectedImage}/>
+                      <Image
+                        source={{ uri: images[2] }}
+                        style={styles.selectedImage}
+                      />
                     </View>
-                    <View style={[styles.selectedView, {flex: 1}]}>
-                      {images.length > 5 && <View style={styles.selectedImageViewCenter}><Text style={styles.selectedImageTextCenter}>+{images.length  - 4}</Text></View>}
-                      <TouchableOpacity style={styles.closeButton} onPress={() => {handleCloseImage(4)}}>
-                        <CloseIcon/>
+                    {images.length === 4 && (
+                      <View style={[styles.selectedView, { flex: 1 }]}>
+                        <TouchableOpacity
+                          style={styles.closeButton}
+                          onPress={() => {
+                            handleCloseImage(3);
+                          }}
+                        >
+                          <CloseIcon />
+                        </TouchableOpacity>
+                        <Image
+                          source={{ uri: images[3] }}
+                          style={styles.selectedImage}
+                        />
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+            )}
+            {images.length >= 5 && (
+              <View
+                style={{
+                  height: DEVICE_HEIGHT * 0.42,
+                  flexDirection: "column",
+                }}
+              >
+                <View style={{ flex: 4, flexDirection: "row" }}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(0);
+                      }}
+                    >
+                      <CloseIcon />
+                    </TouchableOpacity>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        handleCloseImage(1);
+                      }}
+                    >
+                      <CloseIcon />
+                    </TouchableOpacity>
+                    <Image
+                      source={{ uri: images[1] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                </View>
+                <View style={{ flex: 3 }}>
+                  <View style={{ flexDirection: "row", flex: 1 }}>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => {
+                          handleCloseImage(2);
+                        }}
+                      >
+                        <CloseIcon />
                       </TouchableOpacity>
-                      <Image source={{ uri: images[4] }} style={styles.selectedImage}/>
+                      <Image
+                        source={{ uri: images[2] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => {
+                          handleCloseImage(3);
+                        }}
+                      >
+                        <CloseIcon />
+                      </TouchableOpacity>
+                      <Image
+                        source={{ uri: images[3] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      {images.length > 5 && (
+                        <View style={styles.selectedImageViewCenter}>
+                          <Text style={styles.selectedImageTextCenter}>
+                            +{images.length - 4}
+                          </Text>
+                        </View>
+                      )}
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => {
+                          handleCloseImage(4);
+                        }}
+                      >
+                        <CloseIcon />
+                      </TouchableOpacity>
+                      <Image
+                        source={{ uri: images[4] }}
+                        style={styles.selectedImage}
+                      />
                     </View>
                   </View>
-                </View>  
-            </View>
-            }
+                </View>
+              </View>
+            )}
           </ScrollView>
         </View>
         {firstFocus ? (
@@ -266,7 +408,10 @@ export const CreatePost = () => {
               style={styles.iconButton}
               onPress={() => {}}
               underlayColor={color.TouchableHighlightBorderWhite}
-              onPressOut={()=> {setOpenemoji((prev)=>!prev); Keyboard.dismiss()}}
+              onPressOut={() => {
+                setOpenemoji((prev) => !prev);
+                Keyboard.dismiss();
+              }}
             >
               <SmileIcon />
             </TouchableHighlight>
@@ -293,8 +438,26 @@ export const CreatePost = () => {
             <ScrollViewBottom />
           </ScrollView>
         )}
-        { openEmoji && <EmojiKeyboard onRequestClose={()=>{setOpenemoji(false)}} onEmojiSelected={handleOnEmojiSelected} disabledCategories={["travel_places","search","flags","food_drink","objects","symbols"]} 
-          enableCategoryChangeAnimation={true} expandable={false} enableRecentlyUsed emojiSize={20}/>}
+        {openEmoji && (
+          <EmojiKeyboard
+            onRequestClose={() => {
+              setOpenemoji(false);
+            }}
+            onEmojiSelected={handleOnEmojiSelected}
+            disabledCategories={[
+              "travel_places",
+              "search",
+              "flags",
+              "food_drink",
+              "objects",
+              "symbols",
+            ]}
+            enableCategoryChangeAnimation={true}
+            expandable={false}
+            enableRecentlyUsed
+            emojiSize={20}
+          />
+        )}
       </View>
     );
 }
