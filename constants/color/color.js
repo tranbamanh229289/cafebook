@@ -52,6 +52,7 @@ export default {
     IconGray: "#676769",
     HeaderBorderColor: "#cecece",
     StatusBarBackgroundBlur: "#021E43",
+    StatusBarBackgroundCreatePostBlur: "#7f7f7f",
     TextMainBlue: "#1462de",
     IconBackgroundGray: "#e6e7ec",
     MenuBackgroundGray: "#f1f2f4",
