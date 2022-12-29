@@ -33,16 +33,7 @@ export const SearchHistory = () => {
 const SearchHistoryComponent = ({ searchInfo }) => {
     return (
         <View style={styles.view1}>
-            {/* <Image
-                style={{
-                    resizeMode: "cover",
-                    height: 60,
-                    width: 60,
-                    borderRadius:  50
-                    
-                }}
-                source={require("../../assets/search-icon.png")}
-            /> */}
+            
             <View style={{
                 height: 60,
                 width: 60,
