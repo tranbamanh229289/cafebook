@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import color from "../../constants/color/color";
 
 const dataText = `Shopee
@@ -9,9 +9,17 @@ Chúc mừng bạn đã đăng ký thành công chương trình Người tiêu d
  
 👉 Các thông tin cần cập nhật lên hệ thống Shopee: `
 
+const DEVICE_HEIGHT = Dimensions.get("screen").height;
+
 export const PostBody = () => {
     const [more, setMore] = useState(dataText.length < 120);
     const [bodyText , setBodyText] = useState(dataText);
+    const [images, setImages] = useState(["https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"]);
 
     return (
         <View style={styles.container}>
@@ -27,6 +35,131 @@ export const PostBody = () => {
                 }
             </TouchableHighlight>
             <View style={styles.imagesContainer}>
+            {images.length === 1 && (
+              <View style={{ height: (DEVICE_HEIGHT * 2) / 3 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                </View>
+              </View>
+            )}
+            {images.length === 2 && (
+              <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={{marginLeft: 3}}/>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <Image
+                      source={{ uri: images[1] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                </View>
+              </View>
+            )}
+            {images.length > 2 && images.length <= 4 && (
+              <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
+                <View style={styles.selectedImagesContainer}>
+                  <View style={[styles.selectedView, { flex: 2 }]}>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={{marginLeft: 3}}/>
+                  <View style={{ flexDirection: "column", flex: 1 }}>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <Image
+                        source={{ uri: images[1] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    <View style={{marginBottom: 3}}/>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <Image
+                        source={{ uri: images[2] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    
+                    {images.length === 4 && (
+                      <View style={[styles.selectedView, { flex: 1 }]}>
+                        <View style={{marginBottom: 3}}/>
+                        <Image
+                          source={{ uri: images[3] }}
+                          style={styles.selectedImage}
+                        />
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+            )}
+            {images.length >= 5 && (
+              <View
+                style={{
+                  height: DEVICE_HEIGHT * 0.42,
+                  flexDirection: "column",
+                }}
+              >
+                <View style={{ flex: 4, flexDirection: "row" }}>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                  <View style={{marginLeft: 3}}/>
+                  <View style={[styles.selectedView, { flex: 1 }]}>
+                    <Image
+                      source={{ uri: images[1] }}
+                      style={styles.selectedImage}
+                    />
+                  </View>
+                </View>
+                <View style={{marginBottom: 3}}/>
+                <View style={{ flex: 3 }}>
+                  <View style={{ flexDirection: "row", flex: 1 }}>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <Image
+                        source={{ uri: images[2] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    <View style={{marginLeft: 3}}/>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      <Image
+                        source={{ uri: images[3] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                    <View style={{marginLeft: 3}}/>
+                    <View style={[styles.selectedView, { flex: 1 }]}>
+                      {images.length > 5 && (
+                        <View style={styles.selectedImageViewCenter}>
+                          <Text style={styles.selectedImageTextCenter}>
+                            +{images.length - 4}
+                          </Text>
+                        </View>
+                      )}
+                      <Image
+                        source={{ uri: images[4] }}
+                        style={styles.selectedImage}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
             </View>
         </View>
     );
@@ -35,12 +168,10 @@ export const PostBody = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
     },
     textContainer: {
     },
     imagesContainer: {
-
     },
     text: {
         paddingLeft: "3.5%",
@@ -52,4 +183,33 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontSize: 16,
     },
+    selectedImagesContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        flex: 1,
+      },
+      selectedImage: {
+        flex: 1,
+      },
+      selectedView: {
+      },
+      selectedImageView: {
+        marginTop: 5,
+        height: 320,
+        borderWidth: 1,
+      },
+      selectedImageTextCenter: {
+        color: color.White,
+        fontSize: 24
+      },
+      selectedImageViewCenter: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        zIndex: 200,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: color.Black,
+        opacity: 0.5,
+      },
 });
