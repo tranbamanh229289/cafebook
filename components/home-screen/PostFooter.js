@@ -64,8 +64,8 @@ export const PostFooter = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: "column",
+        height: 90,
     },
     statisticContainer: {
         flex: 1,

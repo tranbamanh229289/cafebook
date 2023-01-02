@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import color from "../../constants/color/color";
 
 const dataText = `Shopee
@@ -20,21 +21,43 @@ export const PostBody = () => {
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"]);
+    const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
-            <TouchableHighlight style={styles.textContainer} underlayColor={color.TouchableHighlightBorderWhite} onPress={()=>{setMore(prev => !prev)}}>
-                {more ? 
-                <Text style={styles.text}>{bodyText}</Text>
-                    :
-                <>
-                    <Text style={styles.text}>{bodyText.slice(0,120) + " ... "}
-                        <TouchableHighlight underlayColor={color.TouchableHighlightBorderWhite} onPress={()=>{setMore(true)}}><Text style={styles.textSeeMore}>See more</Text></TouchableHighlight>
-                    </Text>
-                </>
-                }
-            </TouchableHighlight>
-            <View style={styles.imagesContainer}>
+      <View style={styles.container}>
+        <TouchableHighlight
+          style={styles.textContainer}
+          underlayColor={color.TouchableHighlightBorderWhite}
+          onPress={() => {
+            setMore((prev) => !prev);
+          }}
+        >
+          {more ? (
+            <Text style={styles.text}>{bodyText}</Text>
+          ) : (
+            <>
+              <Text style={styles.text}>
+                {bodyText.slice(0, 120) + " ... "}
+                <TouchableHighlight
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => {
+                    setMore(true);
+                  }}
+                >
+                  <Text style={styles.textSeeMore}>See more</Text>
+                </TouchableHighlight>
+              </Text>
+            </>
+          )}
+        </TouchableHighlight>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            navigation.navigate("PostDetail", {
+              name: "Sơn Nguyễn",
+            })
+          }
+        >
+          <View style={styles.imagesContainer}>
             {images.length === 1 && (
               <View style={{ height: (DEVICE_HEIGHT * 2) / 3 }}>
                 <View style={styles.selectedImagesContainer}>
@@ -56,7 +79,7 @@ export const PostBody = () => {
                       style={styles.selectedImage}
                     />
                   </View>
-                  <View style={{marginLeft: 3}}/>
+                  <View style={{ marginLeft: 3 }} />
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
                       source={{ uri: images[1] }}
@@ -75,7 +98,7 @@ export const PostBody = () => {
                       style={styles.selectedImage}
                     />
                   </View>
-                  <View style={{marginLeft: 3}}/>
+                  <View style={{ marginLeft: 3 }} />
                   <View style={{ flexDirection: "column", flex: 1 }}>
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
@@ -83,17 +106,17 @@ export const PostBody = () => {
                         style={styles.selectedImage}
                       />
                     </View>
-                    <View style={{marginBottom: 3}}/>
+                    <View style={{ marginBottom: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
                         source={{ uri: images[2] }}
                         style={styles.selectedImage}
                       />
                     </View>
-                    
+
                     {images.length === 4 && (
                       <View style={[styles.selectedView, { flex: 1 }]}>
-                        <View style={{marginBottom: 3}}/>
+                        <View style={{ marginBottom: 3 }} />
                         <Image
                           source={{ uri: images[3] }}
                           style={styles.selectedImage}
@@ -118,7 +141,7 @@ export const PostBody = () => {
                       style={styles.selectedImage}
                     />
                   </View>
-                  <View style={{marginLeft: 3}}/>
+                  <View style={{ marginLeft: 3 }} />
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
                       source={{ uri: images[1] }}
@@ -126,7 +149,7 @@ export const PostBody = () => {
                     />
                   </View>
                 </View>
-                <View style={{marginBottom: 3}}/>
+                <View style={{ marginBottom: 3 }} />
                 <View style={{ flex: 3 }}>
                   <View style={{ flexDirection: "row", flex: 1 }}>
                     <View style={[styles.selectedView, { flex: 1 }]}>
@@ -135,14 +158,14 @@ export const PostBody = () => {
                         style={styles.selectedImage}
                       />
                     </View>
-                    <View style={{marginLeft: 3}}/>
+                    <View style={{ marginLeft: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
                         source={{ uri: images[3] }}
                         style={styles.selectedImage}
                       />
                     </View>
-                    <View style={{marginLeft: 3}}/>
+                    <View style={{ marginLeft: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       {images.length > 5 && (
                         <View style={styles.selectedImageViewCenter}>
@@ -160,8 +183,9 @@ export const PostBody = () => {
                 </View>
               </View>
             )}
-            </View>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
     );
 }
 
@@ -170,6 +194,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     textContainer: {
+      marginBottom: 3,
     },
     imagesContainer: {
     },
