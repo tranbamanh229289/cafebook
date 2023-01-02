@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { PostBody } from "./PostBody";
 import { PostFooter } from "./PostFooter";
 import { PostHeader } from "./PostHeader";

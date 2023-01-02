@@ -31,6 +31,7 @@ import { PasswordScreen } from "../screens/register/PasswordScreen";
 import { TermAndPrivacyScreen } from "../screens/register/TermAndPrivacyScreen";
 import { TabBarNavigator } from "./top-tab-bar/TabBarNavigator";
 import { ChatScreen } from "../screens/message/ChatScreen";
+import { PostDetail } from "../screens/home/PostDetail";
 const Stack = createNativeStackNavigator();
 export const Navigator = () => {
   return (
@@ -289,7 +290,20 @@ export const Navigator = () => {
             headerTransparent: true,
           })}
         />
-
+      <Stack.Screen
+          name="PostDetail"
+          component={PostDetail}
+          options={() => ({
+            headerShown: false,
+            headerShadowVisible: false,
+            contentStyle: {
+              borderTopWidth: 1,
+              borderTopColor: color.HeaderBorderColor,
+            },
+            statusBarColor: color.BackgroundGray,
+            statusBarStyle: "dark",
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

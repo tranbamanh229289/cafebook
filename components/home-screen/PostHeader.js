@@ -6,30 +6,48 @@ import { Entypo } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-export const PostHeader = () => {
+export const PostHeader = ({detail}) => {
     return (
-        <TouchableHighlight  onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
-            <View style={styles.container}>
-                <View style={styles.avatar}>
-                    <Avatar source={"https://play-lh.googleusercontent.com/9_CDhcHHXGiDOnkhE7O3wkoa2muXfs2FNG03JWeOWs8CufQ-1QCVNVQm1_gyax1qGQ"}/>
-                </View>
-                <View style={styles.name}>
-                    <Text style={styles.text}>Shoppe</Text>
-                    <View style={styles.status}>
-                        <Text style={styles.tinyText}>16h</Text>
-                        <Dot/>
-                        <PublicIcon/>
-                    </View>
-                </View>
-                <TouchableHighlight style={styles.moreButton} underlayColor={color.TouchableHighlightBorderWhite} onPress={() => {}}>
-                    <MoreIcon/>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.hideOption} underlayColor={color.TouchableHighlightBorderWhite} onPress={() => {}}>
-                    <CloseIcon/>
-                </TouchableHighlight>
+      <TouchableHighlight
+        onPress={() => {}}
+        underlayColor={color.TouchableHighlightBorderWhite}
+      >
+        <View style={styles.container}>
+          <View style={styles.avatar}>
+            <Avatar
+              source={
+                "https://play-lh.googleusercontent.com/9_CDhcHHXGiDOnkhE7O3wkoa2muXfs2FNG03JWeOWs8CufQ-1QCVNVQm1_gyax1qGQ"
+              }
+            />
+          </View>
+          <View style={styles.name}>
+            <Text style={styles.text}>Shoppe</Text>
+            <View style={styles.status}>
+              <Text style={styles.tinyText}>16h</Text>
+              <Dot />
+              <PublicIcon />
             </View>
-        </TouchableHighlight>
-        
+          </View>
+          {!detail && (
+            <>
+              <TouchableHighlight
+                style={styles.moreButton}
+                underlayColor={color.TouchableHighlightBorderWhite}
+                onPress={() => {}}
+              >
+                <MoreIcon />
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={styles.hideOption}
+                underlayColor={color.TouchableHighlightBorderWhite}
+                onPress={() => {}}
+              >
+                <CloseIcon />
+              </TouchableHighlight>
+            </>
+          )}
+        </View>
+      </TouchableHighlight>
     );
 }
 
