@@ -43,22 +43,25 @@ export const FloatingLabelTextInput = ({ placeholder, width, fullWidth,  keyboar
           },
         ]}
       >
+        {placeholder}
       </Animated.Text>
       <View style={styles.inputField}>
         <TextInput
           style={[styles.text, fullWidth===true && {width: "95%"}]}
-          onChangeText={onChangeVal(keyName)}
-          value={val}
+          onChangeText={(value) => {
+            setValue(value);
+            onChangeVal(keyName)(value);
+          }}
           onBlur={() => {
             setOnFocus(false);
           }}
           onFocus={() => {
             setOnFocus(true);
           }}
+          value={value}
           keyboardType={keyboardType!==undefined ? keyboardType : "default"}
-          placeholder={placeholder}
         />
-        {value !== '' && <Pressable onPress={()=>{setValue('')}}><EvilIcons name="close" size={20} color="black" /></Pressable>}
+        {value !== '' && <Pressable onPress={()=>{setValue("");  onChangeVal(keyName)(""); console.log(value)}}><EvilIcons name="close" size={20} color="black" /></Pressable>}
       </View>
       <View style={onFocus ? styles.focusBr : styles.br} />
     </View>
