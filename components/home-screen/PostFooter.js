@@ -7,10 +7,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from "react";
 
 
-export const PostFooter = () => {
+export const PostFooter = ({dark}) => {
     const [commentCounting , setCommentCounting ] = useState(0);
     const [reactionCounting, setReactionCounting] = useState(0);
     const [like , setLike] = useState(false);
+    const darkTheme = {
+        color: color.White
+    };
 
     const handlePressLike = () => {
         if (!like) {
@@ -24,37 +27,37 @@ export const PostFooter = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableHighlight style={styles.statisticContainer} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
+            <TouchableHighlight style={styles.statisticContainer} onPress={()=>{}} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                 <View style={styles.statisticView}>
                     <View style={styles.reactionContainer}>
                         <View style={styles.iconBorder}>
                             <LikeIconSmall/>
                         </View>
-                        <Text style={styles.text}> {reactionCounting}</Text>
+                        <Text style={[styles.text, dark && darkTheme]}> {reactionCounting}</Text>
                     </View>
                     <View style={styles.commentContainer}>
-                        <Text style={styles.text}>{commentCounting} comments</Text>
+                        <Text style={[styles.text, dark && darkTheme]}>{commentCounting} comments</Text>
                     </View>
                 </View>
             </TouchableHighlight>
             <View style={styles.br}/>
             <View style={styles.buttonContainer}>
-                <TouchableHighlight style={styles.touchableButton} onPress={handlePressLike} underlayColor={color.TouchableHighlightBorderWhite}>
+                <TouchableHighlight style={styles.touchableButton} onPress={handlePressLike} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                     <View style={styles.button}>
                         {like?<LikeIconFocus/>:<LikeIcon />}
-                        <Text style={styles.text}>  Like</Text>
+                        <Text style={[styles.text, dark && darkTheme]}>  Like</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.touchableButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
+                <TouchableHighlight style={styles.touchableButton} onPress={()=>{}} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                     <View style={styles.button} >
                         <CommentIcon />
-                        <Text style={styles.text}>  Comment</Text>
+                        <Text style={[styles.text, dark && darkTheme]}>  Comment</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.touchableButton} onPress={()=>{}} underlayColor={color.TouchableHighlightBorderWhite}>
+                <TouchableHighlight style={styles.touchableButton} onPress={()=>{}} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                     <View style={styles.button}>
                         <ShareIcon/>
-                        <Text style={styles.text}>  Share</Text>
+                        <Text style={[styles.text, dark && darkTheme]}>  Share</Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     br: {
         width: "100%",
         alignSelf: "center",
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         borderBottomColor: color.LightGrey,
     },
     button: {

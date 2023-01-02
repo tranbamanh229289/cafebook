@@ -32,6 +32,7 @@ import { TermAndPrivacyScreen } from "../screens/register/TermAndPrivacyScreen";
 import { TabBarNavigator } from "./top-tab-bar/TabBarNavigator";
 import { ChatScreen } from "../screens/message/ChatScreen";
 import { PostDetail } from "../screens/home/PostDetail";
+import { ShowImageScreen } from "../screens/ShowImageScreen";
 const Stack = createNativeStackNavigator();
 export const Navigator = () => {
   return (
@@ -302,6 +303,17 @@ export const Navigator = () => {
             },
             statusBarColor: color.BackgroundGray,
             statusBarStyle: "dark",
+          })}
+        />
+        <Stack.Screen
+          name="ShowImage"
+          component={ShowImageScreen}
+          options={() => ({
+            headerShown: false,
+            headerShadowVisible: false,
+            statusBarColor: color.Black,
+            statusBarStyle: "light",
+            animation: "fade_from_bottom"
           })}
         />
       </Stack.Navigator>
