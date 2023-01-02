@@ -5,6 +5,8 @@ import { EyeOpen } from "./EyeOpen";
 export const InputField = ({ secured, placeholder, isLastInputField, keyName, val, onChangeVal }) => {
   const [onFocus, setOnFocus] = useState(false);
   const [pressed, setPressed] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
   return (
     <Pressable
       style={() => [
@@ -18,7 +20,7 @@ export const InputField = ({ secured, placeholder, isLastInputField, keyName, va
         <View style={{flexDirection: "row", alignItems: "center"}}>
           <TextInput
             value={val}
-            secureTextEntry
+            secureTextEntry={secureTextEntry}
             placeholder={placeholder}
             style={styles.textSecure}
             onChangeText={onChangeVal(keyName)}
@@ -37,7 +39,7 @@ export const InputField = ({ secured, placeholder, isLastInputField, keyName, va
               setOnFocus(true);
             }}
           />
-          <EyeOpen/>
+          <EyeOpen secureTextEntry={secureTextEntry} setSecureTextEntry={setSecureTextEntry}/>
         </View>
       ) : (
         <TextInput

@@ -1,8 +1,9 @@
-import { Text, View, StyleSheet, Dimensions, TouchableHighlight, ScrollView, Image } from "react-native";
+import { Text, View, StyleSheet, Dimensions, TouchableHighlight, ScrollView, Image, TouchableWithoutFeedback } from "react-native";
 import {PostHeader} from "../../components/home-screen/PostHeader";
 import {Post, PostFooter} from "../../components/home-screen/PostFooter";
 import { useState } from "react";
 import color from "../../constants/color/color";
+import { useNavigation } from "@react-navigation/native";
 
 const dataText = `Shopee
 Thân gửi bạn prokieumoi310,
@@ -26,14 +27,20 @@ const DEVICE_HEIGHT = Dimensions.get("screen").height;
 export const PostDetail = () => {
     const [more, setMore] = useState(dataText.length < 450);
     const [bodyText , setBodyText] = useState(dataText);
-    const [images, setImages] = useState(["https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
+    const [images, setImages] = useState(["https://static.kinhtedothi.vn/w960/images/upload/2022/12/04/leo3.jpg"
+    ,"https://nds-static.vtc.gov.vn/media/74c6eaa3-6c54-40b7-ad6b-732200dfb9a8/221203200749-lionel-messi-celebrating-argentina-australia-tease.jpg"
+    ,"https://media.newyorker.com/photos/638ccd015df5752861a95aee/1:1/w_1707,h_1707,c_limit/Messi_Argentina%20v.%20Mexico.png"
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
     ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"]);
+
+    const navigation = useNavigation();
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <PostHeader detail={true} />
         <TouchableHighlight
           style={styles.textContainer}
@@ -63,11 +70,21 @@ export const PostDetail = () => {
         <PostFooter />
         {images.map((e, i) => (
           <View style={styles.imageView} key={`image-view-${i}`}>
-            <ItemSeparatorComponent/>
-            <View style={styles.selectedView}>
+            <ItemSeparatorComponent />
+            <TouchableWithoutFeedback
+              style={styles.selectedView}
+              onPress={() => {
+                navigation.navigate("ShowImage", {
+                  uri: e,
+                  name: "Son Nguyen",
+                  time: "3 hours ago",
+                  text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                });
+              }}
+            >
               <Image source={{ uri: e }} style={styles.selectedImage} />
-            </View>
-            <PostFooter/>
+            </TouchableWithoutFeedback>
+            <PostFooter />
           </View>
         ))}
       </ScrollView>
