@@ -27,30 +27,34 @@ export const ShowImageScreen = ({route, navigation}) => {
               resizeMode="contain"
             />
           </View>
-          <View style={styles.content}>
-            <View style={styles.textContent}>
-              <Text style={styles.text}>{route.params.name}</Text>
-              {more ? (
-                <Text style={styles.text}>{bodyText}</Text>
-              ) : (
-                <>
-                  <Text style={styles.text}>
-                    {bodyText.slice(0, 120) + " ... "}
-                    <TouchableHighlight
-                      underlayColor={color.Black}
-                      onPress={() => {
-                        setMore(true);
-                      }}
-                    >
-                      <Text style={styles.textSeeMore}>See more</Text>
-                    </TouchableHighlight>
-                  </Text>
-                </>
-              )}
-              <Text style={[styles.text, styles.timeText]}>{route.params.time.toUpperCase()}</Text>
+          {showMenu && (
+            <View style={styles.content}>
+              <View style={styles.textContent}>
+                <Text style={styles.text}>{route.params.name}</Text>
+                {more ? (
+                  <Text style={styles.text}>{bodyText}</Text>
+                ) : (
+                  <>
+                    <Text style={styles.text}>
+                      {bodyText.slice(0, 120) + " ... "}
+                      <TouchableHighlight
+                        underlayColor={color.Black}
+                        onPress={() => {
+                          setMore(true);
+                        }}
+                      >
+                        <Text style={styles.textSeeMore}>See more</Text>
+                      </TouchableHighlight>
+                    </Text>
+                  </>
+                )}
+                <Text style={[styles.text, styles.timeText]}>
+                  {route.params.time.toUpperCase()}
+                </Text>
+              </View>
+              <PostFooter dark={true} />
             </View>
-            <PostFooter dark={true} />
-          </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     );
