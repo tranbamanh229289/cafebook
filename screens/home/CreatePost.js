@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import { EmojiKeyboard } from "rn-emoji-keyboard";
 import * as ImagePicker from 'expo-image-picker'; 
 import { OnBackPressModal } from "../../components/home-screen/OnBackPressModal";
+import {onChange, onPressIcon} from "../../redux/features/createPost/createPostSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {useNavigation } from "@react-navigation/native";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
@@ -22,10 +25,13 @@ export const CreatePost = () => {
     const [openEmoji, setOpenemoji] = useState(false);
     const animatedValue = new Animated.Value(0);
     const [modalVisible, setModalVisible] = useState(false);
+    const text = useSelector((state) => state.createPost.value);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     useEffect(() => {
       const backAction = () => {
-        if (!modalVisible) {
+        if ((images.length > 0 || text.length > 0) && !modalVisible) {
           StatusBar.setBackgroundColor(color.StatusBarBackgroundCreatePostBlur);
           StatusBar.setBarStyle("light-content");
           setModalVisible(true);
@@ -33,14 +39,16 @@ export const CreatePost = () => {
         }
         return false;
       };
-  
       const backHandler = BackHandler.addEventListener(
         "hardwareBackPress",
         backAction
       );
-  
       return () => backHandler.remove();
-    }, []);
+    }, [images, text]);
+
+    const onChangeText = (value) => {
+      dispatch(onChange(value));
+    }
 
     const pickImage = async () => {
       // No permissions request is necessary for launching the image library
@@ -88,10 +96,12 @@ export const CreatePost = () => {
     }
 
     const handleOnEmojiSelected = (selected) => {
+      dispatch(onPressIcon(selected.emoji))
     }
 
     useEffect(() => {
       const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+        setFirstFocus(true);
         if (openEmoji === true) {
           setOpenemoji(false);
         }
@@ -172,6 +182,8 @@ export const CreatePost = () => {
                 style={styles.input}
                 onContentSizeChange={onContentSizeChange}
                 onFocus={() => setFirstFocus(true)}
+                onChangeText={onChangeText}
+                value={text}
               />
             </Animated.View>
             {images.length === 1 && (
@@ -424,7 +436,7 @@ export const CreatePost = () => {
             </TouchableHighlight>
             <TouchableHighlight
               style={styles.iconButton}
-              onPress={() => {}}
+              onPress={() => {setFirstFocus(false)}}
               underlayColor={color.TouchableHighlightBorderWhite}
             >
               <MoreIcon />
