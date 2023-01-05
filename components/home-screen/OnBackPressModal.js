@@ -3,9 +3,12 @@ import color from "../../constants/color/color";
 import { MaterialIcons } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import {discardPost} from "../../redux/features/createPost/createPostSlice"
+import { useDispatch } from "react-redux";
 
 export const OnBackPressModal = ({setModalVisible}) => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const handlePressContinue = () => {
         StatusBar.setBackgroundColor(color.White);
@@ -13,7 +16,8 @@ export const OnBackPressModal = ({setModalVisible}) => {
         setModalVisible(false);
     }
     const handlePressDiscard = () => {
-        navigation.goBack();
+      dispatch(discardPost());
+      navigation.goBack();
     }
 
     return (

@@ -63,4 +63,5 @@ export default {
     BorderTopGray: "#e0e1e3",
     SettingIconGray: "#b6cbd6",
     BorderTinyButtonGray: "#d9d9d9",
+    MainBlueBlur: "#e7f3ff",
 }
