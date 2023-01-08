@@ -7,6 +7,8 @@ import color from "../../constants/color/color";
 
   
 export const NotificationScreen = () => {
+  const [refreshing, setRefreshing] = useState(false);
+
   const [notifications, setNotifications] = useState([
     {
       id: 0,
@@ -74,7 +76,7 @@ export const NotificationScreen = () => {
       )}
       <TouchableHighlight
         underlayColor={color.TouchableHighlightBorderWhite}
-        onPress={() => onPressNotification(uri , index ,seen)}
+        onPress={() => onPressNotification(uri, index, seen)}
       >
         <View
           style={[
@@ -122,6 +124,7 @@ export const NotificationScreen = () => {
     <View style={styles.container}>
       {notifications.length > 0 ? (
         <FlatList
+          refreshing={refreshing}
           ListHeaderComponent={ListHeaderComponent}
           showsVerticalScrollIndicator={false}
           data={notifications}
@@ -129,9 +132,30 @@ export const NotificationScreen = () => {
           keyExtractor={(item) => item.id}
           stickyHeaderHiddenOnScroll
           stickyHeaderIndices={[0]}
+          onRefresh={() => {
+            setRefreshing(true);
+            setTimeout(() => {
+              console.log("notification refreshed");
+              setRefreshing(false);
+            }, 1000);
+          }}
+          onEndReached={() => {
+            setRefreshing(true);
+            setTimeout(() => {
+                setNotifications((prev) => [
+                  ...prev,
+                  {
+                    uri: "https://thpt-phamhongthai.edu.vn/wp-content/uploads/2022/08/anh-avatar-viet-nam-cute-ngau-tuyet-dep-10.jpg",
+                    id: prev.length,
+                    seen: true,
+                  },
+                ]);
+              setRefreshing(false);
+            }, 1000);
+          }}
         />
       ) : (
-        <Text></Text>
+        <Text style={styles._Notification}>Don't have any notifications</Text>
       )}
     </View>
   );
@@ -159,6 +183,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: color.White,
+      justifyContent: "center",
     },
     headerText: {
       fontSize: 28,
@@ -230,5 +255,8 @@ const styles = StyleSheet.create({
         color: color.GrayText
     },
     textMain: {
+    },
+    _Notification: {
+        alignSelf: "center",
     }
   });
