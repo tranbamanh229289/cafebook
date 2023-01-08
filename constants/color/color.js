@@ -64,4 +64,5 @@ export default {
     SettingIconGray: "#b6cbd6",
     BorderTinyButtonGray: "#d9d9d9",
     MainBlueBlur: "#e7f3ff",
+    UnseenNotification: "#e7f3ff"
 }
