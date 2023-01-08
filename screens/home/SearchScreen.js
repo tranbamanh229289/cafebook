@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Animated,
+  Modal
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -17,6 +18,8 @@ import {
 } from "@expo/vector-icons";
 import color from "../../constants/color/color";
 import { Post } from "../../components/home-screen/Post";
+import { useNavigation } from "@react-navigation/native";
+import { SearchHistory}  from "./SearchHistory"
 
 const DATA = [
   {
@@ -40,6 +43,9 @@ const Item = ({ title }) => (
 );
 
 export const SearchScreen = () => {
+  const navigation = useNavigation();
+  const [historyModalVisible, setHistoryModalVisible] = useState(false);
+
   const STATE_ENUM = {
     DEFAULT: "DEFAULT",
     SEARCHING: "SEARCHING",
@@ -73,9 +79,25 @@ export const SearchScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Modal
+            animationType="slide"
+            presentationStyle="overFullScreen"
+            transparent={true}
+            visible={historyModalVisible}
+            onRequestClose={() => {
+              setHistoryModalVisible(!historyModalVisible);
+            }}
+          >
+            <SearchHistory setHistoryModalVisible={setHistoryModalVisible}/>
+          </Modal>
       <View style={styles.searchView}>
         <View>
-          <Ionicons name="arrow-back-outline" size={26} color="black" />
+          <Ionicons
+            name="arrow-back-outline"
+            size={26}
+            color="black"
+            onPress={() => navigation.goBack()}
+          />
         </View>
         <View
           style={
@@ -119,7 +141,7 @@ export const SearchScreen = () => {
         <View style={styles.secondView}>
           <Text style={styles.searchHistoryText}>Tìm kiếm gần đây</Text>
 
-          <Pressable>
+          <Pressable onPress={()  => setHistoryModalVisible(true)}>
             <Text style={styles.changeText}>Chỉnh sửa</Text>
           </Pressable>
         </View>
@@ -201,13 +223,19 @@ export const SearchScreen = () => {
             </ScrollView>
           </View>
 
-          
-
           <Animated.FlatList
             contentContainerStyle={styles.contentContainerStyle}
             showsVerticalScrollIndicator={false}
             data={DATA}
-            ListHeaderComponent={(<View style={{width: "100%", height: 10, backgroundColor: color.BackgroundGray}}/>)}
+            ListHeaderComponent={
+              <View
+                style={{
+                  width: "100%",
+                  height: 10,
+                  backgroundColor: color.BackgroundGray,
+                }}
+              />
+            }
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             refreshing={refresh}
@@ -345,7 +373,6 @@ const styles = StyleSheet.create({
 
   item: {
     backgroundColor: color.White,
-    
   },
 });
 
@@ -383,26 +410,23 @@ const SearchElement = ({ searchInfo, focused }) => {
               alignContent: "center",
               alignItems: "center",
               justifyContent: "center",
-              borderBottomColor: color.MainBlue, 
-              borderBottomWidth:1, 
+              borderBottomColor: color.MainBlue,
+              borderBottomWidth: 1,
               marginHorizontal: 7,
-              
             },
           ]}
         >
-          
           <Text
             style={{
               fontSize: 18,
               color: color.MainBlue,
               fontWeight: "bold",
-              
+
               marginVertical: 5,
             }}
           >
             {searchInfo}
           </Text>
-          
         </Pressable>
       )}
 

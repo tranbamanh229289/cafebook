@@ -1,11 +1,11 @@
 import { Text, View, StyleSheet, Image } from "react-native";
 import { Ionicons, EvilIcons, FontAwesome } from '@expo/vector-icons';
 
-export const SearchHistory = () => {
+export const SearchHistory = ({setHistoryModalVisible}) => {
     return (
         <View style={styles.containerView}>
             <View style={styles.view1}>
-                <Ionicons name="arrow-back-outline" size={26} color="black" />
+                <Ionicons name="arrow-back-outline" size={26} color="black" onPress={() => setHistoryModalVisible(false)}/>
                 <Text style={{
                     fontSize: 20,
                     paddingLeft: 15,
@@ -30,9 +30,9 @@ export const SearchHistory = () => {
     );
 }
 
-const SearchHistoryComponent = ({ searchInfo }) => {
+const SearchHistoryComponent = ({searchInfo}) => {
     return (
-        <View style={styles.view1}>
+        <View style={{...styles.view1, paddingTop: 15}}>
             
             <View style={{
                 height: 60,
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         height: "100%",
         width: "100%",
+        backgroundColor:"white"
     },
 
     view1: {
@@ -97,7 +98,8 @@ const styles = StyleSheet.create({
         width: "100%",
         borderBottomWidth: 1,
         borderBottomColor: "#d9dbda",
-        padding: 15,
+        paddingBottom: 15,
+        paddingHorizontal: 15,
     },
 
     view2: {
