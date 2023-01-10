@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { HomeScreen } from "../../screens/home/HomeScreen";
-import { Ionicons } from "@expo/vector-icons";
+import { EvilIcons, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -12,16 +12,16 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { StyleSheet, Animated, Dimensions, View, StatusBar, Platform } from "react-native";
 import { FriendScreen } from "../../screens/home/FriendScreen";
 import { WatchScreen } from "../../screens/home/WatchScreen";
-import { NewfeedScreen } from "../../screens/home/NewfeedScreen";
 import { NotificationScreen } from "../../screens/home/NotificationScreen";
 import { MenuScreen } from "../../screens/home/MenuScreen";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CollapsibleHeader } from "../../components/home-screen/CollapsibleHeader";
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { MyProfileScreen } from "../../screens/home/MyProfileScreen";
 
 const Tab = createMaterialTopTabNavigator();
 const height = Dimensions.get("window").height + 80;
-const STATUSBARHEIGHT = Platform.OS == 'android' ? StatusBar.currentHeight : getStatusBarHeight()
+// const STATUSBARHEIGHT = Platform.OS == 'android' ? StatusBar.currentHeight : getStatusBarHeight()
 
 export const TabBarNavigator = () => {
   const [headerVisible,setHeaderVisible] = useState(true);
@@ -87,9 +87,9 @@ export const TabBarNavigator = () => {
         />
         <Tab.Screen
           name="New Feeds"
-          component={NewfeedScreen}
+          component={MyProfileScreen}
           options={() => ({
-            tabBarIcon: ({ focused }) => (focused ? newfeedFocused : newfeed),
+            tabBarIcon: ({ focused }) => (focused ? MyProfileFocused : MyProfile),
           })}
         />
         <Tab.Screen
@@ -134,19 +134,11 @@ const videoFocused = (
 const video = (
   <MaterialIcons name="ondemand-video" size={size} color={color.Black} />
 );
-const newfeedFocused = (
-  <MaterialCommunityIcons
-    name="newspaper-variant"
-    size={size}
-    color={color.MainBlue}
-  />
+const MyProfileFocused = (
+  <FontAwesome name="user-circle-o" size={size-2} color={color.MainBlue} />
 );
-const newfeed = (
-  <MaterialCommunityIcons
-    name="newspaper-variant-outline"
-    size={size}
-    color={color.Black}
-  />
+const MyProfile = (
+  <EvilIcons name="user" size={size+8} color={color.Black} />
 );
 const notificationFocused = (
   <Fontisto name="bell-alt" size={size} color={color.MainBlue} />
@@ -159,7 +151,7 @@ const Menu = <SimpleLineIcons name="menu" size={size} color="black" />;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: STATUSBARHEIGHT,
+    // paddingTop: STATUSBARHEIGHT,
     backgroundColor:color.White,
     height: "100%",
   },
