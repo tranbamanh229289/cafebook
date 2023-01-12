@@ -6,20 +6,28 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  Button,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import color from "../../constants/color/color";
 import { Feather } from "@expo/vector-icons";
+import { Avatar } from "../../components/home-screen/Avatar";
+import { SuggestFriendScreen } from "./FriendSuggestScreen";
+import { AllFriendScreen } from "./FriendAllScreen";
+
 
 export const FriendScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
+
+  
+
   const [friendRequests, setFriendRequests] = useState([
     {
       id: 0,
       username: "Minh Chu",
       avatar:
         "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
+      same_friends: "0",
       created: "40 phút",
     },
     {
@@ -35,7 +43,7 @@ export const FriendScreen = () => {
       username: "Minh Chu",
       avatar:
         "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
+      same_friends: "0",
       created: "40 phút",
     },
     {
@@ -87,37 +95,37 @@ export const FriendScreen = () => {
       created: "40 phút",
     },
     {
-        id: 9,
-        username: "Minh Chu",
-        avatar:
-          "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-        same_friends: "144",
-        created: "40 phút",
-      },
-      {
-        id: 10,
-        username: "Minh Chu",
-        avatar:
-          "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-        same_friends: "144",
-        created: "40 phút",
-      },
-      {
-        id: 11,
-        username: "Minh Chu",
-        avatar:
-          "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-        same_friends: "144",
-        created: "40 phút",
-      },
-      {
-        id: 12,
-        username: "Minh Chu",
-        avatar:
-          "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-        same_friends: "144",
-        created: "40 phút",
-      },
+      id: 9,
+      username: "Minh Chu",
+      avatar:
+        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+      same_friends: "144",
+      created: "40 phút",
+    },
+    {
+      id: 10,
+      username: "Minh Chu",
+      avatar:
+        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+      same_friends: "144",
+      created: "40 phút",
+    },
+    {
+      id: 11,
+      username: "Minh Chu",
+      avatar:
+        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+      same_friends: "144",
+      created: "40 phút",
+    },
+    {
+      id: 12,
+      username: "Minh Chu",
+      avatar:
+        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+      same_friends: "144",
+      created: "40 phút",
+    },
   ]);
 
   return (
@@ -126,37 +134,39 @@ export const FriendScreen = () => {
         <FlatList
           refreshing={refreshing}
           ListHeaderComponent={ListHeaderComponent}
+          showsVerticalScrollIndicator={false}
           data={friendRequests}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
+          stickyHeaderHiddenOnScroll
           stickyHeaderIndices={[0]}
           onRefresh={() => {
             setRefreshing(true);
             setTimeout(() => {
-              console.log("notification refreshed");
+              console.log("Friend requests refreshed");
               setRefreshing(false);
             }, 1000);
           }}
           onEndReached={() => {
             setRefreshing(true);
             setTimeout(() => {
-                setFriendRequests((prev) => [
-                  ...prev,
-                  {
-                    id: prev.length,
-                    username: "Minh Chu",
-                    avatar:
-                      "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-                    same_friends: "144",
-                    created: "40 phút",
-                  },
-                ]);
+              setFriendRequests((prev) => [
+                ...prev,
+                {
+                  id: prev.length,
+                  username: "Minh Chu",
+                  avatar:
+                    "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+                  same_friends: "144",
+                  created: "40 phút",
+                },
+              ]);
               setRefreshing(false);
             }, 1000);
           }}
         />
       ) : (
-        <Text>Don't have any notifications</Text>
+        <Text>Don't have any friend requests</Text>
       )}
     </View>
   );
@@ -170,28 +180,64 @@ const styles = StyleSheet.create({
     backgroundColor: color.White,
     paddingHorizontal: 15,
   },
-  subTextView: {
-    backgroundColor: "#111111",
-  },
   subText: {
     fontFamily: "Roboto-Bold",
     fontSize: 18,
-    paddingLeft: 10,
-    fontColor: color.Black
   },
+  itemContainer: {
+    marginTop: 15,
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  subItemContainer: {
+    flexDirection: "column",
+    flex: 1,
+  },
+  avatar: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  button: {
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+  },
+  textButton:{
+    fontSize: 18,
+    fontFamily: "Roboto-Bold",
+  },
+  usernameText:{
+    fontSize: 20,
+    fontFamily: "Roboto-Bold",
+  },
+  sameFriendText:{
+    fontSize: 16,
+    color: color.GrayText,
+    paddingBottom: 5
+  }
 });
 
 const headerStyles = StyleSheet.create({
   listHeaderContainer: {
-    backgroundColor: color.greenIcon,
     flexDirection: "column",
     paddingVertical: 8,
     marginBottom: 5,
+    backgroundColor: color.White,
   },
   headerItem1: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  headerItem2: {
+    alignItems: "center",
+    flexDirection: "row",
+    paddingBottom: 16,
+    borderBottomColor: color.BorderTinyButtonGray,
+    borderBottomWidth: 1,
+    marginBottom: 8,
   },
   friendText: {
     fontSize: 28,
@@ -205,6 +251,33 @@ const headerStyles = StyleSheet.create({
     backgroundColor: color.IconBackgroundGray,
     borderRadius: 16,
   },
+  textButton: {
+    height: 38,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: color.IconBackgroundGray,
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  watchAllTextButton: {
+    height: 38,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontWeight: "bold",
+    fontSize: 16,
+    fontColor: color.Black,
+  },
+  textWatchAll: {
+    fontSize: 20,
+    color: color.MainBlue,
+  },
+  subText1:{
+    fontSize: 22,
+    fontFamily: "Roboto-Bold",
+  }
 });
 
 const SearchIcon = () => <Feather name="search" size={22} color="black" />;
@@ -231,17 +304,65 @@ const renderItem = ({ item }) => (
 );
 
 const Item = ({ avatar, index, username, same_friends, created }) => {
+  const [suggestFriendModal, setSuggestFriendModal] = useState(false)
+  const [allFriendModal, setAllFriendModal] = useState(false)
+  return(
   <>
-    {/* {console.log(index)}
-    {console.log(typeof(index))}
     {index === 0 && (
-      <View style={styles.subTextView}>
-        <Text style={styles.subText}>Lời mời kết bạn</Text>
+      <>
+      <SuggestFriendScreen modalVisible={suggestFriendModal} setModalVisible={setSuggestFriendModal}/>
+      <AllFriendScreen modalVisible={allFriendModal} setModalVisible={setAllFriendModal}/>
+
+        <View style={headerStyles.headerItem2}>
+          <TouchableOpacity style={headerStyles.textButton} onPress={() => setSuggestFriendModal(true)}>
+            <Text style={headerStyles.text }>Gợi ý</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={headerStyles.textButton} onPress={() => setAllFriendModal(true)}>
+            <Text style={headerStyles.text}>Tất cả bạn bè</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={headerStyles.headerItem1}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={headerStyles.subText1}>Lời mời kết bạn </Text>
+            <Text style={[headerStyles.subText1, { color: color.Red }]}>9</Text>
+          </View>
+
+          {/* <TouchableOpacity style={headerStyles.watchAllTextButton}>
+            <Text style={headerStyles.textWatchAll}>Xem tất cả</Text>
+          </TouchableOpacity> */}
+        </View>
+      </>
+    )}
+
+    <View style={styles.itemContainer}>
+      <View style={styles.avatar}>
+        <Avatar width={90} height={90} source={avatar} />
       </View>
-    )} */}
 
-{console.log(avatar, index, username, same_friends, created )}
-<View style={{height: 250, width: 50, backgroundColor: color.Red}}></View>
+      <View style={styles.subItemContainer}>
+        <View style={{alignItems: "center", justifyContent: "space-between", flexDirection: "row" }}>
+          <Text style={styles.usernameText}>{username}</Text>
+          <Text style={{color: color.TextGray}}>{created}</Text>
+      </View>
 
+      {parseInt(same_friends) > 0 && (
+        <Text style={styles.sameFriendText}>{same_friends} bạn chung</Text>
+      )}
+
+        <View style={{ flexDirection: "row" , justifyContent:"space-between"}}>
+          <TouchableOpacity style={{flex:1, marginRight: 10}}>
+            <View style={[styles.button,{backgroundColor: color.MainBlue}]}>
+              <Text style={[styles.textButton,{color:color.White}]}>Chấp nhận</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex:1,}}>
+            <View style={[styles.button,{backgroundColor: color.IconBackgroundGray}]}>
+              <Text style={styles.textButton}>Xóa</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   </>
-};
+)};
