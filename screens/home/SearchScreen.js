@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Animated,
-  Modal
+  Modal,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -19,7 +19,7 @@ import {
 import color from "../../constants/color/color";
 import { Post } from "../../components/home-screen/Post";
 import { useNavigation } from "@react-navigation/native";
-import { SearchHistory}  from "./SearchHistory"
+import { SearchHistory } from "./SearchHistory";
 
 const DATA = [
   {
@@ -80,16 +80,16 @@ export const SearchScreen = () => {
   return (
     <View style={styles.container}>
       <Modal
-            animationType="slide"
-            presentationStyle="overFullScreen"
-            transparent={true}
-            visible={historyModalVisible}
-            onRequestClose={() => {
-              setHistoryModalVisible(!historyModalVisible);
-            }}
-          >
-            <SearchHistory setHistoryModalVisible={setHistoryModalVisible}/>
-          </Modal>
+        animationType="slide"
+        presentationStyle="overFullScreen"
+        transparent={true}
+        visible={historyModalVisible}
+        onRequestClose={() => {
+          setHistoryModalVisible(!historyModalVisible);
+        }}
+      >
+        <SearchHistory setHistoryModalVisible={setHistoryModalVisible} />
+      </Modal>
       <View style={styles.searchView}>
         <View>
           <Ionicons
@@ -141,7 +141,7 @@ export const SearchScreen = () => {
         <View style={styles.secondView}>
           <Text style={styles.searchHistoryText}>Tìm kiếm gần đây</Text>
 
-          <Pressable onPress={()  => setHistoryModalVisible(true)}>
+          <Pressable onPress={() => setHistoryModalVisible(true)}>
             <Text style={styles.changeText}>Chỉnh sửa</Text>
           </Pressable>
         </View>
