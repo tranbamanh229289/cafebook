@@ -1,3 +1,4 @@
+import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,

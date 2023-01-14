@@ -65,5 +65,7 @@ export default {
     BorderTinyButtonGray: "#d9d9d9",
     MainBlueBlur: "#e7f3ff",
     UnseenNotification: "#e7f3ff",
-    WhiteTextMainBlue: "#2270dc"
+    WhiteTextMainBlue: "#2270dc",
+    ProfilePostFooterBackgroundGray: "#f7f8fa",
+    BorderProfilePostFooterButton: "#e6e6e6"
 }
