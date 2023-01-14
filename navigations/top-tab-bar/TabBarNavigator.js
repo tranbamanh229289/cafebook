@@ -86,7 +86,7 @@ export const TabBarNavigator = () => {
           })}
         />
         <Tab.Screen
-          name="New Feeds"
+          name="MyProfile"
           component={MyProfileScreen}
           options={() => ({
             tabBarIcon: ({ focused }) => (focused ? MyProfileFocused : MyProfile),

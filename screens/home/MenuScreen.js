@@ -37,7 +37,7 @@ export const MenuScreen = ({navigation}) => {
         </View>
         <TouchableHighlight
           style={styles.avatarContainer}
-          onPress={() => {}}
+          onPress={() => {navigation.navigate("MyProfile")}}
           underlayColor={color.TouchableHighlightBorderWhite}
         >
           <>

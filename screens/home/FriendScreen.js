@@ -266,7 +266,7 @@ const headerStyles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontWeight: "bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
     fontColor: color.Black,
   },
