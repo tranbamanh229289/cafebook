@@ -1,4 +1,3 @@
-import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -267,7 +266,7 @@ const headerStyles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontWeight: "bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
     fontColor: color.Black,
   },
