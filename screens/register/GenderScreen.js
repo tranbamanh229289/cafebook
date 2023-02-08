@@ -1,53 +1,102 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useState } from "react";
+import {
+    Pressable,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import color from "../../constants/color/color";
+import { useDispatch, useSelector } from "react-redux";
+import { inputAccount } from "../../redux/features/auth/authSlice";
 
-export const GenderScreen = ({navigation}) => {
-    const [selected, setSelected] = useState(1);
+export const GenderScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const account = useSelector((state) => state.auth.account);
+    const [selected, setSelected] = useState(account.gender);
+    const handleNext = useCallback(() => {
+        dispatch(inputAccount({ gender: selected }));
+        navigation.navigate("MobileNumberScreen");
+    }, [selected]);
 
     return (
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.header}>What's your gender?</Text>
-                <Text style={styles.sub}>You can change who sees your gender on your profile later.</Text>
+                <Text style={styles.sub}>
+                    You can change who sees your gender on your profile later.
+                </Text>
             </View>
             <View style={styles.inputContainer}>
-                <Pressable style={styles.selectInput} onPress={()=>{setSelected(1)}}>
+                <Pressable
+                    style={styles.selectInput}
+                    onPress={() => {
+                        setSelected(1);
+                    }}
+                >
                     <Text style={styles.text}>Female</Text>
-                    <View style={[styles.buttonContainer, selected === 1 && { borderColor: color.MainBlue }]}>
-                        <View style={selected === 1 && styles.selected}/>
+                    <View
+                        style={[
+                            styles.buttonContainer,
+                            selected === 1 && { borderColor: color.MainBlue },
+                        ]}
+                    >
+                        <View style={selected === 1 && styles.selected} />
                     </View>
                 </Pressable>
-                <Pressable style={styles.selectInput} onPress={()=>{setSelected(2)}}>
+                <Pressable
+                    style={styles.selectInput}
+                    onPress={() => {
+                        setSelected(2);
+                    }}
+                >
                     <Text style={styles.text}>Male</Text>
-                    <View style={[styles.buttonContainer, selected === 2 && { borderColor: color.MainBlue }]}>
-                        <View style={selected === 2 && styles.selected}/>
+                    <View
+                        style={[
+                            styles.buttonContainer,
+                            selected === 2 && { borderColor: color.MainBlue },
+                        ]}
+                    >
+                        <View style={selected === 2 && styles.selected} />
                     </View>
                 </Pressable>
-                <Pressable style={[styles.selectInput , {height: 100}]} onPress={()=>{setSelected(3)}}>
+                <Pressable
+                    style={[styles.selectInput, { height: 100 }]}
+                    onPress={() => {
+                        setSelected(3);
+                    }}
+                >
                     <View style={styles.customText}>
                         <Text style={styles.text}>Custom</Text>
-                        <Text style={styles.subText}>Select Custom to choose another gender, or if you'd rather not say.</Text>
+                        <Text style={styles.subText}>
+                            Select Custom to choose another gender, or if you'd
+                            rather not say.
+                        </Text>
                     </View>
-                    <View style={[styles.buttonContainer, selected === 3 && { borderColor: color.MainBlue }]}>
-                        <View style={selected === 3 && styles.selected}/>
+                    <View
+                        style={[
+                            styles.buttonContainer,
+                            selected === 3 && { borderColor: color.MainBlue },
+                        ]}
+                    >
+                        <View style={selected === 3 && styles.selected} />
                     </View>
                 </Pressable>
             </View>
             <View style={styles.nextButton}>
-                <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("MobileNumberScreen")}>
+                <TouchableOpacity style={styles.button} onPress={handleNext}>
                     <Text style={styles.buttonText}>Next</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: color.White,
-        flexDirection: "column"
+        flexDirection: "column",
     },
     textContainer: {
         flex: 4,
@@ -58,18 +107,18 @@ const styles = StyleSheet.create({
         flex: 10,
         justifyContent: "center",
         alignItems: "center",
-        flexDirection: "column"
+        flexDirection: "column",
     },
     header: {
         fontSize: 18,
         marginBottom: 12,
-        fontFamily: "Roboto-Medium"
+        fontFamily: "Roboto-Medium",
     },
     sub: {
         textAlign: "center",
         color: color.GrayText,
         fontSize: 14,
-        width: "90%"
+        width: "90%",
     },
     nextButton: {
         flex: 9,
@@ -85,7 +134,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     buttonText: {
-        color: color.White
+        color: color.White,
     },
     selectInput: {
         width: "90%",
@@ -94,12 +143,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "nowrap",
         alignItems: "center",
-        height: 50
+        height: 50,
     },
     text: {
         width: "95%",
         fontFamily: "Roboto-Medium",
-        fontSize: 16
+        fontSize: 16,
     },
     buttonContainer: {
         width: 16,
@@ -115,13 +164,13 @@ const styles = StyleSheet.create({
         height: 10,
         borderRadius: 6,
         backgroundColor: color.MainBlue,
-        borderColor: color.MainBlue
+        borderColor: color.MainBlue,
     },
     customText: {
         width: "95%",
     },
     subText: {
         marginTop: 10,
-        color: color.GrayText
-    }
+        color: color.GrayText,
+    },
 });
