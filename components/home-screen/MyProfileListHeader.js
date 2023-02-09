@@ -16,7 +16,6 @@ const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
 export const MyProfileListHeader = ({data}) => {
-  console.log(data)
   const navigation = useNavigation();
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
