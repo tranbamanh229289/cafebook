@@ -15,7 +15,8 @@ import color from "../../constants/color/color";
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
-export const MyProfileListHeader = () => {
+export const MyProfileListHeader = ({data}) => {
+  console.log(data)
   const navigation = useNavigation();
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -55,7 +56,7 @@ export const MyProfileListHeader = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.infomation}>
-        <Text style={styles.textName}>Son Ngu yen</Text>
+        <Text style={styles.textName}>{Object.keys(data).length > 0 ? data.username : ""}</Text>
         <View style={styles.nameButtonView}>
           <TouchableHighlight
             style={[

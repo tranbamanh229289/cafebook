@@ -16,7 +16,12 @@ import { BreakLineBody } from "../../components/login/BreakLineBody";
 import { InputField } from "../../components/login/InputField";
 import { MoreLanguageBar } from "../../components/login/MoreLanguageBar";
 import color from "../../constants/color/color";
+<<<<<<< HEAD
 import { login, resetAccount } from "../../redux/features/auth/authSlice";
+=======
+import { login } from "../../redux/features/auth/authSlice";
+import { save } from "../../utils/secureStore";
+>>>>>>> b358421 (add secure storage , call api get_user_info)
 
 export default function LoginScreen({ navigation }) {
     const dispatch = useDispatch();
@@ -43,11 +48,19 @@ export default function LoginScreen({ navigation }) {
         [account]
     );
 
+<<<<<<< HEAD
     const handleLogin = () => {
         dispatch(login(account));
         // navigation.navigate("HomeTab");
         console.log(account);
     };
+=======
+  const handleLogin = ()=> {
+    dispatch(login(account));
+    navigation.navigate("HomeTab");
+    save("accessToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTMxNTRkYzZjZTZiMWVlODRjN2RjNyIsImRhdGVMb2dpbiI6IjIwMjMtMDItMDlUMDM6NTg6MzQuNzA2WiIsImlhdCI6MTY3NTkxNTExNCwiZXhwIjoxNjc2MDAxNTE0fQ.EMTTP0roPNaBUMLPQxYr3MLlmw5RPfhm-EXQqKXpfPs");
+  }
+>>>>>>> b358421 (add secure storage , call api get_user_info)
 
     const handleRegister = () => {
         dispatch(resetAccount());
