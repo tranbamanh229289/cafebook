@@ -9,7 +9,7 @@ export const Avatar = ({source , width, height }) => {
     const Uri = () => (<Image style={[styles.container , width !== undefined && {width: width} , height !==undefined && {height: height}]} source={{uri: source}}/>);
 
     return (
-        source!==undefined ?  <Uri/> : <Default/>
+        (source!==undefined && source !== null)?  <Uri/> : <Default/>
     );
 }
 

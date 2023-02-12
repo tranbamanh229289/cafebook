@@ -12,3 +12,7 @@ export async function getValueFor(key) {
     return null;
   }
 }
+
+export async function deleteItem(key) {
+  await SecureStore.deleteItemAsync(key);
+}

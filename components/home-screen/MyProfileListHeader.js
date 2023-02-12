@@ -1,4 +1,4 @@
-import { Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Dimensions, ImageBackground, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Fontisto } from '@expo/vector-icons';
 import { Foundation } from "@expo/vector-icons";
 import { AntDesign } from '@expo/vector-icons';
@@ -11,12 +11,34 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "./Avatar";
 import color from "../../constants/color/color";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getValueFor } from "../../utils/secureStore";
+import { get_user_info } from "../../api/api";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
-export const MyProfileListHeader = ({data}) => {
+export const MyProfileListHeader = () => {
   const navigation = useNavigation();
+  const id = useSelector((state) => state.auth.data.id);
+  const [data, setData] = useState({});
+
+  useEffect(()=>{
+    getValueFor("accessToken")
+    .then((token)=>{
+      if (token !== null) {
+        get_user_info(id, token)
+          .then((res) => {
+            if (res.data.code === "1000") {
+              setData(res.data.data);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+  }, []);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.backgroundImageView}>
@@ -45,9 +67,7 @@ export const MyProfileListHeader = ({data}) => {
           <Avatar
             width={DEVICE_HEIGHT * 0.23}
             height={DEVICE_HEIGHT * 0.23}
-            source={
-              "https://thpt-phamhongthai.edu.vn/wp-content/uploads/2022/08/anh-avatar-viet-nam-cute-ngau-tuyet-dep-10.jpg"
-            }
+            source={data.avatar}
           />
           <TouchableOpacity style={styles.avatarButtonView} activeOpacity={0.6}>
             <CameraIcon />
@@ -55,7 +75,9 @@ export const MyProfileListHeader = ({data}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.infomation}>
-        <Text style={styles.textName}>{Object.keys(data).length > 0 ? data.username : ""}</Text>
+        <Text style={styles.textName}>
+          {data.username}
+        </Text>
         <View style={styles.nameButtonView}>
           <TouchableHighlight
             style={[
@@ -395,7 +417,7 @@ export const MyProfileListHeader = ({data}) => {
             <View style={styles.avatar}>
               <Avatar
                 source={
-                  "https://thpt-phamhongthai.edu.vn/wp-content/uploads/2022/08/anh-avatar-viet-nam-cute-ngau-tuyet-dep-10.jpg"
+                  data.avatar
                 }
                 width={46}
                 height={46}

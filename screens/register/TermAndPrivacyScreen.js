@@ -17,7 +17,7 @@ export const TermAndPrivacyScreen = ({ navigation }) => {
     useEffect(() => {
         if (code === "9996") {
             Alert.alert(
-                "Tài khoản này đã tồn tạo",
+                "Tài khoản này đã tồn tại",
                 registerMessage.existedUser,
                 [
                     {
