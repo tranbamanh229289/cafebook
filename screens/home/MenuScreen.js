@@ -17,8 +17,25 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItem, getValueFor } from "../../utils/secureStore";
+import { logout } from "../../redux/features/auth/authSlice";
 
 export const MenuScreen = ({navigation}) => {
+  const avatar = useSelector((state) => state.auth.data.avatar);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    const token = await getValueFor("accessToken");
+    await deleteItem("accessToken");
+    dispatch(logout({ token: token }))
+    .unwrap()
+    .then(res => console.log(auth))
+    .catch(err => console.log(err));
+    navigation.navigate("Login");
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -42,7 +59,7 @@ export const MenuScreen = ({navigation}) => {
         >
           <>
             <View style={styles.avatar}>
-              <Avatar />
+              <Avatar source={avatar}/>
             </View>
             <View style={styles.name}>
               <Text style={styles.nameBold}>Sơn Nguyễn</Text>
@@ -93,7 +110,7 @@ export const MenuScreen = ({navigation}) => {
             <Text style={styles.nameBold}> Setting push notification</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={styles.seemoreButton} onPress={()=>{navigation.navigate("Login")}} underlayColor={color.TouchableHighlightBorderWhite}>
+        <TouchableHighlight style={styles.seemoreButton} onPress={handleLogout} underlayColor={color.TouchableHighlightBorderWhite}>
           <Text style={styles.buttonText}>Log out</Text>
         </TouchableHighlight>
       </View>

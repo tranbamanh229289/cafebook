@@ -21,6 +21,7 @@ const initialState = {
     loading: false,
     error: "",
     code: "",
+    data: {},
 };
 
 export const login = createAsyncThunk(
@@ -34,7 +35,23 @@ export const login = createAsyncThunk(
             const res = await axiosClient("post", "/auth/login", {}, newParams);
             return res.data;
         } catch (error) {
-            console.log(error);
+            console.log(error.response.data)
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const logout = createAsyncThunk(
+    "auth/logout",
+    async (params, thunkAPI) => {
+        const newParams = {
+            token: params.token
+        };
+        try {
+            const res = await axiosClient("post", "/auth/logout", {}, newParams);
+            return res.data;
+        } catch (error) {
+            console.log(error.response.data)
             return thunkAPI.rejectWithValue(error.response.data);
         }
     }
@@ -61,6 +78,7 @@ export const signup = createAsyncThunk(
             );
             return res.data;
         } catch (error) {
+            console.log(error.response.data)
             return thunkAPI.rejectWithValue(error.response.data);
         }
     }
@@ -140,11 +158,14 @@ const authSlice = createSlice({
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
+                state.code = action.payload.code;
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
                 state.code = action.payload.code;
                 state.data = {
+                    id: action.payload.data.id,
+                    token: action.payload.data.token,
                     username: action.payload.data.username,
                     birthday: action.payload.data.birthday,
                     gender: action.payload.data.gender,
@@ -190,6 +211,23 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.code = action.payload.code;
                 state.isVerified = true;
+            })
+            .addCase(logout.pending, (state)=>{
+                state.loading = true;
+            })
+            .addCase(logout.fulfilled, (state, action)=>{
+                state.loading = false;
+                state.account = {};
+                state.code = "";
+                state.data = {};
+                state.user = {};
+                state.isVerified = false;
+                state.verifyCode = "";
+                state.error = "";
+            })
+            .addCase(logout.rejected , (state, action) => {
+                state.loading = false;
+                state.code = action.payload.code;
             });
     },
 });

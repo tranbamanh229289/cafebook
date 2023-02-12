@@ -3,13 +3,15 @@ import color from "../../constants/color/color";
 import { Avatar } from "./Avatar";
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 export const TopBarListHeader = () => {
+    const avatar = useSelector((state) => state.auth.data.avatar);
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.avatar}>
-                <Avatar />
+                <Avatar source={avatar}/>
             </TouchableOpacity >
             <View style={styles.postViewButton}>
                 <TouchableHighlight style={styles.touchableHighlight} onPress={()=>{navigation.navigate('CreatePost')}} underlayColor={color.TouchableHighlightBorderWhite}>
