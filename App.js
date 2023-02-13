@@ -42,5 +42,4 @@ export default function App() {
     }
   }, [[fontLoaded]]);
    return <Provider store={store}>{!fontLoaded ? <LoginSplashAnimation /> : <Navigator />}</Provider>;
-  // return <SearchHistory/>;
 }

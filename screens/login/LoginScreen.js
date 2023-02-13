@@ -51,7 +51,6 @@ export default function LoginScreen({ navigation }) {
       .unwrap()
       .then((result) => {
         setAccount({});
-        navigation.navigate("HomeTab");
         save("accessToken", result.data.token);
       })
       .catch((err) => {

@@ -31,9 +31,8 @@ export const MenuScreen = ({navigation}) => {
     await deleteItem("accessToken");
     dispatch(logout({ token: token }))
     .unwrap()
-    .then(res => console.log(auth))
+    .then(res => console.log("logout"))
     .catch(err => console.log(err));
-    navigation.navigate("Login");
   }
 
   return (

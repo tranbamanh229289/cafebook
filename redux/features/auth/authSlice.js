@@ -187,6 +187,12 @@ const authSlice = createSlice({
                 state.code = action.payload.code;
                 state.verifyCode = action.payload.data.verifyCode;
                 state.isVerified = action.payload.data.isVerified;
+                state.user = {
+                    username: `${state.account.firstName} ${state.account.lastName}`,
+                    gender: state.account.gender,
+                    birthday: state.account.birthday,
+                    avatar: null,
+                }
             })
             .addCase(getVerifyCode.pending, (state) => {
                 state.loading = true;
@@ -211,6 +217,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.code = action.payload.code;
                 state.isVerified = true;
+                state.data.token = action.payload.data.token;
             })
             .addCase(logout.pending, (state)=>{
                 state.loading = true;
