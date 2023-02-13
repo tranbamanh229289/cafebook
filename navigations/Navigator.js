@@ -34,23 +34,30 @@ import { ChatScreen } from "../screens/message/ChatScreen";
 import { PostDetail } from "../screens/home/PostDetail";
 import { ShowImageScreen } from "../screens/ShowImageScreen";
 import { getValueFor } from "../utils/secureStore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoggedIn } from "../redux/features/auth/authSlice";
 
 const Stack = createNativeStackNavigator();
 
 export const Navigator = () => {
+  const dispatch = useDispatch();
   const [isSignIn, setIsSignIn] = useState(false);
   const token = useSelector((state) => state.auth.data.token);
+
   useEffect(() => {
     getValueFor("accessToken")
       .then((token) => {
-        if (token !== null) setIsSignIn(true);
-        else {
+        if (token !== null) {
+          setIsSignIn(true);
+          getValueFor("userId")
+            .then((userId) => dispatch(setIsLoggedIn({userId, token})))
+            .catch((err) => console.log(err));
+        } else {
           setIsSignIn(false);
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [token]);
   return (
     <NavigationContainer>
       <Stack.Navigator>

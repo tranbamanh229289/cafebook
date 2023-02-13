@@ -1,9 +1,12 @@
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, StatusBar, BackHandler, ScrollView, FlatList, StyleSheet, Animated, Dimensions } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { ListHeader } from "../../components/home-screen/ListHeader";
 import { Post } from "../../components/home-screen/Post";
 import color from "../../constants/color/color";
+import { getUserInfo } from "../../redux/features/user/userSlice";
+import { getValueFor } from "../../utils/secureStore";
 
 const DATA = [
   {
@@ -29,8 +32,10 @@ const Item = ({ title }) => (
 const {height} = Dimensions.get("screen");
 
 export const HomeScreen = memo(({ navigation, route , setHeaderVisible, scrollY}) => {
+  const token = useSelector((state) => state.auth.data.token);
+  const userId = useSelector((state) => state.auth.data.id);
   const [refresh, setRefresh] = useState(false);
-
+  const dispatch = useDispatch();
   useFocusEffect(
     useCallback(() => {
       setHeaderVisible(true);
@@ -40,6 +45,10 @@ export const HomeScreen = memo(({ navigation, route , setHeaderVisible, scrollY}
       };
     }, [])
   );
+
+  useEffect(()=>{
+    dispatch(getUserInfo({token, userId}));
+  }, [token])
   
   const renderItem = ({ item }) => (
     <Item title={item.title} />
