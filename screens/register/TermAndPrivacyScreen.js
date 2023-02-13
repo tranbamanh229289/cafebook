@@ -9,9 +9,8 @@ export const TermAndPrivacyScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const account = useSelector((state) => state.auth.account);
     const code = useSelector((state) => state.auth.code);
-
     const handleSignup = useCallback(async () => {
-        await dispatch(signup(account));
+        dispatch(signup(account));
     }, [account, code]);
 
     useEffect(() => {
