@@ -42,6 +42,7 @@ export const ConfirmScreen = ({ navigation }) => {
             .then()
             .catch((err) => console.log(err));
           save("accessToken", res.data.token);
+          save("userId", res.data.id);
         }
       })
       .catch((err) => console.log(err));

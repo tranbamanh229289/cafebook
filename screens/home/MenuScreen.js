@@ -22,13 +22,14 @@ import { deleteItem, getValueFor } from "../../utils/secureStore";
 import { logout } from "../../redux/features/auth/authSlice";
 
 export const MenuScreen = ({navigation}) => {
-  const avatar = useSelector((state) => state.auth.data.avatar);
-  const auth = useSelector((state) => state.auth);
+  const linkAvatar = useSelector((state) => state.user.user.avatar);
+  const username = useSelector((state) => state.user.user.username);
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
     const token = await getValueFor("accessToken");
     await deleteItem("accessToken");
+    await deleteItem("userId");
     dispatch(logout({ token: token }))
     .unwrap()
     .then(res => console.log("logout"))
@@ -58,10 +59,10 @@ export const MenuScreen = ({navigation}) => {
         >
           <>
             <View style={styles.avatar}>
-              <Avatar source={avatar}/>
+              <Avatar source={linkAvatar}/>
             </View>
             <View style={styles.name}>
-              <Text style={styles.nameBold}>Sơn Nguyễn</Text>
+              <Text style={styles.nameBold}>{username}</Text>
               <Text style={{ color: color.GrayText }}>See your profile</Text>
             </View>
           </>

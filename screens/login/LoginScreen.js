@@ -52,6 +52,7 @@ export default function LoginScreen({ navigation }) {
       .then((result) => {
         setAccount({});
         save("accessToken", result.data.token);
+        save("userId", result.data.id);
       })
       .catch((err) => {
         console.log(err.message)

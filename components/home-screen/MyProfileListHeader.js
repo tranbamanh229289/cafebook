@@ -21,24 +21,8 @@ const DEVICE_WIDTH = Dimensions.get("screen").width;
 
 export const MyProfileListHeader = () => {
   const navigation = useNavigation();
-  const id = useSelector((state) => state.auth.data.id);
-  const [data, setData] = useState({});
-
-  useEffect(()=>{
-    getValueFor("accessToken")
-    .then((token)=>{
-      if (token !== null) {
-        get_user_info(id, token)
-          .then((res) => {
-            if (res.data.code === "1000") {
-              setData(res.data.data);
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-    });
-  }, []);
-
+  const linkAvatar = useSelector((state) => state.user.user.avatar);
+  const username = useSelector((state) => state.user.user.username);
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.backgroundImageView}>
@@ -67,7 +51,7 @@ export const MyProfileListHeader = () => {
           <Avatar
             width={DEVICE_HEIGHT * 0.23}
             height={DEVICE_HEIGHT * 0.23}
-            source={data.avatar}
+            source={linkAvatar}
           />
           <TouchableOpacity style={styles.avatarButtonView} activeOpacity={0.6}>
             <CameraIcon />
@@ -76,7 +60,7 @@ export const MyProfileListHeader = () => {
       </View>
       <View style={styles.infomation}>
         <Text style={styles.textName}>
-          {data.username}
+          {username}
         </Text>
         <View style={styles.nameButtonView}>
           <TouchableHighlight
@@ -417,7 +401,7 @@ export const MyProfileListHeader = () => {
             <View style={styles.avatar}>
               <Avatar
                 source={
-                  data.avatar
+                  linkAvatar
                 }
                 width={46}
                 height={46}

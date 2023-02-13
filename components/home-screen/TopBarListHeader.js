@@ -6,12 +6,12 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 export const TopBarListHeader = () => {
-    const avatar = useSelector((state) => state.auth.data.avatar);
+    const linkAvatar = useSelector((state) => state.user.user.avatar);
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.avatar}>
-                <Avatar source={avatar}/>
+                <Avatar source={linkAvatar}/>
             </TouchableOpacity >
             <View style={styles.postViewButton}>
                 <TouchableHighlight style={styles.touchableHighlight} onPress={()=>{navigation.navigate('CreatePost')}} underlayColor={color.TouchableHighlightBorderWhite}>
