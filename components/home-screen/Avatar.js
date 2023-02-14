@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
+import color from "../../constants/color/color";
 
 
 
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
     container: {
         width: 36,
         height: 36,
-        borderRadius: 200
+        borderRadius: 200,
+        backgroundColor: color.DarkGray
     },
 });

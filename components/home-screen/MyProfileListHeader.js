@@ -11,27 +11,54 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "./Avatar";
 import color from "../../constants/color/color";
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { getValueFor } from "../../utils/secureStore";
-import { get_user_info } from "../../api/api";
+import { useDispatch, useSelector } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import { setAvatar, setCoverImage} from "../../redux/features/user/userSlice";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
 export const MyProfileListHeader = () => {
   const navigation = useNavigation();
-  const linkAvatar = useSelector((state) => state.user.user.avatar);
-  const username = useSelector((state) => state.user.user.username);
+  const linkAvatar = useSelector((state) => state.user.data.avatar);
+  const username = useSelector((state) => state.user.data.username);
+  const token = useSelector((state) => state.auth.data.token);
+  const cover_image = useSelector((state) => state.user.data.cover_image);
+
+  const dispatch = useDispatch();
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: false,
+      allowsEditing: true,
+    });
+    if (!result.cancelled) {
+      dispatch(setAvatar({token, uri: result.uri}))
+    }
+  }
+
+  const pickCoverImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [16, 9],
+      quality: 1,
+      allowsMultipleSelection: false,
+      allowsEditing: true,
+    });
+    if (!result.cancelled) {
+      dispatch(setCoverImage({token, uri: result.uri}))
+    }
+  }
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.backgroundImageView}>
         <ImageBackground
           style={styles.backgroundImage}
           resizeMode="cover"
-          source={{
-            uri: "https://i.pinimg.com/originals/29/21/61/292161866ea60cb8995d44aaba1ec84a.jpg",
-          }}
+          source={(cover_image!==null && cover_image!==undefined) ? {uri: cover_image} : null}
         />
         <View style={styles.imageButtonView}>
           <TouchableOpacity
@@ -43,7 +70,7 @@ export const MyProfileListHeader = () => {
           >
             <MakeupIcon />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageButton} activeOpacity={0.6}>
+          <TouchableOpacity style={styles.imageButton} activeOpacity={0.6} onPress={pickCoverImage}>
             <CameraIcon />
           </TouchableOpacity>
         </View>
@@ -53,7 +80,7 @@ export const MyProfileListHeader = () => {
             height={DEVICE_HEIGHT * 0.23}
             source={linkAvatar}
           />
-          <TouchableOpacity style={styles.avatarButtonView} activeOpacity={0.6}>
+          <TouchableOpacity style={styles.avatarButtonView} activeOpacity={0.6} onPress={pickImage}>
             <CameraIcon />
           </TouchableOpacity>
         </TouchableOpacity>
@@ -571,6 +598,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backgroundImage: {
+    backgroundColor: color.BackgroundGray,
     flex: 1,
   },
   imageButtonView: {
