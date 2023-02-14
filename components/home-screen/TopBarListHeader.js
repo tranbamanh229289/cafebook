@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 export const TopBarListHeader = () => {
-    const linkAvatar = useSelector((state) => state.user.user.avatar);
+    const linkAvatar = useSelector((state) => state.user.data.avatar);
     const navigation = useNavigation();
     return (
         <View style={styles.container}>

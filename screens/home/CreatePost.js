@@ -46,8 +46,8 @@ export const CreatePost = () => {
   const text = useSelector((state) => state.createPost.value);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const linkAvatar = useSelector((state) => state.user.user.avatar);
-  const username = useSelector((state) => state.user.user.username);
+  const linkAvatar = useSelector((state) => state.user.data.avatar);
+  const username = useSelector((state) => state.user.data.username);
 
   useEffect(() => {
     const backAction = () => {

@@ -22,8 +22,8 @@ import { deleteItem, getValueFor } from "../../utils/secureStore";
 import { logout } from "../../redux/features/auth/authSlice";
 
 export const MenuScreen = ({navigation}) => {
-  const linkAvatar = useSelector((state) => state.user.user.avatar);
-  const username = useSelector((state) => state.user.user.username);
+  const linkAvatar = useSelector((state) => state.user.data.avatar);
+  const username = useSelector((state) => state.user.data.username);
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
