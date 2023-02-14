@@ -5,92 +5,118 @@ import { useDispatch, useSelector } from "react-redux";
 import { ListHeader } from "../../components/home-screen/ListHeader";
 import { Post } from "../../components/home-screen/Post";
 import color from "../../constants/color/color";
+import {
+  AppendListPost,
+  getListPost,
+  onRefresh,
+  pressRefresh,
+  refreshListPost,
+} from "../../redux/features/post/postSlice";
 import { getUserInfo } from "../../redux/features/user/userSlice";
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-
-const Item = ({ title }) => (
+const Item = ({ avatar, username, images, described, like , is_liked, comment, created }) => (
   <View style={styles.item}>
-    <Post/>
+    <Post
+      avatar={avatar}
+      username={username}
+      images={images}
+      described={described}
+      is_liked={is_liked}
+      like={like}
+      comment={comment}
+      created={created}
+    />
   </View>
 );
 
-const {height} = Dimensions.get("screen");
+const { height } = Dimensions.get("screen");
 
-export const HomeScreen = memo(({ navigation, route , setHeaderVisible, scrollY}) => {
-  const token = useSelector((state) => state.auth.data.token);
-  const userId = useSelector((state) => state.auth.data.id);
-  const [refresh, setRefresh] = useState(false);
-  const dispatch = useDispatch();
-  useFocusEffect(
-    useCallback(() => {
-      setHeaderVisible(true);
-      scrollY.setValue(0);
-      return () => {
-        setHeaderVisible(false);
-      };
-    }, [])
-  );
+export const HomeScreen = memo(
+  ({ navigation, route, setHeaderVisible, scrollY }) => {
+    const [index, setIndex] = useState(0);
+    const token = useSelector((state) => state.auth.data.token);
+    const userId = useSelector((state) => state.auth.data.id);
+    const loading = useSelector((state) => state.post.loading);
+    const posts = useSelector((state) => state.post.data.posts);
 
-  useEffect(()=>{
-    dispatch(getUserInfo({token, userId}));
-  }, [token])
-  
-  const renderItem = ({ item }) => (
-    <Item title={item.title} />
-  );
-  
-  const ItemSeparatorComponent = () => (
-    <View style={{height: 10 , backgroundColor: color.BackgroundGray}}/>
-  );
+    console.log(posts);
 
-  return (
-    <View style={styles.container}>
-      {/* <StatusBar barStyle="dark-content" translucent={false}/> */}
-      <Animated.FlatList
-        contentContainerStyle={styles.contentContainerStyle}
-        showsVerticalScrollIndicator={false}
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        refreshing={refresh}
-        ListHeaderComponent={ListHeader}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        onRefresh={()=>{
-          console.log("refreshed");
-        }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-        scrollEventThrottle={16}
-        onEndReached={()=>{
-          setRefresh(true);
-          setTimeout(()=>{
-            DATA.push({
-              id: '58694a0f-3da1-471f-bd96-145' + Math.random().toString(),
-              title: 'Third Item',
-            },);
-            setRefresh(false)
-          },1000)
-        }}
+    const onEndReached = () => {
+      setIndex((prev) => prev + 5);
+    };
+    const dispatch = useDispatch();
+
+    useFocusEffect(
+      useCallback(() => {
+        setHeaderVisible(true);
+        scrollY.setValue(0);
+        return () => {
+          setHeaderVisible(false);
+        };
+      }, [])
+    );
+
+    useEffect(() => {
+      dispatch(getUserInfo({ token, userId }))
+        .unwrap()
+        .then((res) => console.log("get user infomation"))
+        .catch((err) => console.log(err));
+    }, [token]);
+
+    useEffect(() => {
+      if (index === 0) {
+        dispatch(getListPost({ token: token }));
+      } else {
+        dispatch(AppendListPost({ token: token, index: index }));
+      }
+    }, [index]);
+
+    const renderItem = ({ item }) => (
+      <Item
+        title={item.title}
+        avatar={item.author.avatar}
+        username={item.author.username}
+        images={item.image}
+        described={item.described}
+        like={item.like}
+        is_liked={item.is_liked}
+        comment={item.comment}
+        created={item.created}
       />
-    </View>
-  );
-});
+    );
+
+    const ItemSeparatorComponent = () => (
+      <View style={{ height: 10, backgroundColor: color.BackgroundGray }} />
+    );
+
+    const handleOnRefresh = () => {
+      setIndex(0);
+    };
+
+    return (
+      <View style={styles.container}>
+        {/* <StatusBar barStyle="dark-content" translucent={false}/> */}
+        <Animated.FlatList
+          contentContainerStyle={styles.contentContainerStyle}
+          showsVerticalScrollIndicator={false}
+          data={posts}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          refreshing={loading}
+          ListHeaderComponent={ListHeader}
+          ItemSeparatorComponent={ItemSeparatorComponent}
+          onRefresh={handleOnRefresh}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+          onEndReached={onEndReached}
+        />
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -98,12 +124,11 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: color.White,
-
   },
   title: {
     fontSize: 32,
   },
   contentContainerStyle: {
-    backgroundColor: color.BackgroundGray
-  }
+    backgroundColor: color.BackgroundGray,
+  },
 });

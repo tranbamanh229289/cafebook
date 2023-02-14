@@ -34,16 +34,17 @@ import {
 } from "../../redux/features/createPost/createPostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { appendImage, appendListImage, changeText, closeImage } from "../../redux/features/post/postSlice";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
 export const CreatePost = () => {
-  const [images, setImages] = useState([]);
+  const images = useSelector((state) => state.post.images)
   const [firstFocus, setFirstFocus] = useState(false);
   const [openEmoji, setOpenemoji] = useState(false);
   const animatedValue = new Animated.Value(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const text = useSelector((state) => state.createPost.value);
+  const text = useSelector((state) => state.post.text);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const linkAvatar = useSelector((state) => state.user.data.avatar);
@@ -67,7 +68,7 @@ export const CreatePost = () => {
   }, [images, text]);
 
   const onChangeText = (value) => {
-    dispatch(onChange(value));
+    dispatch(changeText(value));
   };
 
   const pickImage = async () => {
@@ -84,16 +85,14 @@ export const CreatePost = () => {
     // console.log(result);
 
     if (!result.cancelled && result.selected === undefined) {
-      setImages((prev) => [...prev, result.uri]);
+      dispatch(appendImage(result));
     } else if (!result.cancelled && result.selected !== undefined) {
-      result.selected.map((e) => {
-        setImages((prev) => [...prev, e.uri]);
-      });
+      dispatch(appendListImage(result.selected));
     }
   };
 
   const handleCloseImage = (i) => {
-    setImages((prev) => [...prev.slice(0, i), ...prev.slice(i + 1)]);
+    dispatch(closeImage(i));
   };
 
   const onContentSizeChange = (e) => {
@@ -115,7 +114,7 @@ export const CreatePost = () => {
   };
 
   const handleOnEmojiSelected = (selected) => {
-    dispatch(onPressIcon(selected.emoji));
+    
   };
 
   useEffect(() => {
@@ -216,7 +215,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[0] }}
+                    source={{ uri: images[0].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -236,7 +235,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[0] }}
+                    source={{ uri: images[0].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -250,7 +249,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[1] }}
+                    source={{ uri: images[1].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -270,7 +269,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[0] }}
+                    source={{ uri: images[0].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -285,7 +284,7 @@ export const CreatePost = () => {
                       <CloseIcon />
                     </TouchableOpacity>
                     <Image
-                      source={{ uri: images[1] }}
+                      source={{ uri: images[1].uri }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -299,7 +298,7 @@ export const CreatePost = () => {
                       <CloseIcon />
                     </TouchableOpacity>
                     <Image
-                      source={{ uri: images[2] }}
+                      source={{ uri: images[2].uri }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -314,7 +313,7 @@ export const CreatePost = () => {
                         <CloseIcon />
                       </TouchableOpacity>
                       <Image
-                        source={{ uri: images[3] }}
+                        source={{ uri: images[3].uri }}
                         style={styles.selectedImage}
                       />
                     </View>
@@ -341,7 +340,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[0] }}
+                    source={{ uri: images[0].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -355,7 +354,7 @@ export const CreatePost = () => {
                     <CloseIcon />
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: images[1] }}
+                    source={{ uri: images[1].uri }}
                     style={styles.selectedImage}
                   />
                 </View>
@@ -372,7 +371,7 @@ export const CreatePost = () => {
                       <CloseIcon />
                     </TouchableOpacity>
                     <Image
-                      source={{ uri: images[2] }}
+                      source={{ uri: images[2].uri }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -386,7 +385,7 @@ export const CreatePost = () => {
                       <CloseIcon />
                     </TouchableOpacity>
                     <Image
-                      source={{ uri: images[3] }}
+                      source={{ uri: images[3].uri }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -407,7 +406,7 @@ export const CreatePost = () => {
                       <CloseIcon />
                     </TouchableOpacity>
                     <Image
-                      source={{ uri: images[4] }}
+                      source={{ uri: images[4].uri }}
                       style={styles.selectedImage}
                     />
                   </View>

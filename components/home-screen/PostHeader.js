@@ -5,8 +5,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect } from "react";
+import TimeToString from "../../utils/TimeToString";
 
-export const PostHeader = ({detail}) => {
+export const PostHeader = ({detail, avatar, username, created}) => {
     return (
       <TouchableHighlight
         onPress={() => {}}
@@ -16,14 +18,14 @@ export const PostHeader = ({detail}) => {
           <View style={styles.avatar}>
             <Avatar
               source={
-                "https://play-lh.googleusercontent.com/9_CDhcHHXGiDOnkhE7O3wkoa2muXfs2FNG03JWeOWs8CufQ-1QCVNVQm1_gyax1qGQ"
+                avatar
               }
             />
           </View>
           <View style={styles.name}>
-            <Text style={styles.text}>Shoppe</Text>
+            <Text style={styles.text}>{username}</Text>
             <View style={styles.status}>
-              <Text style={styles.tinyText}>16h</Text>
+              <Text style={styles.tinyText}>{(created !== null && created !==undefined) && TimeToString(created) }</Text>
               <Dot />
               <PublicIcon />
             </View>
