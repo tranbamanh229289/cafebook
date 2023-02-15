@@ -10,7 +10,7 @@ export const Post = ({avatar , username, images, described, like, is_liked, comm
                 <PostHeader avatar={avatar} username={username} created={created}/>
             </View>
             <View style={styles.body}>
-                <PostBody images={images} described={described}/>
+                <PostBody images={images} described={described} avatar={avatar} username={username} like={like} comment={comment} is_liked={is_liked} created={created}/>
             </View>
             <View style={styles.footer}>
                 <PostFooter like={like} is_liked={is_liked} comment={comment}/>

@@ -1,13 +1,22 @@
-import { useState } from "react";
-import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import color from "../constants/color/color";
 import { Feather } from '@expo/vector-icons';
 import { PostFooter } from "../components/home-screen/PostFooter";
+import TimeToString from "../utils/TimeToString";
 
 export const ShowImageScreen = ({route, navigation}) => {
     const [showMenu , setShowMenu] = useState(true);
-    const [more, setMore] = useState(route.params.text.length < 120);
-    const [bodyText , setBodyText] = useState(route.params.text);
+    const [more, setMore] = useState(true);
+    const [bodyText , setBodyText] = useState("");
+
+    useEffect(()=>{
+      if (route.params.text !== null && route.params.text !== undefined) {
+        setBodyText(route.params.text);
+        setMore(route.params.text.length < 120)
+      }
+    },[]);
+
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -49,7 +58,7 @@ export const ShowImageScreen = ({route, navigation}) => {
                   </>
                 )}
                 <Text style={[styles.text, styles.timeText]}>
-                  {route.params.time.toUpperCase()}
+                  {TimeToString(route.params.time)}
                 </Text>
               </View>
               <PostFooter dark={true} />
