@@ -1,28 +1,26 @@
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import color from "../../constants/color/color";
 
-const dataText = `Shopee
-Thân gửi bạn prokieumoi310,
- 
-Chúc mừng bạn đã đăng ký thành công chương trình Người tiêu dùng có sức ảnh hưởng của Shopee (KOC), để bắt đầu tham gia chương trình bạn vui lòng cung cấp các thông tin sau:
- 
-👉 Các thông tin cần cập nhật lên hệ thống Shopee: `
-
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
-export const PostBody = () => {
-    const [more, setMore] = useState(dataText.length < 120);
-    const [bodyText , setBodyText] = useState(dataText);
-    const [images, setImages] = useState(["https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"]);
+export const PostBody = ({images, described, avatar, username, like, comment ,is_liked, created}) => {
+    const [more, setMore] = useState(true);
+    const [bodyText , setBodyText] = useState("");
+    const [listImage, setListImage] = useState([]);
     const navigation = useNavigation();
 
+    useEffect(()=>{
+      if (described !== null && described !== undefined) {
+        setBodyText(described);
+        setMore(described.length < 120)
+      }
+      if (images!==null && images!==undefined && images.length <= 4) {
+        setListImage(images);
+      }
+    }, [])
     return (
       <View style={styles.container}>
         <TouchableHighlight
@@ -32,7 +30,7 @@ export const PostBody = () => {
             setMore((prev) => !prev);
           }}
         >
-          {more ? (
+          {more || bodyText.length < 120 ? (
             <Text style={styles.text}>{bodyText}</Text>
           ) : (
             <>
@@ -53,48 +51,55 @@ export const PostBody = () => {
         <TouchableWithoutFeedback
           onPress={() =>
             navigation.navigate("PostDetail", {
-              name: "Sơn Nguyễn",
+              avatar,
+              username,
+              images,
+              described,
+              like,
+              comment,
+              is_liked,
+              created
             })
           }
         >
           <View style={styles.imagesContainer}>
-            {images.length === 1 && (
+            {listImage.length === 1 && (
               <View style={{ height: (DEVICE_HEIGHT * 2) / 3 }}>
                 <View style={styles.selectedImagesContainer}>
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
-                      source={{ uri: images[0] }}
+                      source={{ uri: listImage[0].url }}
                       style={styles.selectedImage}
                     />
                   </View>
                 </View>
               </View>
             )}
-            {images.length === 2 && (
+            {listImage.length === 2 && (
               <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
                 <View style={styles.selectedImagesContainer}>
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
-                      source={{ uri: images[0] }}
+                      source={{ uri: listImage[0].url }}
                       style={styles.selectedImage}
                     />
                   </View>
                   <View style={{ marginLeft: 3 }} />
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
-                      source={{ uri: images[1] }}
+                      source={{ uri: listImage[1].url }}
                       style={styles.selectedImage}
                     />
                   </View>
                 </View>
               </View>
             )}
-            {images.length > 2 && images.length <= 4 && (
+            {listImage.length > 2 && listImage.length <= 4 && (
               <View style={{ height: (DEVICE_HEIGHT * 1) / 2 }}>
                 <View style={styles.selectedImagesContainer}>
                   <View style={[styles.selectedView, { flex: 2 }]}>
                     <Image
-                      source={{ uri: images[0] }}
+                      source={{ uri: listImage[0].url }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -102,23 +107,23 @@ export const PostBody = () => {
                   <View style={{ flexDirection: "column", flex: 1 }}>
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
-                        source={{ uri: images[1] }}
+                        source={{ uri: listImage[1].url }}
                         style={styles.selectedImage}
                       />
                     </View>
                     <View style={{ marginBottom: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
-                        source={{ uri: images[2] }}
+                        source={{ uri: listImage[2].url }}
                         style={styles.selectedImage}
                       />
                     </View>
 
-                    {images.length === 4 && (
+                    {listImage.length === 4 && (
                       <View style={[styles.selectedView, { flex: 1 }]}>
                         <View style={{ marginBottom: 3 }} />
                         <Image
-                          source={{ uri: images[3] }}
+                          source={{ uri: listImage[3].url }}
                           style={styles.selectedImage}
                         />
                       </View>
@@ -127,7 +132,7 @@ export const PostBody = () => {
                 </View>
               </View>
             )}
-            {images.length >= 5 && (
+            {/* {images.listImage >= 5 && (
               <View
                 style={{
                   height: DEVICE_HEIGHT * 0.42,
@@ -137,14 +142,14 @@ export const PostBody = () => {
                 <View style={{ flex: 4, flexDirection: "row" }}>
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
-                      source={{ uri: images[0] }}
+                      source={{ uri: listImage[0].url }}
                       style={styles.selectedImage}
                     />
                   </View>
                   <View style={{ marginLeft: 3 }} />
                   <View style={[styles.selectedView, { flex: 1 }]}>
                     <Image
-                      source={{ uri: images[1] }}
+                      source={{ uri: listImage[1].url }}
                       style={styles.selectedImage}
                     />
                   </View>
@@ -154,35 +159,35 @@ export const PostBody = () => {
                   <View style={{ flexDirection: "row", flex: 1 }}>
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
-                        source={{ uri: images[2] }}
+                        source={{ uri: listImage[2].url }}
                         style={styles.selectedImage}
                       />
                     </View>
                     <View style={{ marginLeft: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
                       <Image
-                        source={{ uri: images[3] }}
+                        source={{ uri: listImage[3].url }}
                         style={styles.selectedImage}
                       />
                     </View>
                     <View style={{ marginLeft: 3 }} />
                     <View style={[styles.selectedView, { flex: 1 }]}>
-                      {images.length > 5 && (
+                      {listImage.length > 5 && (
                         <View style={styles.selectedImageViewCenter}>
                           <Text style={styles.selectedImageTextCenter}>
-                            +{images.length - 4}
+                            +{listImage.length - 4}
                           </Text>
                         </View>
                       )}
                       <Image
-                        source={{ uri: images[4] }}
+                        source={{ uri: listImage[4].url }}
                         style={styles.selectedImage}
                       />
                     </View>
                   </View>
                 </View>
               </View>
-            )}
+            )} */}
           </View>
         </TouchableWithoutFeedback>
       </View>

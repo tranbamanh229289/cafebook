@@ -1,63 +1,83 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View,FlatList, StyleSheet} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { MyProfileListHeader } from "../../components/home-screen/MyProfileListHeader";
 import { Post } from "../../components/home-screen/Post";
 import color from "../../constants/color/color";
+import { appendMyListPost, getMyListPost } from "../../redux/features/post/postSlice";
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-
-const Item = ({}) => (
+const Item = ({ avatar, username, images, described, like , is_liked, comment, created }) => (
   <View style={styles.item}>
-    <Post />
+    <Post
+      avatar={avatar}
+      username={username}
+      images={images}
+      described={described}
+      is_liked={is_liked}
+      like={like}
+      comment={comment}
+      created={created}
+    />
   </View>
 );
 
 export const MyProfileScreen = () => {
-  const [refresh, setRefresh] = useState(false);
+  const dispatch = useDispatch();
+  const myPosts = useSelector((state) => state.post.myPosts);
+  const loading = useSelector((state) => state.post.loading);
+  const token = useSelector((state) => state.auth.data.token);
+  const [page, setPage] = useState(1);
 
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  useEffect(()=>{
+    if (token !== undefined) {
+      if (page === 1) {
+        dispatch(getMyListPost({token: token, page: page}));
+      }
+      else {
+        dispatch(appendMyListPost({token: token, page: page}));
+      }
+    }
+  }, [page,token]);
+
+  const renderItem = ({ item }) => (
+    <Item
+      title={item.title}
+      avatar={item.author.avatar}
+      username={item.author.username}
+      images={item.image}
+      described={item.described}
+      like={item.like}
+      is_liked={item.is_liked}
+      comment={item.comment}
+      created={item.created}
+    />
+  );
 
   const ItemSeparatorComponent = () => (
     <View style={{ height: 10, backgroundColor: color.BackgroundGray }} />
   );
+
+  const handleOnEndReached = () => {
+    setPage(prev => prev + 1);
+  }
+
+  const handleRefresh = () => {
+    setPage(1);
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
-        data={DATA}
+        data={myPosts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        refreshing={refresh}
-        ListHeaderComponent={MyProfileListHeader}
+        refreshing={loading}
+        onRefresh={handleRefresh}
+        ListHeaderComponent={() => (<MyProfileListHeader/>)}
         ItemSeparatorComponent={ItemSeparatorComponent}
-        onRefresh={() => {
-          console.log("refreshed");
-        }}
-        onEndReached={() => {
-          setRefresh(true);
-          setTimeout(() => {
-            DATA.push({
-              id: "58694a0f-3da1-471f-bd96-145" + Math.random().toString(),
-              title: "Third Item",
-            });
-            setRefresh(false);
-          }, 1000);
-        }}
+        onEndReached={handleOnEndReached}
       />
     </View>
   );

@@ -1,47 +1,31 @@
 import { Text, View, StyleSheet, Dimensions, TouchableHighlight, ScrollView, Image, TouchableWithoutFeedback } from "react-native";
-import {PostHeader} from "../../components/home-screen/PostHeader";
-import {Post, PostFooter} from "../../components/home-screen/PostFooter";
-import { useState } from "react";
+import { PostHeader } from "../../components/home-screen/PostHeader";
+import { PostFooter } from "../../components/home-screen/PostFooter";
+import { useEffect, useState } from "react";
 import color from "../../constants/color/color";
 import { useNavigation } from "@react-navigation/native";
 
-const dataText = `Shopee
-Thân gửi bạn prokieumoi310,
- 
-Chúc mừng bạn đã đăng ký thành công chương trình Người tiêu dùng có sức ảnh hưởng của Shopee (KOC), để bắt đầu tham gia chương trình bạn vui lòng cung cấp các thông tin sau:
- 
-👉 Các thông tin cần cập nhật lên hệ thống Shopee: Shopee
-Thân gửi bạn prokieumoi310,
- 
-Chúc mừng bạn đã đăng ký thành công chương trình Người tiêu dùng có sức ảnh hưởng của Shopee (KOC), để bắt đầu tham gia chương trình bạn vui lòng cung cấp các thông tin sau:
- 
-👉 Các thông tin cần cập nhật lên hệ thống Shopee: Shopee
-Thân gửi bạn prokieumoi310,
- 
-Chúc mừng bạn đã đăng ký thành công chương trình Người tiêu dùng có sức ảnh hưởng của Shopee (KOC), để bắt đầu tham gia chương trình bạn vui lòng cung cấp các thông tin sau:
- 
-👉 Các thông tin cần cập nhật lên hệ thống Shopee: `
-
-
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
-export const PostDetail = () => {
-    const [more, setMore] = useState(dataText.length < 450);
-    const [bodyText , setBodyText] = useState(dataText);
-    const [images, setImages] = useState(["https://static.kinhtedothi.vn/w960/images/upload/2022/12/04/leo3.jpg"
-    ,"https://nds-static.vtc.gov.vn/media/74c6eaa3-6c54-40b7-ad6b-732200dfb9a8/221203200749-lionel-messi-celebrating-argentina-australia-tease.jpg"
-    ,"https://media.newyorker.com/photos/638ccd015df5752861a95aee/1:1/w_1707,h_1707,c_limit/Messi_Argentina%20v.%20Mexico.png"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"
-    ,"https://nhatrangsensetravel.com/view/at_20-su-that-thu-vi-ve-dat-nuoc-nepal-day-bi-an_5b04f892755f8f5984c92d912505d2a3.jpg"]);
-
+export const PostDetail = ({route}) => {
+    const [more, setMore] = useState(true);
+    const [images, setImages] = useState(route.params.images);
+    const [bodyText , setBodyText] = useState("");
     const navigation = useNavigation();
+
+    useEffect(()=>{
+      if (route.params.described !== null && route.params.described !== undefined) {
+        setBodyText(route.params.described);
+        setMore(route.params.described < 450)
+      }
+    },[]);
+
     return (
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
-        <PostHeader detail={true} />
+        <PostHeader detail={true} avatar={route.params.avatar} username={route.params.username} created={route.params.created}/>
         <TouchableHighlight
           style={styles.textContainer}
           underlayColor={color.TouchableHighlightBorderWhite}
@@ -67,7 +51,7 @@ export const PostDetail = () => {
             </>
           )}
         </TouchableHighlight>
-        <PostFooter />
+        <PostFooter like={route.params.like} is_liked={route.params.is_liked} comment={route.params.comment}/>
         {images.map((e, i) => (
           <View style={styles.imageView} key={`image-view-${i}`}>
             <ItemSeparatorComponent />
@@ -75,14 +59,14 @@ export const PostDetail = () => {
               style={styles.selectedView}
               onPress={() => {
                 navigation.navigate("ShowImage", {
-                  uri: e,
-                  name: "Son Nguyen",
-                  time: "3 hours ago",
-                  text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                  uri: e.url,
+                  name: route.params.username,
+                  time: route.params.created,
+                  text: route.params.described,
                 });
               }}
             >
-              <Image source={{ uri: e }} style={styles.selectedImage} />
+              <Image source={{ uri: e.url }} style={styles.selectedImage} />
             </TouchableWithoutFeedback>
             <PostFooter />
           </View>

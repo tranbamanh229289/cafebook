@@ -1,12 +1,25 @@
-import { Button, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import color from "../../constants/color/color";
-import {submit} from "../../redux/features/createPost/createPostSlice"
+import { addPost, AppendAfterPost } from "../../redux/features/post/postSlice";
 
 export const CreatePostHeaderRight = () => {
+    const token = useSelector((state) => state.auth.data.token);
+    const navigation = useNavigation();
+
+    const handleUploadPost = () => {
+        dispatch(addPost())
+        .unwrap()
+        .then((res) => {
+            dispatch(AppendAfterPost({id: res.data.id, token: token}));
+            navigation.navigate("HomeScreen")
+        })
+        .catch(err => console.log(err))
+    }
     const dispatch = useDispatch();
     return (
-        <TouchableOpacity style={styles.container} onPress={()=> dispatch(submit())}>
+        <TouchableOpacity style={styles.container} onPress={handleUploadPost}>
             <Text style={styles.text}>POST</Text>
         </TouchableOpacity>
     );

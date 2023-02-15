@@ -5,25 +5,38 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from "react";
+import { useEffect } from "react";
 
 
-export const PostFooter = ({dark}) => {
+export const PostFooter = ({dark, like, is_liked, comment}) => {
     const [commentCounting , setCommentCounting ] = useState(0);
     const [reactionCounting, setReactionCounting] = useState(0);
-    const [like , setLike] = useState(false);
+    const [likePress , setLikePress] = useState(false);
     const darkTheme = {
         color: color.White
     };
 
     const handlePressLike = () => {
-        if (!like) {
+        if (!likePress) {
             setReactionCounting((prev) => prev + 1);
         }
         else {
             setReactionCounting((prev) => prev - 1);
         }
-        setLike(!like);
+        setLikePress((prev) => !prev);
     }
+
+    useEffect(()=>{
+        if (like!==undefined && like!==null) {
+            setReactionCounting(parseInt(like))
+        }
+        if (is_liked!==undefined && is_liked!==null) {
+            setLikePress(is_liked !== "0" );
+        }
+        if (comment!==undefined && comment!==null) {
+            setCommentCounting(parseInt(comment))
+        }
+    },[])
 
     return (
         <View style={styles.container}>
@@ -44,7 +57,7 @@ export const PostFooter = ({dark}) => {
             <View style={styles.buttonContainer}>
                 <TouchableHighlight style={styles.touchableButton} onPress={handlePressLike} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                     <View style={styles.button}>
-                        {like?<LikeIconFocus/>:<LikeIcon />}
+                        {likePress?<LikeIconFocus/>:<LikeIcon />}
                         <Text style={[styles.text, dark && darkTheme]}>  Like</Text>
                     </View>
                 </TouchableHighlight>

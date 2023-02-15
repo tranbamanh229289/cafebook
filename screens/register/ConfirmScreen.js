@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,15 +9,49 @@ import {
 import { LoginSplashAnimation } from "../../animation/LoginSplashAnimation";
 import { RegisterLoading } from "../../animation/RegisterLoading";
 import color from "../../constants/color/color";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  checkVerifyCode,
+  getVerifyCode,
+} from "../../redux/features/auth/authSlice";
+import { change_info_after_signup } from "../../api/api";
+import { save } from "../../utils/secureStore";
 
 export const ConfirmScreen = ({ navigation }) => {
+  const username = useSelector((state) => state.auth.user.username);
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const temp = useSelector((state) => state.auth.verifyCode);
+
+  const handleGetVerifyCode = () => {
+    dispatch(getVerifyCode());
+    setVerifyCode(temp);
+  };
+  const [verifyCode, setVerifyCode] = useState("");
+  const handleCheckVerifyCode = () => {
+    setIsLoading(true);
+    dispatch(
+      checkVerifyCode({
+        verifyCode: verifyCode,
+      })
+    )
+      .unwrap()
+      .then((res) => {
+        if (res.code === "1000") {
+          change_info_after_signup(username, res.data.token)
+            .then()
+            .catch((err) => console.log(err));
+          save("accessToken", res.data.token);
+          save("userId", res.data.id);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     if (isLoading) {
       setTimeout(() => {
         setIsLoading(false);
-        navigation.navigate("Login");
       }, 3000);
     }
   }, [isLoading]);
@@ -29,7 +63,7 @@ export const ConfirmScreen = ({ navigation }) => {
       ) : (
         <View style={styles.container}>
           <View style={styles.textContainer}>
-            <View style={{flex: 1}}/>
+            <View style={{ flex: 1 }} />
             <Text style={styles.header}>Confirmation</Text>
             <Text style={styles.sub}>We have sent you 5 digits to</Text>
           </View>
@@ -39,23 +73,30 @@ export const ConfirmScreen = ({ navigation }) => {
               style={[styles.input, styles.text]}
               keyboardType="number-pad"
               textAlign="center"
+              value={verifyCode}
+              onChangeText={(value) => setVerifyCode(value)}
+              maxLength={5}
             />
           </View>
           <View style={{ flex: 1 }} />
           <View style={styles.nextButton}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => setIsLoading(true)}
+              onPress={handleCheckVerifyCode}
             >
               <Text style={styles.buttonText}>Done</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: color.LightGrey }]}
+              onPress={handleGetVerifyCode}
             >
               <Text
                 style={[
                   styles.buttonText,
-                  { color: color.Black, fontFamily: "Roboto-Medium" },
+                  {
+                    color: color.Black,
+                    fontFamily: "Roboto-Medium",
+                  },
                 ]}
               >
                 Can't get the code

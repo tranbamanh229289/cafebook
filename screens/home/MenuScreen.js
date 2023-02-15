@@ -17,8 +17,25 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItem, getValueFor } from "../../utils/secureStore";
+import { logout } from "../../redux/features/auth/authSlice";
 
 export const MenuScreen = ({navigation}) => {
+  const linkAvatar = useSelector((state) => state.user.data.avatar);
+  const username = useSelector((state) => state.user.data.username);
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    const token = await getValueFor("accessToken");
+    await deleteItem("accessToken");
+    await deleteItem("userId");
+    dispatch(logout({ token: token }))
+    .unwrap()
+    .then(res => console.log("logout"))
+    .catch(err => console.log(err));
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -42,10 +59,10 @@ export const MenuScreen = ({navigation}) => {
         >
           <>
             <View style={styles.avatar}>
-              <Avatar />
+              <Avatar source={linkAvatar}/>
             </View>
             <View style={styles.name}>
-              <Text style={styles.nameBold}>Sơn Nguyễn</Text>
+              <Text style={styles.nameBold}>{username}</Text>
               <Text style={{ color: color.GrayText }}>See your profile</Text>
             </View>
           </>
@@ -93,7 +110,7 @@ export const MenuScreen = ({navigation}) => {
             <Text style={styles.nameBold}> Setting push notification</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={styles.seemoreButton} onPress={()=>{navigation.navigate("Login")}} underlayColor={color.TouchableHighlightBorderWhite}>
+        <TouchableHighlight style={styles.seemoreButton} onPress={handleLogout} underlayColor={color.TouchableHighlightBorderWhite}>
           <Text style={styles.buttonText}>Log out</Text>
         </TouchableHighlight>
       </View>

@@ -7,7 +7,6 @@ import {
   ImageBackground,
   ScrollView,
   TouchableHighlight,
-  StatusBar,
   Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,34 +15,64 @@ import { BreakLineBody } from "../../components/login/BreakLineBody";
 import { InputField } from "../../components/login/InputField";
 import { MoreLanguageBar } from "../../components/login/MoreLanguageBar";
 import color from "../../constants/color/color";
-import { login } from "../../redux/features/auth/authSlice";
+import { login, resetAccount } from "../../redux/features/auth/authSlice";
+import { save } from "../../utils/secureStore";
 
 export default function LoginScreen({ navigation }) {
-  const dispatch = useDispatch()
-  const error = useSelector(state=> state.auth.error)
+  const dispatch = useDispatch();
+  const error = useSelector((state) => state.auth.error);
+  const code = useSelector((state) => state.auth.code);
+  const data = useSelector((state) => state.auth.data);
+
   const [firstOpen, setFirstOpen] = useState(true);
   useEffect(() => {}, []);
 
   const [account, setAccount] = useState({
-    phoneNumber: '',
-    password: ''
-  })
+    phoneNumber: "",
+    password: "",
+  });
 
-  const changeAccount = useCallback((key)=> {
-    return (val)=> {
-      setAccount(prev => {
-        return {
-          ...prev,
-          [key]: val,
-        }
-      })
-    }
-  }, [account])
+  const changeAccount = useCallback(
+    (key) => {
+      return (val) => {
+        setAccount((prev) => {
+          return {
+            ...prev,
+            [key]: val,
+          };
+        });
+      };
+    },
+    [account]
+  );
 
-  const handleLogin = ()=> {
+  const handleLogin = async () => {
     dispatch(login(account))
-    navigation.navigate("HomeTab")
-  }
+      .unwrap()
+      .then((result) => {
+        setAccount({});
+        save("accessToken", result.data.token);
+        save("userId", result.data.id);
+      })
+      .catch((err) => {
+        console.log(err.message)
+        Alert.alert(
+          "Đăng nhập thất bại",
+          "Tài khoản hoặc mật khẩu không đúng",
+          [
+            {
+              text: "OK",
+              style: "cancel",
+            },
+          ]
+        );
+      });
+  };
+
+  const handleRegister = () => {
+    dispatch(resetAccount());
+    navigation.navigate("CreateAccount");
+  };
 
   return (
     <>
@@ -63,7 +92,12 @@ export default function LoginScreen({ navigation }) {
               <MoreLanguageBar />
             </View>
             <View style={styles.inputContainer}>
-              <InputField placeholder="Số điện thoại hoặc email" keyName="phoneNumber" val={account.phoneNumber} onChangeVal={changeAccount}/>
+              <InputField
+                placeholder="Số điện thoại hoặc email"
+                keyName="phoneNumber"
+                val={account.phoneNumber}
+                onChangeVal={changeAccount}
+              />
               <InputField
                 placeholder="Mật khẩu"
                 secured={true}
@@ -76,33 +110,24 @@ export default function LoginScreen({ navigation }) {
                 onPress={handleLogin}
                 style={styles.loginButton}
               >
-                <Text
-                  style={styles.loginButtonText}
-                >
-                  Đăng nhập
-                </Text>
+                <Text style={styles.loginButtonText}>Đăng nhập</Text>
               </TouchableOpacity>
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
                 onPress={() => {}}
                 style={styles.forgotPWButton}
               >
-                  <Text
-                    style={styles.forgotPWText}
-                  >
-                    Quên mật khẩu?
-                  </Text>
+                <Text style={styles.forgotPWText}>Quên mật khẩu?</Text>
               </TouchableHighlight>
             </View>
           </View>
           <View style={styles.footerContainer}>
             <BreakLineBody />
-            <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")}
+            <TouchableOpacity
+              onPress={handleRegister}
               style={styles.createNewAccountButton}
             >
-              <Text
-                style={styles.createNewAccountText}
-              >
+              <Text style={styles.createNewAccountText}>
                 Tạo tài khoản caFebook mới
               </Text>
             </TouchableOpacity>
@@ -155,10 +180,10 @@ const styles = StyleSheet.create({
     marginBottom: "4%",
   },
   loginButtonText: {
-      fontSize: 16,
-      color: color.White,
-      fontWeight: "700",
-      fontFamily: "Cochin",
+    fontSize: 16,
+    color: color.White,
+    fontWeight: "700",
+    fontFamily: "Cochin",
   },
   forgotPWButton: {
     borderRadius: 8,
@@ -191,5 +216,5 @@ const styles = StyleSheet.create({
     color: color.White,
     fontWeight: "700",
     fontFamily: "Cochin",
-  }
+  },
 });
