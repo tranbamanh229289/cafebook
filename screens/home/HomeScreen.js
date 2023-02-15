@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, Animated, Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { ListHeader } from "../../components/home-screen/ListHeader";
@@ -8,9 +8,6 @@ import color from "../../constants/color/color";
 import {
   AppendListPost,
   getListPost,
-  onRefresh,
-  pressRefresh,
-  refreshListPost,
 } from "../../redux/features/post/postSlice";
 import { getUserInfo } from "../../redux/features/user/userSlice";
 
@@ -38,8 +35,6 @@ export const HomeScreen = memo(
     const userId = useSelector((state) => state.auth.data.id);
     const loading = useSelector((state) => state.post.loading);
     const posts = useSelector((state) => state.post.data.posts);
-
-    console.log(posts);
 
     const onEndReached = () => {
       setIndex((prev) => prev + 5);

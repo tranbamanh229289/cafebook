@@ -28,13 +28,9 @@ import { useEffect, useState } from "react";
 import { EmojiKeyboard } from "rn-emoji-keyboard";
 import * as ImagePicker from "expo-image-picker";
 import { OnBackPressModal } from "../../components/home-screen/OnBackPressModal";
-import {
-  onChange,
-  onPressIcon,
-} from "../../redux/features/createPost/createPostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { appendImage, appendListImage, changeText, closeImage } from "../../redux/features/post/postSlice";
+import { appendImage, appendListImage, changeText, closeImage, selectEmoji } from "../../redux/features/post/postSlice";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
@@ -114,7 +110,7 @@ export const CreatePost = () => {
   };
 
   const handleOnEmojiSelected = (selected) => {
-    
+    dispatch(selectEmoji(selected.emoji))
   };
 
   useEffect(() => {

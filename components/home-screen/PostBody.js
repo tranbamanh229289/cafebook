@@ -6,7 +6,7 @@ import color from "../../constants/color/color";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
-export const PostBody = ({images, described}) => {
+export const PostBody = ({images, described, avatar, username, like, comment ,is_liked, created}) => {
     const [more, setMore] = useState(true);
     const [bodyText , setBodyText] = useState("");
     const [listImage, setListImage] = useState([]);
@@ -51,7 +51,14 @@ export const PostBody = ({images, described}) => {
         <TouchableWithoutFeedback
           onPress={() =>
             navigation.navigate("PostDetail", {
-              name: "Sơn Nguyễn",
+              avatar,
+              username,
+              images,
+              described,
+              like,
+              comment,
+              is_liked,
+              created
             })
           }
         >

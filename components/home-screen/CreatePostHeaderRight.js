@@ -1,16 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import color from "../../constants/color/color";
-import { addPost } from "../../redux/features/post/postSlice";
+import { addPost, AppendAfterPost } from "../../redux/features/post/postSlice";
 
 export const CreatePostHeaderRight = () => {
+    const token = useSelector((state) => state.auth.data.token);
     const navigation = useNavigation();
 
     const handleUploadPost = () => {
         dispatch(addPost())
         .unwrap()
         .then((res) => {
+            dispatch(AppendAfterPost({id: res.data.id, token: token}));
             navigation.navigate("HomeScreen")
         })
         .catch(err => console.log(err))
