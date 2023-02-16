@@ -64,7 +64,7 @@ export const ShowImageScreen = ({route, navigation}) => {
                   </>
                 )}
                 <Text style={[styles.text, styles.timeText]}>
-                  {mapData.hasOwnProperty(postId) && TimeToString(mapData[postId]["created"])}
+                  {mapData.hasOwnProperty(postId) && ((mapData[postId]["created"] !== mapData[postId]["modified"]) ? `Edited ${TimeToString(mapData[postId]["modified"])}` : TimeToString(mapData[postId]["created"]))}
                 </Text>
               </View>
               <PostFooter dark={true} postId={postId}/>

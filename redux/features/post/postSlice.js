@@ -154,23 +154,41 @@ export const editPost = createAsyncThunk(
   async (params, thunkAPI) => {
     const state = thunkAPI.getState();
     const formData = new FormData();
+    let hasUploadImage = false;
     try {
       for (let i = 0 ; i < state.post.images.length ; i ++) {
-        formData.append("image", {
+        if (!state.post.images[i].hasOwnProperty("id")) {
+          hasUploadImage = true;
+          formData.append("image", {
           uri: state.post.images[i].uri,
           name: "post-image",
           type: "image/jpeg",
         });
+        }
       }
-      const image_del = state.post.mapData[params.id]["image"] !== null ? JSON.stringify(state.post.mapData[params.id]["image"].map(e => e.id)) : "";
+      const mapImageSelect = {};
+      for (let i = 0 ; i < state.post.images.length ; i++) {
+        if (state.post.images[i].hasOwnProperty("id")) {
+          mapImageSelect[state.post.images[i]["id"]] = true;
+        }
+      }
+      const image_del = [];
+      if (state.post.mapData[params.id]["image"] !== null) {
+        const chooseImages = state.post.mapData[params.id]["image"];
+        for (let j = 0 ; j < chooseImages.length ; j++ ) {
+          if (!mapImageSelect.hasOwnProperty(chooseImages[j]["id"])) {
+            image_del.push(chooseImages[j]["id"]);
+          }
+        }
+      }
       const res = await axios.post(
         `${baseURL}post/edit_post`,
-        state.post.images.length > 0 ? formData : {},
+        hasUploadImage ? formData : {},
         {
           params: {
             token: state.auth.data.token,
             described: state.post.text,
-            image_del: image_del,
+            image_del: JSON.stringify(image_del),
             id: params.id,
           },
           headers: {
@@ -180,6 +198,7 @@ export const editPost = createAsyncThunk(
       );
       return {...res.data, id: params.id };
     } catch (err) {
+      console.log(err)
       return thunkAPI.rejectWithValue(err.response.data);
     }
   }
