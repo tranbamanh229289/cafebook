@@ -3,17 +3,17 @@ import { PostBody } from "./PostBody";
 import { PostFooter } from "./PostFooter";
 import { PostHeader } from "./PostHeader";
 
-export const Post = ({avatar , username, images, described, like, is_liked, comment, created}) => {
+export const Post = ({postId}) => {
     return  (
         <View style={styles.container}>
             <View style={styles.header}>
-                <PostHeader avatar={avatar} username={username} created={created}/>
+                <PostHeader postId={postId}/>
             </View>
             <View style={styles.body}>
-                <PostBody images={images} described={described} avatar={avatar} username={username} like={like} comment={comment} is_liked={is_liked} created={created}/>
+                <PostBody postId={postId}/>
             </View>
             <View style={styles.footer}>
-                <PostFooter like={like} is_liked={is_liked} comment={comment}/>
+                <PostFooter postId={postId}/>
             </View>
         </View>
     );

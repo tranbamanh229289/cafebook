@@ -4,16 +4,22 @@ import color from "../constants/color/color";
 import { Feather } from '@expo/vector-icons';
 import { PostFooter } from "../components/home-screen/PostFooter";
 import TimeToString from "../utils/TimeToString";
+import { useSelector } from "react-redux";
 
 export const ShowImageScreen = ({route, navigation}) => {
+    const postId = route.params.postId;
+    const mapData = useSelector((state) => state.post.mapData);
+
     const [showMenu , setShowMenu] = useState(true);
     const [more, setMore] = useState(true);
     const [bodyText , setBodyText] = useState("");
 
     useEffect(()=>{
-      if (route.params.text !== null && route.params.text !== undefined) {
-        setBodyText(route.params.text);
-        setMore(route.params.text.length < 120)
+      if (mapData.hasOwnProperty(postId)) {
+        if (mapData[postId]["described"] !== null) {
+          setBodyText(mapData[postId]["described"]);
+          setMore(mapData[postId]["described"].length < 120);
+        }
       }
     },[]);
 
@@ -39,7 +45,7 @@ export const ShowImageScreen = ({route, navigation}) => {
           {showMenu && (
             <View style={styles.content}>
               <View style={styles.textContent}>
-                <Text style={styles.text}>{route.params.name}</Text>
+                <Text style={styles.text}>{mapData.hasOwnProperty(postId) && mapData[postId]["author"]["username"]}</Text>
                 {more ? (
                   <Text style={styles.text}>{bodyText}</Text>
                 ) : (
@@ -58,10 +64,10 @@ export const ShowImageScreen = ({route, navigation}) => {
                   </>
                 )}
                 <Text style={[styles.text, styles.timeText]}>
-                  {TimeToString(route.params.time)}
+                  {mapData.hasOwnProperty(postId) && TimeToString(mapData[postId]["created"])}
                 </Text>
               </View>
-              <PostFooter dark={true} />
+              <PostFooter dark={true} postId={postId}/>
             </View>
           )}
         </View>
