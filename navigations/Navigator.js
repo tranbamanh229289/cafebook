@@ -1,17 +1,11 @@
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Dimensions,
   StyleSheet,
-  Text,
-  View,
-  Animated,
-  Easing,
 } from "react-native";
 import {
   CreatePostHeaderRight,
-  CreatePostRightBarHeader,
 } from "../components/home-screen/CreatePostHeaderRight";
 import color from "../constants/color/color";
 import { CreatePost } from "../screens/home/CreatePost";

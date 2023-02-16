@@ -1,22 +1,29 @@
-import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import color from "../../constants/color/color";
 import { AntDesign } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { likePost } from "../../redux/features/post/postSlice";
 
-
-export const PostFooter = ({dark, like, is_liked, comment}) => {
+export const PostFooter = ({dark, postId}) => {
+    const mapData = useSelector((state) => state.post.mapData);
     const [commentCounting , setCommentCounting ] = useState(0);
     const [reactionCounting, setReactionCounting] = useState(0);
     const [likePress , setLikePress] = useState(false);
+    const loading = useSelector((state) => state.post.loading);
+    const token = useSelector((state) => state.auth.data.token);
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+
     const darkTheme = {
         color: color.White
     };
 
     const handlePressLike = () => {
+        dispatch(likePost({token,postId}));
         if (!likePress) {
             setReactionCounting((prev) => prev + 1);
         }
@@ -27,16 +34,12 @@ export const PostFooter = ({dark, like, is_liked, comment}) => {
     }
 
     useEffect(()=>{
-        if (like!==undefined && like!==null) {
-            setReactionCounting(parseInt(like))
+        if (mapData.hasOwnProperty(postId)) {
+            setReactionCounting(parseInt(mapData[postId]["like"]));
+            setLikePress(mapData[postId]["is_liked"] === "1" );
+            setCommentCounting(parseInt(mapData[postId]["comment"]));
         }
-        if (is_liked!==undefined && is_liked!==null) {
-            setLikePress(is_liked !== "0" );
-        }
-        if (comment!==undefined && comment!==null) {
-            setCommentCounting(parseInt(comment))
-        }
-    },[])
+    },[mapData[postId]]);
 
     return (
         <View style={styles.container}>
@@ -61,7 +64,7 @@ export const PostFooter = ({dark, like, is_liked, comment}) => {
                         <Text style={[styles.text, dark && darkTheme]}>  Like</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.touchableButton} onPress={()=>{}} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
+                <TouchableHighlight style={styles.touchableButton} onPress={()=>{navigation.navigate("CommentScreen")}} underlayColor={dark ? color.Black : color.TouchableHighlightBorderWhite}>
                     <View style={styles.button} >
                         <CommentIcon />
                         <Text style={[styles.text, dark && darkTheme]}>  Comment</Text>

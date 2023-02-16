@@ -13,7 +13,7 @@ export const CreatePostHeaderRight = () => {
         .unwrap()
         .then((res) => {
             dispatch(AppendAfterPost({id: res.data.id, token: token}));
-            navigation.navigate("HomeScreen")
+            navigation.navigate("HomeScreen");
         })
         .catch(err => console.log(err))
     }

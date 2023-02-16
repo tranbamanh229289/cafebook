@@ -4,18 +4,27 @@ import { PostFooter } from "../../components/home-screen/PostFooter";
 import { useEffect, useState } from "react";
 import color from "../../constants/color/color";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 export const PostDetail = ({route}) => {
+    const mapData = useSelector((state) => state.post.mapData);
+    const postId = route.params.postId;
+
     const [more, setMore] = useState(true);
-    const [images, setImages] = useState(route.params.images);
+    const [images, setImages] = useState([]);
     const [bodyText , setBodyText] = useState("");
     const navigation = useNavigation();
 
     useEffect(()=>{
-      if (route.params.described !== null && route.params.described !== undefined) {
-        setBodyText(route.params.described);
-        setMore(route.params.described < 450)
+      if (mapData.hasOwnProperty(postId)) {
+        if (mapData[postId]["described"] !== null) {
+          setBodyText(mapData[postId]["described"]);
+        setMore(mapData[postId]["described"].length < 450);
+        }
+        if (mapData[postId]["image"] !== null) {
+          setImages(mapData[postId]["image"]);
+        }
       }
     },[]);
 
@@ -25,7 +34,7 @@ export const PostDetail = ({route}) => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
-        <PostHeader detail={true} avatar={route.params.avatar} username={route.params.username} created={route.params.created}/>
+        <PostHeader detail={true} postId={postId}/>
         <TouchableHighlight
           style={styles.textContainer}
           underlayColor={color.TouchableHighlightBorderWhite}
@@ -51,7 +60,7 @@ export const PostDetail = ({route}) => {
             </>
           )}
         </TouchableHighlight>
-        <PostFooter like={route.params.like} is_liked={route.params.is_liked} comment={route.params.comment}/>
+        <PostFooter postId={postId}/>
         {images.map((e, i) => (
           <View style={styles.imageView} key={`image-view-${i}`}>
             <ItemSeparatorComponent />
@@ -60,15 +69,13 @@ export const PostDetail = ({route}) => {
               onPress={() => {
                 navigation.navigate("ShowImage", {
                   uri: e.url,
-                  name: route.params.username,
-                  time: route.params.created,
-                  text: route.params.described,
+                  postId: postId,
                 });
               }}
             >
               <Image source={{ uri: e.url }} style={styles.selectedImage} />
             </TouchableWithoutFeedback>
-            <PostFooter />
+            <PostFooter postId={postId}/>
           </View>
         ))}
       </ScrollView>
