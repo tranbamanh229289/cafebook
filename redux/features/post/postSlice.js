@@ -14,6 +14,7 @@ const initialState = {
   text: "",
   myPosts: [],
   mapData: {},
+  editPostId: "",
 };
 
 export const appendMyListPost = createAsyncThunk(
@@ -83,6 +84,19 @@ export const AppendAfterPost = createAsyncThunk(
   }
 );
 
+export const updateImageAfterEdit = createAsyncThunk(
+  "post/update_image_after_edit",
+  async (params, thunkAPI) => {
+      try {
+          const res = await axiosClient("post","post/get_post",{}, {token: params.token, id: params.id});
+          return res.data;
+      }
+      catch (err) {
+          return thunkAPI.rejectWithValue(err.response.data);
+      }
+  }
+);
+
 export const likePost = createAsyncThunk(
   "post/like_post",
   async (params, thunkAPI) => {
@@ -135,15 +149,90 @@ export const addPost = createAsyncThunk(
   }
 );
 
+export const editPost = createAsyncThunk(
+  "post/edit_post",
+  async (params, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const formData = new FormData();
+    try {
+      for (let i = 0 ; i < state.post.images.length ; i ++) {
+        formData.append("image", {
+          uri: state.post.images[i].uri,
+          name: "post-image",
+          type: "image/jpeg",
+        });
+      }
+      const image_del = state.post.mapData[params.id]["image"] !== null ? JSON.stringify(state.post.mapData[params.id]["image"].map(e => e.id)) : "";
+      const res = await axios.post(
+        `${baseURL}post/edit_post`,
+        state.post.images.length > 0 ? formData : {},
+        {
+          params: {
+            token: state.auth.data.token,
+            described: state.post.text,
+            image_del: image_del,
+            id: params.id,
+          },
+          headers: {
+            "Content-Type": "multi-part/form-data",
+          },
+        }
+      );
+      return {...res.data, id: params.id };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "post/delete_post",
+  async (params, thunkAPI) => {
+      try {
+          const res = await axiosClient("post","post/delete_post",{}, {token: params.token, id: params.id});
+          return {...res.data, id: params.id};
+      }
+      catch (err) {
+          return thunkAPI.rejectWithValue(err.response.data);
+      }
+  }
+);
+
+export const reportPost = createAsyncThunk(
+  "post/report_post",
+  async (params, thunkAPI) => {
+      try {
+          const res = await axiosClient("post","post/report_post",{}, {token: params.token, id: params.id, subject: "Spam" , details: "Spam"});
+          return {...res.data, id: params.id};
+      }
+      catch (err) {
+          return thunkAPI.rejectWithValue(err.response.data);
+      }
+  }
+);
+
+
+
 const postSlice = createSlice({
   name: "post",
   initialState: initialState,
   reducers: {
+    setEditPost: (state, action) => {
+      const postId = action.payload;
+      if (state.mapData.hasOwnProperty(postId)) {
+        if (state.mapData[postId]["described"] !== null) {
+          state.text = state.mapData[postId]["described"];
+        }
+        if (state.mapData[postId]["image"] !== null) {
+          state.images = state.mapData[postId]["image"].map(image => ({...image, uri: image.url}));
+        }
+        state.editPostId = action.payload;
+      }
+    },
     discardPost: (state) => {
-      state.loading = false;
-      state.code = "";
       state.images = [];
       state.text = "";
+      state.editPostId = "";
     },
     selectEmoji: (state, action) => {
       state.text += action.payload;
@@ -270,6 +359,51 @@ const postSlice = createSlice({
         const like = parseInt(action.payload.data.like);
         const is_liked = post.is_liked;
         state.mapData = {...state.mapData, [id] : {...post, is_liked: is_liked === "0" ? "1" : "0" , like}}
+      })
+      .addCase(deletePost.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deletePost.fulfilled , (state, action) => {
+        state.code = action.payload.code;
+        state.loading = false;
+        state.myPosts = state.myPosts.filter(post => post.id !== action.payload.id);
+        state.data.posts = state.data.posts.filter(post => post.id !== action.payload.id);
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(reportPost.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(reportPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+        state.myPosts = state.myPosts.filter(post => post.id !== action.payload.id);
+        state.data.posts = state.data.posts.filter(post => post.id !== action.payload.id);
+      })
+      .addCase(reportPost.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(editPost.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(editPost.fulfilled, (state, action) => {
+        const id = action.payload.id;
+        const post = state.mapData[id];
+        state.loading = false;
+        state.code = action.payload.code;
+        state.mapData = {...state.mapData, [id] : {...post, described: state.text, image: state.images}};
+        state.text = "";
+        state.images = [];
+      })
+      .addCase(editPost.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(updateImageAfterEdit.fulfilled, (state, action) => {
+        state.mapData = {...state.mapData, [action.payload.data.id] : {...action.payload.data , author: {...action.payload.data.author, username: action.payload.data.author.name}}};
       });
   },
 });
@@ -282,5 +416,6 @@ export const {
   appendListImage,
   closeImage,
   selectEmoji,
+  setEditPost
 } = postSlice.actions;
 export default postSlice.reducer;

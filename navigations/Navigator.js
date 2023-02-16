@@ -30,6 +30,8 @@ import { ShowImageScreen } from "../screens/ShowImageScreen";
 import { getValueFor } from "../utils/secureStore";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn } from "../redux/features/auth/authSlice";
+import { EditPost } from "../screens/home/EditPost";
+import { EditPostHeaderRight } from "../components/home-screen/EditPostHeaderRight";
 
 const Stack = createNativeStackNavigator();
 
@@ -303,6 +305,26 @@ export const Navigator = () => {
                 statusBarColor: color.White,
                 statusBarStyle: "dark",
                 headerRight: () => <CreatePostHeaderRight />,
+              })}
+            />
+            <Stack.Screen
+              name="EditPost"
+              component={EditPost}
+              options={() => ({
+                headerShown: true,
+                title: "Edit post",
+                headerTitleStyle: {
+                  fontSize: 18,
+                  fontWeight: "normal",
+                },
+                headerShadowVisible: false,
+                contentStyle: {
+                  borderTopWidth: 1,
+                  borderTopColor: color.HeaderBorderColor,
+                },
+                statusBarColor: color.White,
+                statusBarStyle: "dark",
+                headerRight: () => <EditPostHeaderRight />,
               })}
             />
             <Stack.Screen
