@@ -30,7 +30,6 @@ export const HomeScreen = ({
   const userId = useSelector((state) => state.auth.data.id);
   const loading = useSelector((state) => state.post.loading);
   const posts = useSelector((state) => state.post.data.posts);
-  const mapData = useSelector((state) => state.post.mapData);
 
   const onEndReached = () => {
     setIndex((prev) => prev + 5);

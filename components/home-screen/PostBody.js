@@ -32,7 +32,7 @@ export const PostBody = ({ postId }) => {
         setListImage(mapData[postId]["image"]);
       }
     }
-  }, []);
+  }, [mapData[postId]]);
   return (
     <View style={styles.container}>
       <TouchableHighlight

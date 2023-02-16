@@ -30,13 +30,19 @@ import * as ImagePicker from "expo-image-picker";
 import { OnBackPressModal } from "../../components/home-screen/OnBackPressModal";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { appendImage, appendListImage, changeText, closeImage, selectEmoji } from "../../redux/features/post/postSlice";
+import {
+  appendImage,
+  appendListImage,
+  changeText,
+  closeImage,
+  selectEmoji,
+  setEditPost,
+} from "../../redux/features/post/postSlice";
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 
-export const CreatePost = () => {
-  const images = useSelector((state) => state.post.images)
-  const [firstFocus, setFirstFocus] = useState(false);
+export const EditPost = ({route}) => {
+  const images = useSelector((state) => state.post.images);
   const [openEmoji, setOpenemoji] = useState(false);
   const animatedValue = new Animated.Value(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,6 +51,8 @@ export const CreatePost = () => {
   const navigation = useNavigation();
   const linkAvatar = useSelector((state) => state.user.data.avatar);
   const username = useSelector((state) => state.user.data.username);
+  const postId = route.params.postId;
+  const token = useSelector((state) => state.auth.data.token);
 
   useEffect(() => {
     const backAction = () => {
@@ -63,6 +71,12 @@ export const CreatePost = () => {
     return () => backHandler.remove();
   }, [images, text]);
 
+  useEffect(()=>{
+    if (token !== undefined) {
+        dispatch(setEditPost(postId))
+    }
+  },[token]);
+
   const onChangeText = (value) => {
     dispatch(changeText(value));
   };
@@ -77,9 +91,9 @@ export const CreatePost = () => {
     });
 
     if (!result.cancelled && result.selected === undefined) {
-      dispatch(appendImage(result));
+      dispatch(appendImage({...result, url: result.uri}));
     } else if (!result.cancelled && result.selected !== undefined) {
-      dispatch(appendListImage(result.selected));
+      dispatch(appendListImage(result.selected.map(e => ({...e, url: e.uri}))));
     }
   };
 
@@ -106,12 +120,11 @@ export const CreatePost = () => {
   };
 
   const handleOnEmojiSelected = (selected) => {
-    dispatch(selectEmoji(selected.emoji))
+    dispatch(selectEmoji(selected.emoji));
   };
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      setFirstFocus(true);
       if (openEmoji === true) {
         setOpenemoji(false);
       }
@@ -137,7 +150,7 @@ export const CreatePost = () => {
         <OnBackPressModal setModalVisible={setModalVisible} />
       </Modal>
       <View style={styles.header}>
-        <Avatar width={46} height={46} source={linkAvatar}/>
+        <Avatar width={46} height={46} source={linkAvatar} />
         <View style={styles.headerRight}>
           <Text style={styles.name}>{username}</Text>
           <View style={styles.headerButton}>
@@ -189,7 +202,6 @@ export const CreatePost = () => {
               multiline={true}
               style={styles.input}
               onContentSizeChange={onContentSizeChange}
-              onFocus={() => setFirstFocus(true)}
               onChangeText={onChangeText}
               value={text}
             />
@@ -408,58 +420,51 @@ export const CreatePost = () => {
           )}
         </ScrollView>
       </View>
-      {firstFocus ? (
-        <View style={styles.bottomButton}>
-          <TouchableHighlight
-            style={styles.iconButton}
-            onPress={pickImage}
-            underlayColor={color.TouchableHighlightBorderWhite}
-          >
-            <ImageIcon />
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.iconButton}
-            onPress={() => {}}
-            underlayColor={color.TouchableHighlightBorderWhite}
-          >
-            <TagIcon />
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.iconButton}
-            onPress={() => {}}
-            underlayColor={color.TouchableHighlightBorderWhite}
-            onPressOut={() => {
-              setOpenemoji((prev) => !prev);
-              Keyboard.dismiss();
-            }}
-          >
-            <SmileIcon />
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.iconButton}
-            onPress={() => {}}
-            underlayColor={color.TouchableHighlightBorderWhite}
-          >
-            <LocationIcon />
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.iconButton}
-            onPress={() => {
-              setFirstFocus(false);
-            }}
-            underlayColor={color.TouchableHighlightBorderWhite}
-          >
-            <MoreIcon />
-          </TouchableHighlight>
-        </View>
-      ) : (
-        <ScrollView
-          style={styles.scrollViewBottomContainer}
-          showsVerticalScrollIndicator={false}
+
+      <View style={styles.bottomButton}>
+        <TouchableHighlight
+          style={styles.iconButton}
+          onPress={pickImage}
+          underlayColor={color.TouchableHighlightBorderWhite}
         >
-          <ScrollViewBottom />
-        </ScrollView>
-      )}
+          <ImageIcon />
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.iconButton}
+          onPress={() => {}}
+          underlayColor={color.TouchableHighlightBorderWhite}
+        >
+          <TagIcon />
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.iconButton}
+          onPress={() => {}}
+          underlayColor={color.TouchableHighlightBorderWhite}
+          onPressOut={() => {
+            setOpenemoji((prev) => !prev);
+            Keyboard.dismiss();
+          }}
+        >
+          <SmileIcon />
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.iconButton}
+          onPress={() => {}}
+          underlayColor={color.TouchableHighlightBorderWhite}
+        >
+          <LocationIcon />
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.iconButton}
+          onPress={() => {
+            setFirstFocus(false);
+          }}
+          underlayColor={color.TouchableHighlightBorderWhite}
+        >
+          <MoreIcon />
+        </TouchableHighlight>
+      </View>
+
       {openEmoji && (
         <EmojiKeyboard
           onRequestClose={() => {
