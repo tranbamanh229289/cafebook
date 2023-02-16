@@ -3,8 +3,8 @@ import color from "../../constants/color/color";
 import { MaterialIcons } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-import {discardPost} from "../../redux/features/createPost/createPostSlice"
 import { useDispatch } from "react-redux";
+import { discardPost } from "../../redux/features/post/postSlice";
 
 export const OnBackPressModal = ({setModalVisible}) => {
     const navigation = useNavigation();

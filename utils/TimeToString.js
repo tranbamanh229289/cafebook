@@ -1,7 +1,7 @@
 const TimeToString = (created) => {
   const deltaTime = Math.floor(new Date().getTime() / 1000) - created;
   if (deltaTime <= 10) {
-    return "Vừa xong";
+    return "now";
   } else
   if (10 < deltaTime && deltaTime< 60) {
     return `${deltaTime}s`;

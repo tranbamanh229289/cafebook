@@ -2,25 +2,28 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import color from "../../constants/color/color";
-import { addPost, AppendAfterPost } from "../../redux/features/post/postSlice";
+import { editPost, updateImageAfterEdit } from "../../redux/features/post/postSlice";
 
-export const CreatePostHeaderRight = () => {
+export const EditPostHeaderRight = () => {
     const token = useSelector((state) => state.auth.data.token);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const postId = useSelector((state) => state.post.editPostId);
+    const images = useSelector(state => state.post.images)
 
-    const handleUploadPost = () => {
-        dispatch(addPost())
+    const handleEditPost = () => {
+        dispatch(editPost({id: postId}))
         .unwrap()
         .then((res) => {
-            dispatch(AppendAfterPost({id: res.data.id, token: token}));
-            navigation.navigate("HomeScreen");
+            dispatch(updateImageAfterEdit({id: postId, token: token}))
+            .then(() => navigation.navigate("MyProfile"));
         })
         .catch(err => console.log(err))
     }
-    const dispatch = useDispatch();
+    
     return (
-        <TouchableOpacity style={styles.container} onPress={handleUploadPost}>
-            <Text style={styles.text}>POST</Text>
+        <TouchableOpacity style={styles.container} onPress={handleEditPost}>
+            <Text style={styles.text}>EDIT</Text>
         </TouchableOpacity>
     );
 }

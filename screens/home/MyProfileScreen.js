@@ -6,28 +6,18 @@ import { Post } from "../../components/home-screen/Post";
 import color from "../../constants/color/color";
 import { appendMyListPost, getMyListPost } from "../../redux/features/post/postSlice";
 
-const Item = ({ avatar, username, images, described, like , is_liked, comment, created }) => (
+const Item = ({ postId }) => (
   <View style={styles.item}>
-    <Post
-      avatar={avatar}
-      username={username}
-      images={images}
-      described={described}
-      is_liked={is_liked}
-      like={like}
-      comment={comment}
-      created={created}
-    />
+    <Post postId={postId}/>
   </View>
 );
-
 export const MyProfileScreen = () => {
   const dispatch = useDispatch();
   const myPosts = useSelector((state) => state.post.myPosts);
   const loading = useSelector((state) => state.post.loading);
   const token = useSelector((state) => state.auth.data.token);
   const [page, setPage] = useState(1);
-
+  
   useEffect(()=>{
     if (token !== undefined) {
       if (page === 1) {
@@ -40,17 +30,7 @@ export const MyProfileScreen = () => {
   }, [page,token]);
 
   const renderItem = ({ item }) => (
-    <Item
-      title={item.title}
-      avatar={item.author.avatar}
-      username={item.author.username}
-      images={item.image}
-      described={item.described}
-      like={item.like}
-      is_liked={item.is_liked}
-      comment={item.comment}
-      created={item.created}
-    />
+    <Item postId={item.id}/>
   );
 
   const ItemSeparatorComponent = () => (
