@@ -39,7 +39,9 @@ export const PostDetail = ({route}) => {
           style={styles.textContainer}
           underlayColor={color.TouchableHighlightBorderWhite}
           onPress={() => {
-            setMore((prev) => !prev);
+            if (bodyText.length >= 450) {
+              setMore(prev => !prev);
+            }
           }}
         >
           {more ? (
