@@ -32,6 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn } from "../redux/features/auth/authSlice";
 import { EditPost } from "../screens/home/EditPost";
 import { EditPostHeaderRight } from "../components/home-screen/EditPostHeaderRight";
+import { FriendProfileScreen } from "../screens/home/FriendProfileScreen";
+import { FriendProfileHeaderTitle } from "../components/home-screen/FriendProfileHeaderTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -358,6 +360,18 @@ export const Navigator = () => {
                 statusBarColor: color.Black,
                 statusBarStyle: "light",
                 animation: "fade_from_bottom",
+              })}
+            />
+            <Stack.Screen
+              name="FriendProfile"
+              component={FriendProfileScreen}
+              options={() => ({
+                headerShown: true,
+                headerShadowVisible: false,
+                statusBarColor: color.White,
+                statusBarStyle: "dark",
+                animation: "simple_push",
+                headerTitle: (props) => (<FriendProfileHeaderTitle {...props}/>)
               })}
             />
           </>
