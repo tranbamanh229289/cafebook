@@ -8,6 +8,7 @@ import {
   ScrollView,
   Animated,
   Modal,
+  FlatList,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -33,6 +34,19 @@ const DATA = [
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     title: "Third Item",
+  },
+];
+
+const searchHistory = [
+  {
+    id: "63ec9596412eff12b8472d52",
+    keyword: "mak",
+    created: "1676449174",
+  },
+  {
+    id: "63ec9e05e7778416e69eda40",
+    keyword: "make",
+    created: "1676451333",
   },
 ];
 
@@ -76,6 +90,19 @@ export const SearchScreen = () => {
   const handleSubmit = () => {
     setSearchState(STATE_ENUM.SEARCHED);
   };
+
+  const SearchHistory = [
+    {
+      id: "63ec9596412eff12b8472d52",
+      keyword: "mak",
+      created: "1676449174",
+    },
+    {
+      id: "63ec9e05e7778416e69eda40",
+      keyword: "make",
+      created: "1676451333",
+    },
+  ];
 
   return (
     <View style={styles.container}>
@@ -149,23 +176,27 @@ export const SearchScreen = () => {
 
       {searchState === STATE_ENUM.DEFAULT && (
         <View style={styles.bigBoardView}>
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hmm" />
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hi" />
-
-          <SearchComponent searchInfo="hi" />
+          <FlatList
+            data={SearchHistory}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <SearchComponent searchInfo={item.keyword} />
+            )}
+          />
         </View>
       )}
 
       {searchState === STATE_ENUM.SEARCHING && (
         <View style={styles.bigBoardView}>
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hmm" />
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hi" />
-
-          <SearchComponent searchInfo="hi" />
+          <View>
+            <FlatList
+              data={SearchHistory}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <SearchComponent searchInfo={item.keyword} />
+              )}
+            />
+          </View>
 
           <View
             style={{
