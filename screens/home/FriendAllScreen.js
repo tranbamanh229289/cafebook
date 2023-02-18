@@ -124,20 +124,10 @@ const renderItem = ({ item }) => (
 
 const Item = ({ avatar, index, username, same_friends }) => {
   const [optionVisible, setOptionVisible] = useState(false);
-  const [sortVisible, setSortVisible] = useState(false);
 
   return (
     <>
-      {index === 0 && (
-        <View style={styles.header2Container}>
-          <Text style={styles.subText1}>9 bạn bè</Text>
-          <TouchableOpacity style={styles.sortButton}>
-            <Text style={styles.textSort} onPress={() => setSortVisible(true)}>
-              Sắp xếp
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      
       <View style={styles.itemContainer}>
         <View style={styles.avatar}>
           <Avatar width={90} height={90} source={avatar} />
@@ -173,40 +163,56 @@ const Item = ({ avatar, index, username, same_friends }) => {
         username={username}
         avatar={avatar}
       />
-      <AllFriendSortModal
-        setModalVisible={setSortVisible}
-        modalVisible={sortVisible}
-      />
+      
     </>
   );
 };
 
 const SearchIcon = () => <Feather name="search" size={22} color="black" />;
 
-const ListHeaderComponent = ({ setModalVisible }) => (
-  <View style={styles.container}>
-    <View style={styles.headerContainer}>
-      <View style={{ flexDirection: "row" }}>
-        <Ionicons
-          name="arrow-back-outline"
-          size={26}
-          color="black"
-          onPress={() => setModalVisible(false)}
-        />
-        <Text
-          style={{
-            fontSize: 20,
-            paddingLeft: 15,
-          }}
-        >
-          Tất cả bạn bè
-        </Text>
-      </View>
+const ListHeaderComponent = ({ setModalVisible }) => {
+  const [sortVisible, setSortVisible] = useState(false);
+  return (
+  <>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={{ flexDirection: "row" }}>
+          <Ionicons
+            name="arrow-back-outline"
+            size={26}
+            color="black"
+            onPress={() => setModalVisible(false)}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              paddingLeft: 15,
+            }}
+          >
+            Tất cả bạn bè
+          </Text>
+        </View>
 
-      <SearchIcon />
+        <SearchIcon />
+      </View>
     </View>
-  </View>
-);
+
+    <View style={styles.header2Container}>
+      <Text style={styles.subText1}>9 bạn bè</Text>
+      <TouchableOpacity style={styles.sortButton}>
+        <Text style={styles.textSort} onPress={() => setSortVisible(true)}>
+          Sắp xếp
+        </Text>
+      </TouchableOpacity>
+    </View>
+
+    <AllFriendSortModal
+        setModalVisible={setSortVisible}
+        modalVisible={sortVisible}
+        onRequestClose={() => setSortVisible(false)}
+      />
+  </>
+)};
 
 const styles = StyleSheet.create({
   container: {},
