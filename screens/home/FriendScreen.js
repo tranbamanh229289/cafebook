@@ -14,9 +14,10 @@ import { Feather, SimpleLineIcons } from "@expo/vector-icons";
 import { Avatar } from "../../components/home-screen/Avatar";
 import { SuggestFriendScreen } from "./FriendSuggestScreen";
 import { AllFriendScreen } from "./FriendAllScreen";
-import { getRequestedFriend } from "../../redux/features/friend/requestedFriendSlice";
+import { getRequestedFriend, setAcceptFriend } from "../../redux/features/friend/requestedFriendSlice";
 import TimeToString from "../../utils/TimeToString";
 import { BlockModal } from "../../components/home-screen/BlockModal";
+import { ConfirmModal } from "../../components/home-screen/ConfirmModal";
 
 export const FriendScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -253,36 +254,70 @@ const ListHeaderComponent = () => {
 const renderItem = ({ item }) => (
   <Item
     avatar={item.avatar}
-    index={item.id}
+    user_id={item.user_id}
     username={item.username}
     same_friends={item.same_friends}
     created={item.created}
   />
 );
 
-const Item = ({ avatar, index, username, same_friends, created }) => {
+const Item = ({ avatar, id, username, same_friends, created, user_id }) => {
   const [friendState, setFriendState] = useState(0);
-  const [blockModalVisible, setBlockModalVisible] = useState(false)
+  const [blockModalVisible, setBlockModalVisible] = useState(false);
+
+  const [acceptModalVisible, setAcceptModalVisible] = useState(false);
+  const [cancelModalVisible, setCancelModalVisible] = useState(false);
+
+  const [acceptBool, setAcceptBool] = useState(false);
+  const [cancelBool, setCancelBool] = useState(false);
+
+  const token = useSelector((state) => state.auth.data.token);
+  const dispatch = useDispatch()
 
   const onOptionPress = () => {
-    setBlockModalVisible(true)
+    setBlockModalVisible(true);
   };
 
   const onAcceptPress = () => {
-    setFriendState(1)
+    setAcceptModalVisible(true)
   };
 
   const onCancelPress = () => {
-    setFriendState(2)
+    setCancelModalVisible(true)
   };
+
+  useEffect(() => {
+    if(acceptBool){
+      dispatch(setAcceptFriend({token:token, user_id: id, is_accept: 1}))
+      setFriendState(1)
+    }else if(cancelBool){
+      dispatch(setAcceptFriend({token:token, user_id: id, is_accept: 0}))
+      setFriendState(2)
+    }
+  },[acceptBool, cancelBool])
 
   return (
     <>
-    <BlockModal
-      modalVisible = {blockModalVisible}
-      setModalVisible = {setBlockModalVisible}
-      username = {username}
-    />
+      <BlockModal
+        modalVisible={blockModalVisible}
+        setModalVisible={setBlockModalVisible}
+        username={username}
+        user_id={user_id}
+      />
+      <ConfirmModal
+        modalVisible={acceptModalVisible}
+        setModalVisible={setAcceptModalVisible}
+        header="Xác nhận"
+        body="Chấp nhận lời mời kết bạn"
+        returnBool={setAcceptBool}
+      />
+      <ConfirmModal
+        modalVisible={cancelModalVisible}
+        setModalVisible={setCancelModalVisible}
+        header="Xác nhận"
+        body="Xóa lời mời kết bạn"
+        returnBool={setCancelBool}
+      />
       <View style={styles.itemContainer}>
         <View style={styles.avatar}>
           <Avatar width={90} height={90} source={avatar} />
@@ -304,6 +339,7 @@ const Item = ({ avatar, index, username, same_friends, created }) => {
             )}
           </View>
 
+
           {parseInt(same_friends) > 0 && friendState === 0 ? (
             <Text style={styles.sameFriendText}>{same_friends} bạn chung</Text>
           ) : (
@@ -314,7 +350,10 @@ const Item = ({ avatar, index, username, same_friends, created }) => {
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              <TouchableOpacity style={{ flex: 1, marginRight: 10 }} onPress={onAcceptPress}>
+              <TouchableOpacity
+                style={{ flex: 1, marginRight: 10 }}
+                onPress={onAcceptPress}
+              >
                 <View
                   style={[styles.button, { backgroundColor: color.MainBlue }]}
                 >
@@ -345,7 +384,10 @@ const Item = ({ avatar, index, username, same_friends, created }) => {
         </View>
 
         {friendState === 2 && (
-          <TouchableOpacity style={{...headerStyles.iconButton, backgroundColor: color.White}} onPress={onOptionPress}>
+          <TouchableOpacity
+            style={{ ...headerStyles.iconButton, backgroundColor: color.White }}
+            onPress={onOptionPress}
+          >
             <OptionIcon />
           </TouchableOpacity>
         )}
@@ -353,4 +395,3 @@ const Item = ({ avatar, index, username, same_friends, created }) => {
     </>
   );
 };
-

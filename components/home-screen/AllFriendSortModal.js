@@ -5,11 +5,35 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import color from "../../constants/color/color";
 import { Fontisto, Octicons, MaterialIcons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setFriend } from "../../redux/features/friend/allFriendSlice";
 
 export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
+  const allFriendData = useSelector(
+    (state) => state.allFriend.data.friends
+  );
+
+  const [sortedData, setSortedData] =  useState([...allFriendData])
+  const dispatch  =  useDispatch()
+
+  const defaultPress = () =>{
+    setModalVisible(false)
+  }
+
+  const newestPress = () =>{
+    setSortedData(sortedData.sort((a, b) => b.created - a.created))
+    dispatch(setFriend({data: sortedData})) ;
+    setModalVisible(false)
+  }
+
+  const oldestPress = () =>{
+    setSortedData(sortedData.sort((a, b) => a.created - b.created))
+    dispatch(setFriend({data: sortedData}))
+    setModalVisible(false)
+  }
   return (
     <>
       <Modal
@@ -36,7 +60,7 @@ export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
             <View style={styles.itemContainer}>
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={defaultPress}
               >
                 <View style={styles.item}>
                   <MaterialIcons name="photo-filter" size={24} color="black" />
@@ -48,7 +72,7 @@ export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={newestPress}
               >
                 <View style={styles.item}>
                   <Octicons name="sort-asc" size={24} color="black" />
@@ -62,7 +86,7 @@ export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={oldestPress}
               >
                 <View style={styles.item}>
                   <Octicons name="sort-desc" size={24} color="black" />

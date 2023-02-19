@@ -12,81 +12,25 @@ import { Ionicons, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import { Avatar } from "../../components/home-screen/Avatar";
 import { AllFriendOptionModal } from "../../components/home-screen/AllFriendOptionModal";
 import { AllFriendSortModal } from "../../components/home-screen/AllFriendSortModal";
+import { getAllFriend } from "../../redux/features/friend/allFriendSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export const AllFriendScreen = ({ modalVisible, setModalVisible }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [friendList, setFriendList] = useState([
-    {
-      id: 0,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "0",
-    },
-    {
-      id: 1,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 2,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "0",
-    },
-    {
-      id: 3,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 4,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 5,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 6,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 7,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 8,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-    {
-      id: 9,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-    },
-  ]);
+
+  const token = useSelector((state) => state.auth.data.token);
+  const user_id = useSelector((state) => state.auth.data.id);
+  const  dispatch = useDispatch()
+  const allFriendData = useSelector(
+    (state) => state.allFriend.data.friends
+  );
+
+  useEffect(() => {
+    dispatch(
+      getAllFriend({ token: token, targetUser: user_id, index: 0, count: 10 })
+    );
+  }, [token]);
+
 
   return (
     <Modal
@@ -100,9 +44,9 @@ export const AllFriendScreen = ({ modalVisible, setModalVisible }) => {
       <FlatList
         refreshing={refreshing}
         ListHeaderComponent={
-          <ListHeaderComponent setModalVisible={setModalVisible} />
+          <ListHeaderComponent setModalVisible={setModalVisible}/>
         }
-        data={friendList}
+        data={allFriendData}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
@@ -113,21 +57,47 @@ export const AllFriendScreen = ({ modalVisible, setModalVisible }) => {
   );
 };
 
-const renderItem = ({ item }) => (
+const renderItem = ({ item, index }) => 
+ 
+  (
   <Item
     avatar={item.avatar}
-    index={item.id}
+    index={index}
+    user_id={item.user_id}
     username={item.username}
     same_friends={item.same_friends}
+    created={item.created}
   />
 );
 
-const Item = ({ avatar, index, username, same_friends }) => {
+const Item = ({ avatar, index, username, same_friends, user_id, created }) => {
   const [optionVisible, setOptionVisible] = useState(false);
+
+  const [sortVisible, setSortVisible] = useState(false);
+  const allFriendData = useSelector(
+    (state) => state.allFriend.data.total
+  );
 
   return (
     <>
-      
+    {index === 0 && (
+      <>
+       <View style={styles.header2Container}>
+        <Text style={styles.subText1}>{allFriendData} bạn bè</Text>
+        <TouchableOpacity style={styles.sortButton}>
+          <Text style={styles.textSort} onPress={() => setSortVisible(true)}>
+            Sắp xếp
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <AllFriendSortModal
+        setModalVisible={setSortVisible}
+        modalVisible={sortVisible}
+        onRequestClose={() => setSortVisible(false)}
+      />
+      </>
+    )}
       <View style={styles.itemContainer}>
         <View style={styles.avatar}>
           <Avatar width={90} height={90} source={avatar} />
@@ -144,7 +114,7 @@ const Item = ({ avatar, index, username, same_friends }) => {
             <Text style={styles.usernameText}>{username}</Text>
           </View>
 
-          {parseInt(same_friends) > 0 && (
+          {parseInt(same_friends) >= 0 && (
             <Text style={styles.sameFriendText}>{same_friends} bạn chung</Text>
           )}
         </View>
@@ -162,8 +132,9 @@ const Item = ({ avatar, index, username, same_friends }) => {
         modalVisible={optionVisible}
         username={username}
         avatar={avatar}
+        created={created}
+        user_id={user_id}
       />
-      
     </>
   );
 };
@@ -171,48 +142,36 @@ const Item = ({ avatar, index, username, same_friends }) => {
 const SearchIcon = () => <Feather name="search" size={22} color="black" />;
 
 const ListHeaderComponent = ({ setModalVisible }) => {
-  const [sortVisible, setSortVisible] = useState(false);
+  
   return (
-  <>
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={26}
-            color="black"
-            onPress={() => setModalVisible(false)}
-          />
-          <Text
-            style={{
-              fontSize: 20,
-              paddingLeft: 15,
-            }}
-          >
-            Tất cả bạn bè
-          </Text>
+    <>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={{ flexDirection: "row" }}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={26}
+              color="black"
+              onPress={() => setModalVisible(false)}
+            />
+            <Text
+              style={{
+                fontSize: 20,
+                paddingLeft: 15,
+              }}
+            >
+              Tất cả bạn bè
+            </Text>
+          </View>
+
+          <SearchIcon />
         </View>
-
-        <SearchIcon />
       </View>
-    </View>
 
-    <View style={styles.header2Container}>
-      <Text style={styles.subText1}>9 bạn bè</Text>
-      <TouchableOpacity style={styles.sortButton}>
-        <Text style={styles.textSort} onPress={() => setSortVisible(true)}>
-          Sắp xếp
-        </Text>
-      </TouchableOpacity>
-    </View>
-
-    <AllFriendSortModal
-        setModalVisible={setSortVisible}
-        modalVisible={sortVisible}
-        onRequestClose={() => setSortVisible(false)}
-      />
-  </>
-)};
+     
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {},
