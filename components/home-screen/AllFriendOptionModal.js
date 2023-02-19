@@ -8,14 +8,33 @@ import {
 import { useEffect } from "react";
 import color from "../../constants/color/color";
 import { Avatar } from "./Avatar";
-import { Fontisto, MaterialIcons, Feather } from '@expo/vector-icons';
+import { Fontisto, MaterialIcons, Feather } from "@expo/vector-icons";
 
 export const AllFriendOptionModal = ({
   modalVisible,
   setModalVisible,
   username,
   avatar,
+  created,
+  user_id,
 }) => {
+  const date = new Date(created * 1000);
+  const month = date.getUTCMonth() + 1; // getUTCMonth() returns a zero-based index, so we add 1 to get the month number
+  const year = date.getUTCFullYear();
+  const day = date.getUTCDate();
+
+  const onMessage = () => {
+    setModalVisible(false)
+  }
+
+  const onClose = () => {
+    setModalVisible(false)
+  }
+
+  const onBlock = () => {
+    setModalVisible(false)
+  }
+
 
   return (
     <>
@@ -45,7 +64,7 @@ export const AllFriendOptionModal = ({
               <View style={styles.textContainer}>
                 <Text style={styles.usernameText}>{username}</Text>
                 <Text style={styles.dateText}>
-                  Là bạn bè từ tháng 1 năm 2020
+                  Là bạn bè từ tháng {month} năm {year}
                 </Text>
               </View>
             </View>
@@ -53,10 +72,10 @@ export const AllFriendOptionModal = ({
             <View style={styles.itemContainer}>
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onMessage}
               >
                 <View style={styles.item}>
-                <Fontisto name="messenger" size={24} color="black" />
+                  <Fontisto name="messenger" size={24} color="black" />
                   <View style={styles.subItem}>
                     <Text style={styles.textItem}>Nhắn tin cho {username}</Text>
                   </View>
@@ -65,10 +84,10 @@ export const AllFriendOptionModal = ({
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onClose}
               >
                 <View style={styles.item}>
-                <Feather name="user-minus" size={24} color="black" />
+                  <Feather name="user-minus" size={24} color="black" />
                   <View style={styles.subItem}>
                     <Text style={styles.textItem}>Bỏ theo dõi {username}</Text>
                     <Text style={styles.subTextItem}>
@@ -80,10 +99,10 @@ export const AllFriendOptionModal = ({
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onBlock}
               >
                 <View style={styles.item}>
-                <MaterialIcons name="block" size={24} color="black" />
+                  <MaterialIcons name="block" size={24} color="black" />
                   <View style={styles.subItem}>
                     <Text style={styles.textItem}>Chặn {username}</Text>
                     <Text style={styles.subTextItem}>
@@ -96,11 +115,10 @@ export const AllFriendOptionModal = ({
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onClose}
               >
-                 
                 <View style={styles.item}>
-                <Feather name="user-x" size={24} color="#E02D4B" />
+                  <Feather name="user-x" size={24} color="#E02D4B" />
                   <View style={styles.subItem}>
                     <Text style={styles.textItem}>
                       Hủy kết bạn với {username}
@@ -135,8 +153,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   itemContainer: {
-    
-    paddingTop:5
+    paddingTop: 5,
   },
   item: {
     backgroundColor: color.White,
@@ -146,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   subItem: {
-    flex:1,
+    flex: 1,
     marginLeft: 10,
   },
 

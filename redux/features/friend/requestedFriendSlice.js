@@ -24,12 +24,60 @@ export const getRequestedFriend = createAsyncThunk(
   }
 );
 
+export const setRequestFriend  = createAsyncThunk(
+  "friend/set_request_friend",
+  async (params, thunkAPI) => {
+    try {
+      const res = await axios.post(
+        `${baseURL}friend/set_request_friend`,
+        {},
+        { params: { token: params.token, user_id: params.user_id} }
+      );
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+)
+
+export const setAcceptFriend  = createAsyncThunk(
+  "friend/set_accept_friend",
+  async (params, thunkAPI) => {
+    try {
+      const res = await axios.post(
+        `${baseURL}friend/set_accept_friend`,
+        {},
+        { params: { token: params.token, user_id: params.user_id, is_accept: params.is_accept}}
+      );
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+)
+
+export const setBlock  = createAsyncThunk(
+  "friend/set_block",
+  async (params, thunkAPI) => {
+    try {
+      const res = await axios.post(
+        `${baseURL}friend/set_block`,
+        {},
+        { params: { token: params.token, user_id: params.user_id, type: params.type}}
+      );
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+)
+
 const requestedFriendSlice = createSlice({
   name: "requestedFriend",
   initialState: initialState,
   reducers: {
     resetRequestedFriend: (state) => {
-      state.data = { "request": [], "total": "0"};
+      state.data = { request: [], total: "0"};
       state.loading = false;
       state.code = "";
     },
@@ -48,7 +96,44 @@ const requestedFriendSlice = createSlice({
       .addCase(getRequestedFriend.rejected, (state, action) => {
         state.loading = false;
         state.code = action.payload.code;
-      });
+      })
+
+      .addCase(setAcceptFriend.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(setAcceptFriend.fulfilled, (state, action) => {
+        state.data.total -=1
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(setAcceptFriend.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+
+      .addCase(setRequestFriend.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(setRequestFriend.fulfilled, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(setRequestFriend.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+
+      .addCase(setBlock.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(setBlock.fulfilled, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
+      .addCase(setBlock.rejected, (state, action) => {
+        state.loading = false;
+        state.code = action.payload.code;
+      })
   },
 });
 

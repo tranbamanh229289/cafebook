@@ -12,7 +12,15 @@ export const BlockModal = ({
   modalVisible,
   setModalVisible,
   username,
+  user_id
 }) => {
+  const onClose= () => {
+    setModalVisible(false);
+  }
+
+  const onBlocked = () => {
+    setModalVisible(false);
+  }
   return (
     <>
       <Modal
@@ -39,7 +47,7 @@ export const BlockModal = ({
             <View style={styles.itemContainer}>
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onClose}
               >
                 <View style={styles.item}>
                   <Octicons name="report" size={24} color="black" />
@@ -56,7 +64,7 @@ export const BlockModal = ({
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={onBlocked}
               >
                 <View style={styles.item}>
                   <Feather name="user-x" size={24} color="black" />
