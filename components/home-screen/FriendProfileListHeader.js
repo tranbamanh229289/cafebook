@@ -10,11 +10,39 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Avatar } from "./Avatar";
 import color from "../../constants/color/color";
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { get_user_friends, set_request_friend } from "../../api/friendApi";
+import { useNavigation } from "@react-navigation/native";
+import { EvilIcons } from '@expo/vector-icons';
 
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
-export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_friend}) => {
+export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_friend, id}) => {
+  const token = useSelector((state)=> state.auth.data.token);
+  const [mutualFriend, setMutualFriend] = useState(0);
+  const [friends, setFriends] = useState([]);
+  const navigation = useNavigation();
+  const [addFriend, setAddFriend] = useState(true);
+
+  useEffect(()=>{
+    get_user_friends(token,id,0,999)
+    .then((res)=> {
+      setMutualFriend(res.data.data.total);
+      setFriends(res.data.data.friends);
+    })
+    .catch(err => console.log(err));
+  },[]);
+
+  const handlePressOnFriendAvatar = (id) => {
+    navigation.navigate("FriendProfile", {id});
+  }
+
+  const handlePressAddFriend = () => {
+    set_request_friend(token, id);
+    setAddFriend(prev => !prev)
+  }
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -46,12 +74,12 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
                 { backgroundColor: color.WhiteTextMainBlue },
               ]}
               underlayColor={color.MainBlue}
-              onPress={() => {}}
+              onPress={handlePressAddFriend}
             >
               <View style={styles.buttonText}>
-                <AddFriendIcon />
+                {addFriend ? <AddFriendIcon /> : <FriendRequestSentIcon/>}
                 <Text style={[{ color: color.White }, styles.text]}>
-                  Add Friend
+                  {addFriend ? "Add Friend" : "Request Sent"}
                 </Text>
               </View>
             </TouchableHighlight>
@@ -219,7 +247,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
         <View style={styles.friendTopView}>
           <View style={styles.friendSubView}>
             <Text style={styles.textHeader}>Friends</Text>
-            <Text style={styles.subText}>0 mutual friends</Text>
+            <Text style={styles.subText}>{mutualFriend} Friends</Text>
           </View>
           <View
             style={[styles.friendSubView, { alignItems: "flex-end" }]}
@@ -227,110 +255,164 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
         </View>
         <View style={styles.friendShow}>
           <View style={styles.friendRow}>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://avatarfiles.alphacoders.com/244/244597.jpg",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>Lionel Messi</Text>
-            </View>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://external-preview.redd.it/cristiano-ronaldo-commits-to-al-nassr-v0-lHSPuLLXaP4pPB04IXXE7eG2jYuOk3tyaSHJOKABAuE.jpg?auto=webp&s=cdbc91e11f3b4cd8332d42ba8458baec9eaa9d71",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>CR 7</Text>
-            </View>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://mega.com.vn/media/news/2752_hinh_nen_neymar__89_.jpg",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>Neymar</Text>
-            </View>
+            {friends.length > 0 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[0]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[0].hasOwnProperty("avatar")
+                        ? { uri: friends[0]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[0].hasOwnProperty("username") &&
+                    friends[0]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
+            {friends.length > 1 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[1]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[1].hasOwnProperty("avatar")
+                        ? { uri: friends[1]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[1].hasOwnProperty("username") &&
+                    friends[1]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
+            {friends.length > 2 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[2]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[2].hasOwnProperty("avatar")
+                        ? { uri: friends[2]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[2].hasOwnProperty("username") &&
+                    friends[2]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
           </View>
           <View style={styles.friendRow}>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://static.independent.co.uk/2022/12/04/22/SEI136346324.jpg?quality=75&width=1200&auto=webp",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>Kylian Mbappé</Text>
-            </View>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://znews-photo.zingcdn.me/w660/Uploaded/wobjcak/2022_08_24/son.jpeg",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>Son Heung-min</Text>
-            </View>
-            <View style={styles.friendItem}>
-              <TouchableHighlight
-                style={styles.friendImage}
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://nld.mediacdn.vn/291774122806476800/2021/8/19/2021-08-18t162420z205616511rc2s7p9kje83rtrmadp3soccer-england-tot-kane-16293458499411269082832.jpg",
-                  }}
-                  style={styles.image}
-                  imageStyle={styles.imageStyle}
-                  resizeMode={"cover"}
-                />
-              </TouchableHighlight>
-              <Text style={styles.friendName}>Harry Kane</Text>
-            </View>
+            {friends.length > 3 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[3]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[3].hasOwnProperty("avatar")
+                        ? { uri: friends[3]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[3].hasOwnProperty("username") &&
+                    friends[3]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
+            {friends.length > 4 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[4]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[4].hasOwnProperty("avatar")
+                        ? { uri: friends[4]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[4].hasOwnProperty("username") &&
+                    friends[4]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
+            {friends.length > 5 ? (
+              <View style={styles.friendItem}>
+                <TouchableHighlight
+                  style={styles.friendImage}
+                  underlayColor={color.TouchableHighlightBorderWhite}
+                  onPress={() => handlePressOnFriendAvatar(friends[5]["id"])}
+                >
+                  <ImageBackground
+                    source={
+                      friends[5].hasOwnProperty("avatar")
+                        ? { uri: friends[5]["avatar"] }
+                        : require("../../assets/default-avatar.jpg")
+                    }
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                    resizeMode={"cover"}
+                  />
+                </TouchableHighlight>
+                <Text style={styles.friendName}>
+                  {friends[5].hasOwnProperty("username") &&
+                    friends[5]["username"]}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.friendItem} />
+            )}
           </View>
           <TouchableHighlight
             style={[
@@ -372,23 +454,6 @@ const DarkBr = ({height}) => (
   />
 );
 
-const CameraIcon = () => <Fontisto name="camera" size={16} color={color.Black} />;
-const MakeupIcon = () => <Foundation name="torso-female" size={24} color={color.White} />;
-const PlusIcon = () => (
-  <View
-    style={{
-      width: 20,
-      height: 20,
-      backgroundColor: color.White,
-      borderRadius: 18,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <AntDesign name="plus" size={18} color={color.MainBlue} />
-  </View>
-);
-
 const MessageIcon = () => (
     <FontAwesome5 name="facebook-messenger" size={18} color={color.Black} />
 );
@@ -425,6 +490,10 @@ const PlusIconSm = () => (
 
 const FriendCheckIcon = () => (
   <FontAwesome5 name="user-check" size={18} color={color.Black} />
+);
+
+const FriendRequestSentIcon = () => (
+  <EvilIcons name="check" size={18} color={color.White} />
 );
 
 const styles = StyleSheet.create({
