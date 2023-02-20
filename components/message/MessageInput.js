@@ -27,7 +27,7 @@ export const MessageInput = ({ sendMessage }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.leftIcons}>
+      {/* <View style={styles.leftIcons}>
         <TouchableOpacity
           style={styles.imageIcon}
           onPress={() => {
@@ -52,7 +52,7 @@ export const MessageInput = ({ sendMessage }) => {
         >
           <FontAwesome name="microphone" size={24} color="black" />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.messageInput}>
         <TextInput
           style={styles.textInput}
@@ -83,7 +83,7 @@ export const MessageInput = ({ sendMessage }) => {
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          onPress={() => console.log("like")}
+          onPress={() => sendMessage("👍")}
           style={styles.likeIcon}
         >
           <AntDesign name="like1" size={32} color={color.Black} />

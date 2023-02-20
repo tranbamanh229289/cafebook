@@ -11,13 +11,19 @@ import { Avatar } from "../home-screen/Avatar";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+
 export const MessageNav = () => {
+  const user = useSelector((state) => state.user.data)
+  // console.log(user)
   const navigation = useNavigation();
   return (
     <View style={styles.topBar}>
       <View style={styles.topBarLeft}>
-        <TouchableOpacity>
-          <Avatar style={styles.avatar} />
+        <TouchableOpacity
+          onPress={() => navigation.navigate("MyProfile")}
+        >
+          <Avatar source={user.avatar} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.header}>cafebook</Text>
       </View>
@@ -25,7 +31,7 @@ export const MessageNav = () => {
         <TouchableOpacity style={styles.btn}>
           <Ionicons name="camera" size={24} color={color.Black} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={()=>{navigation.navigate('CreateMessage')}}>
+        <TouchableOpacity style={styles.btn} onPress={() => { navigation.navigate('CreateMessage') }}>
           <Feather name="edit" size={20} color={color.Black} />
         </TouchableOpacity>
       </View>
