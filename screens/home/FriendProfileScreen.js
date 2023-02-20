@@ -27,7 +27,7 @@ export const FriendProfileScreen = ({route}) => {
 
   useEffect(()=>{
     setFriendPosts(posts.filter((post) => post.author.id === route.params.id));
-  }, [loading]);
+  }, [loading, route.params.id]);
 
   const renderItem = ({ item }) => (
     <Item postId={item.id}/>
@@ -51,6 +51,7 @@ export const FriendProfileScreen = ({route}) => {
             username={userData.username}
             cover_image={userData.cover_image}
             is_friend={userData.is_friend}
+            id={route.params.id}
           />
         )}
         ItemSeparatorComponent={ItemSeparatorComponent}

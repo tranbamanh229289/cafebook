@@ -9,6 +9,7 @@ import {
   Animated,
   Modal,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -16,46 +17,25 @@ import {
   Ionicons,
   EvilIcons,
   MaterialCommunityIcons,
+  Feather,
 } from "@expo/vector-icons";
 import color from "../../constants/color/color";
 import { Post } from "../../components/home-screen/Post";
 import { useNavigation } from "@react-navigation/native";
 import { SearchHistory } from "./SearchHistory";
 import { get_saved_search } from "../../api/searchApi";
-import { useSelector } from "react-redux";
-import axiosClient from "../../utils/axiosClient";
+import { useDispatch, useSelector } from "react-redux";
+import axiosClient, { baseURL } from "../../utils/axiosClient";
+import {
+  appendSearchPost,
+  searchPost,
+} from "../../redux/features/post/postSlice";
+import axios from "axios";
+import { getSavedSearch } from "../../redux/features/search/searchSlice";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
-
-const searchHistory = [
-  {
-    id: "63ec9596412eff12b8472d52",
-    keyword: "mak",
-    created: "1676449174",
-  },
-  {
-    id: "63ec9e05e7778416e69eda40",
-    keyword: "make",
-    created: "1676451333",
-  },
-];
-
-const Item = ({ title }) => (
+const Item = ({ postId }) => (
   <View style={styles.item}>
-    <Post />
+    <Post postId={postId} />
   </View>
 );
 
@@ -70,17 +50,18 @@ export const SearchScreen = () => {
     SEARCHED: "SEARCHED",
   };
 
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  const renderItem = ({ item }) => <Item postId={item.id} />;
 
   const ItemSeparatorComponent = () => (
     <View style={{ height: 10, backgroundColor: color.BackgroundGray }} />
   );
 
   const [refresh, setRefresh] = useState(false);
-
+  const dispatch = useDispatch();
   const [searchState, setSearchState] = useState(STATE_ENUM.DEFAULT);
   const [searchText, setSearchText] = useState("");
-  const [pointRefreshHistory, setPointRefreshHistory] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [pointRefreshHistory, setPointRefreshHistory] = useState(false);
 
   const onChangeTextHandler = (text) => {
     setSearchText(text);
@@ -92,56 +73,101 @@ export const SearchScreen = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axiosClient(
-        "post",
-        "/search/search",
-        {},
-        { token: token, index: 0, count: 10, keyword: searchText }
-      );
-      
-      console.log( response.data["data"]); // assuming the API returns data in a "data" property
-    } catch (error) {
-      console.error(error);
-    }
+  const [indexSearch, setIndexSearch] = useState(0);
+  const searchPosts = useSelector((state) => state.post.searchPosts);
 
-    setPointRefreshHistory(searchText);
-
-    // setSearchState(STATE_ENUM.SEARCHED);
+  const handleSubmit = () => {
+    setIndexSearch(0);
+    setSearchValue(searchText);
+    setSearchState(STATE_ENUM.SEARCHED);
   };
 
-  // const SearchHistoryData = [
-  //   {
-  //     id: "63ec9596412eff12b8472d52",
-  //     keyword: "mak",
-  //     created: "1676449174",
-  //   },
-  //   {
-  //     id: "63ec9e05e7778416e69eda40",
-  //     keyword: "make",
-  //     created: "1676451333",
-  //   },
-  // ];
-
-  const [searchHistoryData, setSearchHistoryData] = useState([]);
+  const SearchComponent = ({ searchInfo }) => {
+    return (
+      <Pressable
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? "#F9F9F9" : "white",
+          },
+          styles.searchComponentInfoView,
+        ]}
+        onPress={() => {
+          setIndexSearch(0);
+          setSearchText(searchInfo)
+          setSearchValue(searchInfo);
+          setSearchState(STATE_ENUM.SEARCHED);
+        }}
+      >
+        <EvilIcons name="search" size={30} color="#68696D" />
+        <Text
+          style={{
+            fontSize: 22,
+            marginLeft: 15,
+          }}
+        >
+          {searchInfo}
+        </Text>
+      </Pressable>
+    );
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosClient(
-          "post",
-          "/search/get_saved_search",
-          {},
-          { token: token, index: 0, count: 5 }
+    if (token !== undefined && token !== null && searchValue !== "") {
+      if (indexSearch === 0) {
+        dispatch(
+          searchPost({
+            token: token,
+            index: indexSearch,
+            count: "5",
+            keyword: searchValue,
+          })
         );
-        setSearchHistoryData(response.data["data"]); // assuming the API returns data in a "data" property
-      } catch (error) {
-        console.error(error);
+      } else {
+        dispatch(
+          appendSearchPost({
+            token: token,
+            index: indexSearch,
+            count: "5",
+            keyword: searchValue,
+          })
+        );
       }
-    };
-    fetchData();
-  }, [searchText, token]);
+    }
+  }, [indexSearch, token, searchValue]);
+
+  useEffect(() => {
+    if (token !== undefined && token !== null) {
+      dispatch(getSavedSearch({ token: token, index: 0 }));
+
+    }
+  }, [token,searchValue]);
+
+  const [searchHistoryData, setSearchHistoryData] = useState([]);
+  const historyData = useSelector((state) => state.search.data);
+  const [refreshPoint, setRefreshPoint] = useState(false);
+
+  useEffect(() => {
+    // const fetchData = async () => {
+    //   try {
+    //     const response = await axios.post(
+    //       `${baseURL}search/get_saved_search`,
+    //       {},
+    //       {
+    //         params: {
+    //           token: token,
+    //           index: 0,
+    //           count: 6,
+    //         },
+    //       }
+    //     );
+    //     setSearchHistoryData(response.data.data); // assuming the API returns data in a "data" property
+    //   } catch (error) {
+    //     console.error(error.response);
+    //   }
+    // };
+    // fetchData();
+    setSearchHistoryData(historyData.slice(0, 6))
+  }, [historyData]);
 
   return (
     <View style={styles.container}>
@@ -221,6 +247,7 @@ export const SearchScreen = () => {
             renderItem={({ item }) => (
               <SearchComponent searchInfo={item.keyword} />
             )}
+            initialNumToRender={6}
           />
         </View>
       )}
@@ -234,6 +261,7 @@ export const SearchScreen = () => {
               renderItem={({ item }) => (
                 <SearchComponent searchInfo={item.keyword} />
               )}
+              initialNumToRender={6}
             />
           </View>
 
@@ -293,42 +321,66 @@ export const SearchScreen = () => {
             </ScrollView>
           </View>
 
-          <Animated.FlatList
-            contentContainerStyle={styles.contentContainerStyle}
-            showsVerticalScrollIndicator={false}
-            data={DATA}
-            ListHeaderComponent={
-              <View
+          {searchPosts.length > 0 && (
+            <Animated.FlatList
+              contentContainerStyle={styles.contentContainerStyle}
+              showsVerticalScrollIndicator={false}
+              data={searchPosts}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    width: "100%",
+                    height: 10,
+                    backgroundColor: color.BackgroundGray,
+                  }}
+                />
+              }
+              renderItem={renderItem}
+              keyExtractor={(item) => "ss" + item.id}
+              refreshing={refresh}
+              ItemSeparatorComponent={ItemSeparatorComponent}
+              onRefresh={() => {
+                console.log("refreshed");
+              }}
+              // onScroll={Animated.event(
+              //   [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              //   { useNativeDriver: false }
+              // )}
+              scrollEventThrottle={16}
+              onEndReached={() => setIndexSearch((prev) => prev + 5)}
+            />
+          )}
+
+          {searchPosts.length <= 0 && (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: color.BackgroundGray,
+              }}
+            >
+              <Feather name="cloud-off" size={120} color="#fff" />
+              <Text
                 style={{
-                  width: "100%",
-                  height: 10,
-                  backgroundColor: color.BackgroundGray,
+                  fontSize: 20,
+                  color: color.GrayText,
+                  paddingVertical: 10,
                 }}
-              />
-            }
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            refreshing={refresh}
-            ItemSeparatorComponent={ItemSeparatorComponent}
-            onRefresh={() => {
-              console.log("refreshed");
-            }}
-            // onScroll={Animated.event(
-            //   [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            //   { useNativeDriver: false }
-            // )}
-            scrollEventThrottle={16}
-            onEndReached={() => {
-              setRefresh(true);
-              setTimeout(() => {
-                DATA.push({
-                  id: "58694a0f-3da1-471f-bd96-145" + Math.random().toString(),
-                  title: "Third Item",
-                });
-                setRefresh(false);
-              }, 1000);
-            }}
-          />
+              >
+                Không thể tải kết quả
+              </Text>
+
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
+                <EvilIcons name="refresh" size={30} color="black" />
+                <Text style={{ fontSize: 16 }} onPress={() => {}}>
+                  Thử lại
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
     </View>
@@ -445,29 +497,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.White,
   },
 });
-
-const SearchComponent = ({ searchInfo }) => {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        {
-          backgroundColor: pressed ? "#F9F9F9" : "white",
-        },
-        styles.searchComponentInfoView,
-      ]}
-    >
-      <EvilIcons name="search" size={30} color="#68696D" />
-      <Text
-        style={{
-          fontSize: 22,
-          marginLeft: 15,
-        }}
-      >
-        {searchInfo}
-      </Text>
-    </Pressable>
-  );
-};
 
 const SearchElement = ({ searchInfo, focused }) => {
   return (
