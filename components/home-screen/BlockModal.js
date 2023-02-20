@@ -5,34 +5,21 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
-import { useEffect, useState } from "react";
 import color from "../../constants/color/color";
-import { Fontisto, Octicons, MaterialIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { setFriend } from "../../redux/features/friend/allFriendSlice";
+import { Octicons, Feather } from "@expo/vector-icons";
 
-export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
-  const allFriendData = useSelector(
-    (state) => state.allFriend.data.friends
-  );
-
-  const [sortedData, setSortedData] =  useState([...allFriendData])
-  const dispatch  =  useDispatch()
-
-  const defaultPress = () =>{
-    setModalVisible(false)
+export const BlockModal = ({
+  modalVisible,
+  setModalVisible,
+  username,
+  user_id
+}) => {
+  const onClose= () => {
+    setModalVisible(false);
   }
 
-  const newestPress = () =>{
-    setSortedData(sortedData.sort((a, b) => b.created - a.created))
-    dispatch(setFriend({data: sortedData})) ;
-    setModalVisible(false)
-  }
-
-  const oldestPress = () =>{
-    setSortedData(sortedData.sort((a, b) => a.created - b.created))
-    dispatch(setFriend({data: sortedData}))
-    setModalVisible(false)
+  const onBlocked = () => {
+    setModalVisible(false);
   }
   return (
     <>
@@ -60,25 +47,16 @@ export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
             <View style={styles.itemContainer}>
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={defaultPress}
+                onPress={onClose}
               >
                 <View style={styles.item}>
-                  <MaterialIcons name="photo-filter" size={24} color="black" />
-                  <View style={styles.subItem}>
-                    <Text style={styles.textItem}>Mặc định</Text>
-                  </View>
-                </View>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={newestPress}
-              >
-                <View style={styles.item}>
-                  <Octicons name="sort-asc" size={24} color="black" />
+                  <Octicons name="report" size={24} color="black" />
                   <View style={styles.subItem}>
                     <Text style={styles.textItem}>
-                      Bạn bè mới nhất trước tiên
+                      Bạn thấy sao về lời mời kết bạn này
+                    </Text>
+                    <Text style={styles.subTextItem}>
+                      {username} sẽ không nhận được thông báo.
                     </Text>
                   </View>
                 </View>
@@ -86,13 +64,15 @@ export const AllFriendSortModal = ({ modalVisible, setModalVisible }) => {
 
               <TouchableHighlight
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={oldestPress}
+                onPress={onBlocked}
               >
                 <View style={styles.item}>
-                  <Octicons name="sort-desc" size={24} color="black" />
+                  <Feather name="user-x" size={24} color="black" />
                   <View style={styles.subItem}>
-                    <Text style={styles.textItem}>
-                      Bạn bè lâu năm nhất trước tiên{" "}
+                    <Text style={styles.textItem}>Chặn {username}</Text>
+                    <Text style={styles.subTextItem}>
+                      {username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn
+                      trên facebook.
                     </Text>
                   </View>
                 </View>
@@ -111,6 +91,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
+
+  header: {
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderBottomColor: color.BorderTopGray,
+    borderBottomWidth: 1,
+  },
   itemContainer: {
     paddingTop: 5,
   },
@@ -126,8 +115,25 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
+  textContainer: {
+    marginLeft: 10,
+  },
+  usernameText: {
+    fontSize: 20,
+    fontFamily: "Roboto-Bold",
+  },
+  dateText: {
+    fontSize: 16,
+    fontFamily: "Roboto",
+    color: color.GrayText,
+  },
   textItem: {
     fontSize: 16,
     fontFamily: "Roboto-Bold",
+  },
+  subTextItem: {
+    fontSize: 14,
+    fontFamily: "Roboto",
+    color: color.GrayText,
   },
 });

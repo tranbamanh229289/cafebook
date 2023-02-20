@@ -8,6 +8,7 @@ import {
   ScrollView,
   Animated,
   Modal,
+  FlatList,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -20,6 +21,9 @@ import color from "../../constants/color/color";
 import { Post } from "../../components/home-screen/Post";
 import { useNavigation } from "@react-navigation/native";
 import { SearchHistory } from "./SearchHistory";
+import { get_saved_search } from "../../api/searchApi";
+import { useSelector } from "react-redux";
+import axiosClient from "../../utils/axiosClient";
 
 const DATA = [
   {
@@ -36,6 +40,19 @@ const DATA = [
   },
 ];
 
+const searchHistory = [
+  {
+    id: "63ec9596412eff12b8472d52",
+    keyword: "mak",
+    created: "1676449174",
+  },
+  {
+    id: "63ec9e05e7778416e69eda40",
+    keyword: "make",
+    created: "1676451333",
+  },
+];
+
 const Item = ({ title }) => (
   <View style={styles.item}>
     <Post />
@@ -45,6 +62,7 @@ const Item = ({ title }) => (
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const [historyModalVisible, setHistoryModalVisible] = useState(false);
+  const token = useSelector((state) => state.auth.data.token);
 
   const STATE_ENUM = {
     DEFAULT: "DEFAULT",
@@ -62,6 +80,7 @@ export const SearchScreen = () => {
 
   const [searchState, setSearchState] = useState(STATE_ENUM.DEFAULT);
   const [searchText, setSearchText] = useState("");
+  const [pointRefreshHistory, setPointRefreshHistory] = useState("");
 
   const onChangeTextHandler = (text) => {
     setSearchText(text);
@@ -73,9 +92,56 @@ export const SearchScreen = () => {
     }
   };
 
-  const handleSubmit = () => {
-    setSearchState(STATE_ENUM.SEARCHED);
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosClient(
+        "post",
+        "/search/search",
+        {},
+        { token: token, index: 0, count: 10, keyword: searchText }
+      );
+      
+      console.log( response.data["data"]); // assuming the API returns data in a "data" property
+    } catch (error) {
+      console.error(error);
+    }
+
+    setPointRefreshHistory(searchText);
+
+    // setSearchState(STATE_ENUM.SEARCHED);
   };
+
+  // const SearchHistoryData = [
+  //   {
+  //     id: "63ec9596412eff12b8472d52",
+  //     keyword: "mak",
+  //     created: "1676449174",
+  //   },
+  //   {
+  //     id: "63ec9e05e7778416e69eda40",
+  //     keyword: "make",
+  //     created: "1676451333",
+  //   },
+  // ];
+
+  const [searchHistoryData, setSearchHistoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosClient(
+          "post",
+          "/search/get_saved_search",
+          {},
+          { token: token, index: 0, count: 5 }
+        );
+        setSearchHistoryData(response.data["data"]); // assuming the API returns data in a "data" property
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [searchText, token]);
 
   return (
     <View style={styles.container}>
@@ -115,7 +181,7 @@ export const SearchScreen = () => {
             value={searchText}
             onChangeText={onChangeTextHandler}
             returnKeyType="search"
-            onKeyPress={(keyPress) => console.log(keyPress)}
+            // onKeyPress={(keyPress) => console.log(keyPress)}
             onSubmitEditing={handleSubmit}
           />
           {searchText !== "" && (
@@ -149,23 +215,27 @@ export const SearchScreen = () => {
 
       {searchState === STATE_ENUM.DEFAULT && (
         <View style={styles.bigBoardView}>
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hmm" />
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hi" />
-
-          <SearchComponent searchInfo="hi" />
+          <FlatList
+            data={searchHistoryData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <SearchComponent searchInfo={item.keyword} />
+            )}
+          />
         </View>
       )}
 
       {searchState === STATE_ENUM.SEARCHING && (
         <View style={styles.bigBoardView}>
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hmm" />
-          <SearchComponent searchInfo="hi" />
-          <SearchComponent searchInfo="hi" />
-
-          <SearchComponent searchInfo="hi" />
+          <View>
+            <FlatList
+              data={searchHistoryData}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <SearchComponent searchInfo={item.keyword} />
+              )}
+            />
+          </View>
 
           <View
             style={{

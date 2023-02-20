@@ -9,42 +9,71 @@ import TimeToString from "../../utils/TimeToString";
 import { useSelector } from "react-redux";
 import { PostOperation } from "./PostOperation";
 import { useState } from "react";
-import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export const PostHeader = ({ postId , detail}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const mapData = useSelector((state) => state.post.mapData);
+  const navigation = useNavigation();
+  const userId = useSelector((state) => state.auth.data.id);
 
   const handlePressPostOperation = () => {
     StatusBar.setBackgroundColor(color.StatusBarBackgroundCreatePostBlur);
     StatusBar.setBarStyle("light-content");
     setModalVisible(true);
   }
+  
+  const handlePressOnName = () => {
+    const id = mapData[postId]["author"]["id"];
+    if (id === userId) {
+      navigation.navigate("MyProfile");
+    }
+    else {
+      navigation.navigate("FriendProfile", {id});
+    }
+  }
 
   return (
     <TouchableHighlight
-      onPress={() => {}}
+      onPress={() => {
+        navigation.navigate("PostDetail", {
+          postId,
+        })
+      }}
       underlayColor={color.TouchableHighlightBorderWhite}
     >
       <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <PostOperation setModalVisible={setModalVisible} postId={postId}/>
-      </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <PostOperation setModalVisible={setModalVisible} postId={postId} />
+        </Modal>
         <View style={styles.avatar}>
-          <Avatar source={mapData.hasOwnProperty(postId) && mapData[postId]["author"]["avatar"]} />
+          <Avatar
+            source={
+              mapData.hasOwnProperty(postId) &&
+              mapData[postId]["author"]["avatar"]
+            }
+          />
         </View>
         <View style={styles.name}>
-          <Text style={styles.text}>{mapData.hasOwnProperty(postId) && mapData[postId]["author"]["username"]}</Text>
+          <TouchableHighlight underlayColor={color.TouchableHighlightBorderWhite} onPress={handlePressOnName} style={styles.nameTouchable}>
+            <Text style={styles.text} numberOfLines={1}>
+              {mapData.hasOwnProperty(postId) &&
+                mapData[postId]["author"]["username"]}
+            </Text>
+          </TouchableHighlight>
           <View style={styles.status}>
             <Text style={styles.tinyText}>
-              {mapData.hasOwnProperty(postId) && ((mapData[postId]["created"] !== mapData[postId]["modified"]) ? `Edited ${TimeToString(mapData[postId]["modified"])}` : TimeToString(mapData[postId]["created"]))}
+              {mapData.hasOwnProperty(postId) &&
+                (mapData[postId]["created"] !== mapData[postId]["modified"]
+                  ? `Edited ${TimeToString(mapData[postId]["modified"])}`
+                  : TimeToString(mapData[postId]["created"]))}
             </Text>
             <Dot />
             <PublicIcon />
@@ -108,6 +137,7 @@ const styles = StyleSheet.create({
     flex: 13,
     height: 40,
     flexDirection: "column",
+    flexWrap: "wrap"
   },
   moreButton: {
     flex: 2,
@@ -144,4 +174,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+  nameTouchable: {
+    flex: 1
+  }
 });

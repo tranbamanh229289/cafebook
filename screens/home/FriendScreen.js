@@ -10,136 +10,41 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import color from "../../constants/color/color";
-import { Feather } from "@expo/vector-icons";
+import { Feather, SimpleLineIcons } from "@expo/vector-icons";
 import { Avatar } from "../../components/home-screen/Avatar";
 import { SuggestFriendScreen } from "./FriendSuggestScreen";
 import { AllFriendScreen } from "./FriendAllScreen";
-
+import { getRequestedFriend, setAcceptFriend } from "../../redux/features/friend/requestedFriendSlice";
+import TimeToString from "../../utils/TimeToString";
+import { BlockModal } from "../../components/home-screen/BlockModal";
+import { ConfirmModal } from "../../components/home-screen/ConfirmModal";
 
 export const FriendScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [index, setIndex] = useState(0);
+  const token = useSelector((state) => state.auth.data.token);
+  const dispatch = useDispatch();
+  const requestedFriendData = useSelector(
+    (state) => state.requestedFriend.data.request
+  );
 
-  
-
-  const [friendRequests, setFriendRequests] = useState([
-    {
-      id: 0,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "0",
-      created: "40 phút",
-    },
-    {
-      id: 1,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 2,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "0",
-      created: "40 phút",
-    },
-    {
-      id: 3,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 4,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 5,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 6,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 7,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 8,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 9,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 10,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 11,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-    {
-      id: 12,
-      username: "Minh Chu",
-      avatar:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      same_friends: "144",
-      created: "40 phút",
-    },
-  ]);
+  useEffect(() => {
+    dispatch(getRequestedFriend({ token, index }));
+  }, [token]);
 
   return (
     <View style={styles.container}>
-      {friendRequests.length > 0 ? (
+      <ListHeaderComponent />
+
+      {requestedFriendData.length > 0 ? (
         <FlatList
           refreshing={refreshing}
-          ListHeaderComponent={ListHeaderComponent}
           showsVerticalScrollIndicator={false}
-          data={friendRequests}
+          data={requestedFriendData}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          stickyHeaderHiddenOnScroll
-          stickyHeaderIndices={[0]}
+          // stickyHeaderHiddenOnScroll
+          // stickyHeaderIndices={[0]}
           onRefresh={() => {
             setRefreshing(true);
             setTimeout(() => {
@@ -150,23 +55,27 @@ export const FriendScreen = () => {
           onEndReached={() => {
             setRefreshing(true);
             setTimeout(() => {
-              setFriendRequests((prev) => [
-                ...prev,
-                {
-                  id: prev.length,
-                  username: "Minh Chu",
-                  avatar:
-                    "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-                  same_friends: "144",
-                  created: "40 phút",
-                },
-              ]);
+              // setFriendRequests((prev) => [
+              //   ...prev,
+              //   {
+              //     id: prev.length,
+              //     username: "Minh Chu",
+              //     avatar:
+              //       "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+              //     same_friends: "144",
+              //     created: "40 phút",
+              //   },
+              // ]);
               setRefreshing(false);
             }, 1000);
           }}
         />
       ) : (
-        <Text>Don't have any friend requests</Text>
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text>Don't have any friend requests</Text>
+        </View>
       )}
     </View>
   );
@@ -204,19 +113,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 10,
   },
-  textButton:{
+  textButton: {
     fontSize: 18,
     fontFamily: "Roboto-Bold",
   },
-  usernameText:{
+  usernameText: {
     fontSize: 20,
     fontFamily: "Roboto-Bold",
   },
-  sameFriendText:{
+  sameFriendText: {
     fontSize: 16,
     color: color.GrayText,
-    paddingBottom: 5
-  }
+    paddingBottom: 5,
+  },
 });
 
 const headerStyles = StyleSheet.create({
@@ -274,95 +183,215 @@ const headerStyles = StyleSheet.create({
     fontSize: 20,
     color: color.MainBlue,
   },
-  subText1:{
+  subText1: {
     fontSize: 22,
     fontFamily: "Roboto-Bold",
-  }
+  },
 });
 
 const SearchIcon = () => <Feather name="search" size={22} color="black" />;
-
-const ListHeaderComponent = () => (
-  <View style={headerStyles.listHeaderContainer}>
-    <View style={headerStyles.headerItem1}>
-      <Text style={headerStyles.friendText}>Bạn bè</Text>
-      <TouchableOpacity style={headerStyles.iconButton}>
-        <SearchIcon />
-      </TouchableOpacity>
-    </View>
-  </View>
+const OptionIcon = () => (
+  <SimpleLineIcons name="options" size={22} color="black" />
 );
 
-const renderItem = ({ item }) => (
-  <Item
-    avatar={item.avatar}
-    index={item.id}
-    username={item.username}
-    same_friends={item.same_friends}
-    created={item.created}
-  />
-);
+const ListHeaderComponent = () => {
+  const [suggestFriendModal, setSuggestFriendModal] = useState(false);
+  const [allFriendModal, setAllFriendModal] = useState(false);
+  const total = useSelector((state) => state.requestedFriend.data.total);
+  return (
+    <>
+      <View style={headerStyles.listHeaderContainer}>
+        <View style={headerStyles.headerItem1}>
+          <Text style={headerStyles.friendText}>Bạn bè</Text>
+          <TouchableOpacity style={headerStyles.iconButton}>
+            <SearchIcon />
+          </TouchableOpacity>
+        </View>
+      </View>
 
-const Item = ({ avatar, index, username, same_friends, created }) => {
-  const [suggestFriendModal, setSuggestFriendModal] = useState(false)
-  const [allFriendModal, setAllFriendModal] = useState(false)
-  return(
-  <>
-    {index === 0 && (
       <>
-      <SuggestFriendScreen modalVisible={suggestFriendModal} setModalVisible={setSuggestFriendModal}/>
-      <AllFriendScreen modalVisible={allFriendModal} setModalVisible={setAllFriendModal}/>
+        <SuggestFriendScreen
+          modalVisible={suggestFriendModal}
+          setModalVisible={setSuggestFriendModal}
+        />
+        <AllFriendScreen
+          modalVisible={allFriendModal}
+          setModalVisible={setAllFriendModal}
+        />
 
         <View style={headerStyles.headerItem2}>
-          <TouchableOpacity style={headerStyles.textButton} onPress={() => setSuggestFriendModal(true)}>
-            <Text style={headerStyles.text }>Gợi ý</Text>
+          <TouchableOpacity
+            style={headerStyles.textButton}
+            onPress={() => setSuggestFriendModal(true)}
+          >
+            <Text style={headerStyles.text}>Gợi ý</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={headerStyles.textButton} onPress={() => setAllFriendModal(true)}>
+          <TouchableOpacity
+            style={headerStyles.textButton}
+            onPress={() => setAllFriendModal(true)}
+          >
             <Text style={headerStyles.text}>Tất cả bạn bè</Text>
           </TouchableOpacity>
         </View>
         <View style={headerStyles.headerItem1}>
           <View style={{ flexDirection: "row" }}>
             <Text style={headerStyles.subText1}>Lời mời kết bạn </Text>
-            <Text style={[headerStyles.subText1, { color: color.Red }]}>9</Text>
+            <Text style={[headerStyles.subText1, { color: color.Red }]}>
+              {total}
+            </Text>
           </View>
 
           {/* <TouchableOpacity style={headerStyles.watchAllTextButton}>
-            <Text style={headerStyles.textWatchAll}>Xem tất cả</Text>
-          </TouchableOpacity> */}
+  <Text style={headerStyles.textWatchAll}>Xem tất cả</Text>
+</TouchableOpacity> */}
         </View>
       </>
-    )}
+    </>
+  );
+};
 
-    <View style={styles.itemContainer}>
-      <View style={styles.avatar}>
-        <Avatar width={90} height={90} source={avatar} />
-      </View>
+const renderItem = ({ item }) => (
+  <Item
+    avatar={item.avatar}
+    user_id={item.user_id}
+    username={item.username}
+    same_friends={item.same_friends}
+    created={item.created}
+  />
+);
 
-      <View style={styles.subItemContainer}>
-        <View style={{alignItems: "center", justifyContent: "space-between", flexDirection: "row" }}>
-          <Text style={styles.usernameText}>{username}</Text>
-          <Text style={{color: color.TextGray}}>{created}</Text>
-      </View>
+const Item = ({ avatar, id, username, same_friends, created, user_id }) => {
+  const [friendState, setFriendState] = useState(0);
+  const [blockModalVisible, setBlockModalVisible] = useState(false);
 
-      {parseInt(same_friends) > 0 && (
-        <Text style={styles.sameFriendText}>{same_friends} bạn chung</Text>
-      )}
+  const [acceptModalVisible, setAcceptModalVisible] = useState(false);
+  const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
-        <View style={{ flexDirection: "row" , justifyContent:"space-between"}}>
-          <TouchableOpacity style={{flex:1, marginRight: 10}}>
-            <View style={[styles.button,{backgroundColor: color.MainBlue}]}>
-              <Text style={[styles.textButton,{color:color.White}]}>Chấp nhận</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex:1,}}>
-            <View style={[styles.button,{backgroundColor: color.IconBackgroundGray}]}>
-              <Text style={styles.textButton}>Xóa</Text>
-            </View>
-          </TouchableOpacity>
+  const [acceptBool, setAcceptBool] = useState(false);
+  const [cancelBool, setCancelBool] = useState(false);
+
+  const token = useSelector((state) => state.auth.data.token);
+  const dispatch = useDispatch()
+
+  const onOptionPress = () => {
+    setBlockModalVisible(true);
+  };
+
+  const onAcceptPress = () => {
+    setAcceptModalVisible(true)
+  };
+
+  const onCancelPress = () => {
+    setCancelModalVisible(true)
+  };
+
+  useEffect(() => {
+    if(acceptBool){
+      dispatch(setAcceptFriend({token:token, user_id: id, is_accept: 1}))
+      setFriendState(1)
+    }else if(cancelBool){
+      dispatch(setAcceptFriend({token:token, user_id: id, is_accept: 0}))
+      setFriendState(2)
+    }
+  },[acceptBool, cancelBool])
+
+  return (
+    <>
+      <BlockModal
+        modalVisible={blockModalVisible}
+        setModalVisible={setBlockModalVisible}
+        username={username}
+        user_id={user_id}
+      />
+      <ConfirmModal
+        modalVisible={acceptModalVisible}
+        setModalVisible={setAcceptModalVisible}
+        header="Xác nhận"
+        body="Chấp nhận lời mời kết bạn"
+        returnBool={setAcceptBool}
+      />
+      <ConfirmModal
+        modalVisible={cancelModalVisible}
+        setModalVisible={setCancelModalVisible}
+        header="Xác nhận"
+        body="Xóa lời mời kết bạn"
+        returnBool={setCancelBool}
+      />
+      <View style={styles.itemContainer}>
+        <View style={styles.avatar}>
+          <Avatar width={90} height={90} source={avatar} />
         </View>
+
+        <View style={styles.subItemContainer}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={styles.usernameText}>{username}</Text>
+            {friendState === 0 && (
+              <Text style={{ color: color.TextGray }}>
+                {TimeToString(created)}
+              </Text>
+            )}
+          </View>
+
+
+          {parseInt(same_friends) > 0 && friendState === 0 ? (
+            <Text style={styles.sameFriendText}>{same_friends} bạn chung</Text>
+          ) : (
+            <View style={{ height: 10 }} />
+          )}
+
+          {friendState === 0 && (
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity
+                style={{ flex: 1, marginRight: 10 }}
+                onPress={onAcceptPress}
+              >
+                <View
+                  style={[styles.button, { backgroundColor: color.MainBlue }]}
+                >
+                  <Text style={[styles.textButton, { color: color.White }]}>
+                    Chấp nhận
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1 }} onPress={onCancelPress}>
+                <View
+                  style={[
+                    styles.button,
+                    { backgroundColor: color.IconBackgroundGray },
+                  ]}
+                >
+                  <Text style={styles.textButton}>Xóa</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {friendState === 1 && (
+            <Text style={styles.sameFriendText}>Đã chấp nhận lời mời</Text>
+          )}
+          {friendState === 2 && (
+            <Text style={styles.sameFriendText}>Đã hủy lời mời</Text>
+          )}
+        </View>
+
+        {friendState === 2 && (
+          <TouchableOpacity
+            style={{ ...headerStyles.iconButton, backgroundColor: color.White }}
+            onPress={onOptionPress}
+          >
+            <OptionIcon />
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
-  </>
-)};
+    </>
+  );
+};
