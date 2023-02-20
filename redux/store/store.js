@@ -7,6 +7,7 @@ import postReducer from "../features/post/postSlice";
 import requestedFriendReducer from "../features/friend/requestedFriendSlice"
 import allFriendReducer from "../features/friend/allFriendSlice";
 import suggestedReducer from "../features/friend/suggestedSlice";
+import searchReducer from "../features/search/searchSlice";
 
 export const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
         post: postReducer,
         requestedFriend: requestedFriendReducer,   
         allFriend: allFriendReducer,
-        suggestedFriend: suggestedReducer 
+        suggestedFriend: suggestedReducer,
+        search: searchReducer, 
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
