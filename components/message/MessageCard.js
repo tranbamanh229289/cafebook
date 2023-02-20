@@ -11,13 +11,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar } from "../home-screen/Avatar";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+
 export const MessageCard = ({
   id,
   name,
   avatar,
   lastMessage,
   lastMessageTime,
+  lastMessageSender
 }) => {
+  const userId = useSelector((state) => state.auth.data.id);
   const convertLastMessageTime = (lastMessageTime) => {
     const time = new Date(lastMessageTime);
     const now = new Date();
@@ -54,7 +58,7 @@ export const MessageCard = ({
         <Text style={styles.messageCardName}>{convertLastMessage(name)}</Text>
         <View style={styles.messageCardFooter}>
           <Text style={styles.lastMessage}>
-            {convertLastMessage(lastMessage)}
+            { (lastMessageSender===userId)?"You: "+ convertLastMessage(lastMessage):""+ convertLastMessage(lastMessage)}
           </Text>
           <Text style={styles.lastMessageTime}>
             {` • ${convertLastMessageTime(lastMessageTime)}`}

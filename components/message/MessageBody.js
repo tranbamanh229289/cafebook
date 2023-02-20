@@ -38,6 +38,7 @@ export const MessageBody = () => {
   );
 
   useEffect(() => {
+    setRefresh(true);
     axiosClient("GET", "chat/get_list_conversation", {}, {
       token: token,
       index: 0,
@@ -46,6 +47,7 @@ export const MessageBody = () => {
       console.log(res.data.data)
       setData(res.data.data)
     }).catch((e) => console.log(e))
+    setRefresh(false)
   }, [])
 
   return (
@@ -69,6 +71,7 @@ export const MessageBody = () => {
               avatar={props.item.partner.avatar}
               lastMessage={props.item.lastMessage.message}
               lastMessageTime={Number(props.item.lastMessage.created)}
+              lastMessageSender={props.item.lastMessage.sender}
             />
           </TouchableOpacity>
         )}
@@ -77,7 +80,16 @@ export const MessageBody = () => {
         ListHeaderComponent={MessageTop}
         ItemSeparatorComponent={ItemSeparatorComponent}
         onRefresh={() => {
-          console.log("refreshed");
+          setRefresh(true);
+          axiosClient("GET", "chat/get_list_conversation", {}, {
+            token: token,
+            index: 0,
+            count: 10,
+          }).then((res) => {
+            console.log(res.data.data)
+            setData(res.data.data)
+          }).catch((e) => console.log(e));
+          setRefresh(false);
         }}
         scrollEventThrottle={16}
         onEndReached={() => {
