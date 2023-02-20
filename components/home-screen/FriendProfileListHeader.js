@@ -19,24 +19,24 @@ import { EvilIcons } from '@expo/vector-icons';
 const DEVICE_HEIGHT = Dimensions.get("screen").height;
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
-export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_friend, id}) => {
-  const token = useSelector((state)=> state.auth.data.token);
+export const FriendProfileListHeader = ({ linkAvatar, username, cover_image, is_friend, id }) => {
+  const token = useSelector((state) => state.auth.data.token);
   const [mutualFriend, setMutualFriend] = useState(0);
   const [friends, setFriends] = useState([]);
   const navigation = useNavigation();
   const [addFriend, setAddFriend] = useState(true);
 
-  useEffect(()=>{
-    get_user_friends(token,id,0,999)
-    .then((res)=> {
-      setMutualFriend(res.data.data.total);
-      setFriends(res.data.data.friends);
-    })
-    .catch(err => console.log(err));
-  },[]);
+  useEffect(() => {
+    get_user_friends(token, id, 0, 999)
+      .then((res) => {
+        setMutualFriend(res.data.data.total);
+        setFriends(res.data.data.friends);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   const handlePressOnFriendAvatar = (id) => {
-    navigation.navigate("FriendProfile", {id});
+    navigation.navigate("FriendProfile", { id });
   }
 
   const handlePressAddFriend = () => {
@@ -77,7 +77,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               onPress={handlePressAddFriend}
             >
               <View style={styles.buttonText}>
-                {addFriend ? <AddFriendIcon /> : <FriendRequestSentIcon/>}
+                {addFriend ? <AddFriendIcon /> : <FriendRequestSentIcon />}
                 <Text style={[{ color: color.White }, styles.text]}>
                   {addFriend ? "Add Friend" : "Request Sent"}
                 </Text>
@@ -87,7 +87,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
             <TouchableHighlight
               style={styles.nameButton}
               underlayColor={color.TouchableHighlightBorderWhite}
-              onPress={() => {}}
+              onPress={() => { }}
             >
               <View style={styles.buttonText}>
                 <FriendCheckIcon />
@@ -99,7 +99,11 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
           <TouchableHighlight
             style={styles.nameButton}
             underlayColor={color.TouchableHighlightBorderWhite}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.navigate("Chat", {
+                itemId: id,
+              });
+            }}
           >
             <View style={styles.buttonText}>
               <MessageIcon />
@@ -110,7 +114,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
           <TouchableHighlight
             style={styles.moreButton}
             underlayColor={color.TouchableHighlightBorderWhite}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <View style={styles.buttonText}>
               <MoreIcon />
@@ -166,11 +170,10 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               <MoreIconSm />
             </View>
             <View style={styles.aboutTextView}>
-              <Text style={styles.normalText}>{`See ${
-                username !== null &&
+              <Text style={styles.normalText}>{`See ${username !== null &&
                 username !== undefined &&
                 username.split(" ")[0] + "'s"
-              } About info`}</Text>
+                } About info`}</Text>
             </View>
           </View>
         </View>
@@ -180,7 +183,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               <TouchableHighlight
                 style={styles.newCollection}
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={() => { }}
               >
                 <View>
                   <PlusIconSm />
@@ -192,7 +195,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               <TouchableHighlight
                 style={styles.newCollection}
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={() => { }}
               >
                 <ImageBackground
                   source={{
@@ -209,7 +212,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               <TouchableHighlight
                 style={styles.newCollection}
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={() => { }}
               >
                 <ImageBackground
                   source={{
@@ -226,7 +229,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               <TouchableHighlight
                 style={styles.newCollection}
                 underlayColor={color.TouchableHighlightBorderWhite}
-                onPress={() => {}}
+                onPress={() => { }}
               >
                 <ImageBackground
                   source={{
@@ -420,7 +423,7 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
               { backgroundColor: color.MenuBackgroundGray },
             ]}
             underlayColor={color.IconBackgroundGray}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text
               style={[styles.editButtonXlText, { color: color.TextTinyGray }]}
@@ -435,16 +438,16 @@ export const FriendProfileListHeader = ({linkAvatar, username,cover_image, is_fr
   );
 };
 
-const Br = ({withoutMargin}) => (
+const Br = ({ withoutMargin }) => (
   <View
     style={[{
       borderTopWidth: 0.5,
       borderTopColor: color.BorderTopGray,
-    }, withoutMargin !== true && {marginVertical: 10}]}
+    }, withoutMargin !== true && { marginVertical: 10 }]}
   />
 );
 
-const DarkBr = ({height}) => (
+const DarkBr = ({ height }) => (
   <View
     style={{
       flex: 1,
@@ -455,7 +458,7 @@ const DarkBr = ({height}) => (
 );
 
 const MessageIcon = () => (
-    <FontAwesome5 name="facebook-messenger" size={18} color={color.Black} />
+  <FontAwesome5 name="facebook-messenger" size={18} color={color.Black} />
 );
 
 const MoreIcon = () => (
@@ -481,12 +484,12 @@ const MoreIconSm = () => (
 );
 
 const AddFriendIcon = () => (
-    <FontAwesome5 name="user-plus" size={18} color={color.White} />
+  <FontAwesome5 name="user-plus" size={18} color={color.White} />
 );
 
 const PlusIconSm = () => (
-    <AntDesign name="plus" size={18} color={color.IconGray} />
-  );
+  <AntDesign name="plus" size={18} color={color.IconGray} />
+);
 
 const FriendCheckIcon = () => (
   <FontAwesome5 name="user-check" size={18} color={color.Black} />

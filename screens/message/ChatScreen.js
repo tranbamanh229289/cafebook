@@ -39,8 +39,7 @@ export const ChatScreen = ({ route }) => {
     }
 
     useEffect(() => {
-        console.log("itemID: ", itemId);
-
+        setRefresh(true);
         axiosClient("POST", "chat/get_conversation", {}, {
             token: token,
             partner_id: itemId,
@@ -50,6 +49,10 @@ export const ChatScreen = ({ route }) => {
             // console.log(res.data.data.conversation);
             setChatHistory(res.data.data.conversation);
         }).catch((e) => console.log(e))
+        setTimeout(() => {
+            setRefresh(false)
+        }, 1000)
+
     }, [itemId]);
 
     console.log(chatHistory);
@@ -61,18 +64,13 @@ export const ChatScreen = ({ route }) => {
                 contentContainerStyle={styles.contentContainerStyle}
                 showsVerticalScrollIndicator={false}
                 renderItem={(props) => {
-                    try {
-                        return (
-                            <View
-                                style={props.item.sender.id === userId ? styles.owner0 : styles.owner1}
-                            >
-                                <Text style={props.item.sender.id === userId ? styles.messageOwner0 : styles.messageOwner1}>{props.item.message}</Text>
-                            </View>
-                        );
-                    }
-                    catch {
-                        console.log(props.item)
-                    }
+                    return (
+                        <View
+                            style={props.item.sender.id === userId ? styles.owner0 : styles.owner1}
+                        >
+                            <Text style={props.item.sender.id === userId ? styles.messageOwner0 : styles.messageOwner1}>{props.item.message}</Text>
+                        </View>
+                    );
 
                 }}
                 keyExtractor={(item) => item.message_id}
@@ -98,12 +96,12 @@ export const ChatScreen = ({ route }) => {
                         axiosClient("POST", "chat/get_conversation", {}, {
                             token: token,
                             partner_id: itemId,
-                            index: chatHistory.length+1,
+                            index: chatHistory.length + 1,
                             count: 15
                         }).then((res) => {
                             console.log("older data: ")
                             console.log(res.data.data.conversation)
-                            setChatHistory([...chatHistory, res.data.data.conversation]);
+                            setChatHistory([...chatHistory, ...res.data.data.conversation]);
                         }).catch((e) => console.log(e));
                         setTimeout(() => {
                             setRefresh(false);

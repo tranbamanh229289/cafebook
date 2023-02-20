@@ -47,7 +47,8 @@ export const MessageBody = () => {
       console.log(res.data.data)
       setData(res.data.data)
     }).catch((e) => console.log(e))
-    setRefresh(false)
+    setTimeout(()=> setRefresh(false), 1000)
+   
   }, [])
 
   return (
@@ -70,7 +71,7 @@ export const MessageBody = () => {
               name={props.item.partner.username}
               avatar={props.item.partner.avatar}
               lastMessage={props.item.lastMessage.message}
-              lastMessageTime={Number(props.item.lastMessage.created)}
+              lastMessageTime={props.item.lastMessage.created}
               lastMessageSender={props.item.lastMessage.sender}
             />
           </TouchableOpacity>
@@ -101,7 +102,7 @@ export const MessageBody = () => {
                 index: data.length,
                 count: 10,
               }).then((res) => {
-                setData([...data, res.data.data])
+                setData([...data, ...res.data.data])
               }).catch((e) => console.log(e))
 
               setRefresh(false);
