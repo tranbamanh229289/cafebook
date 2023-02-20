@@ -47,8 +47,8 @@ export const MessageBody = () => {
       console.log(res.data.data)
       setData(res.data.data)
     }).catch((e) => console.log(e))
-    setTimeout(()=> setRefresh(false), 1000)
-   
+    setTimeout(() => setRefresh(false), 1000)
+
   }, [])
 
   return (
