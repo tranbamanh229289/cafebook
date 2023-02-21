@@ -4,10 +4,11 @@ import authReducer from "../features/auth/authSlice";
 import createPostReducer from "../features/createPost/createPostSlice";
 import userReducer from "../features/user/userSlice";
 import postReducer from "../features/post/postSlice";
-import requestedFriendReducer from "../features/friend/requestedFriendSlice"
+import requestedFriendReducer from "../features/friend/requestedFriendSlice";
 import allFriendReducer from "../features/friend/allFriendSlice";
 import suggestedReducer from "../features/friend/suggestedSlice";
 import searchReducer from "../features/search/searchSlice";
+import commentReducer from "../features/comment/commentSlice";
 
 export const store = configureStore({
     reducer: {
@@ -16,10 +17,11 @@ export const store = configureStore({
         createPost: createPostReducer,
         user: userReducer,
         post: postReducer,
-        requestedFriend: requestedFriendReducer,   
+        requestedFriend: requestedFriendReducer,
         allFriend: allFriendReducer,
         suggestedFriend: suggestedReducer,
-        search: searchReducer, 
+        search: searchReducer,
+        comment: commentReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
