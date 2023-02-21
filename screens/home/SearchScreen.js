@@ -93,7 +93,7 @@ export const SearchScreen = () => {
         ]}
         onPress={() => {
           setIndexSearch(0);
-          setSearchText(searchInfo)
+          setSearchText(searchInfo);
           setSearchValue(searchInfo);
           setSearchState(STATE_ENUM.SEARCHED);
         }}
@@ -138,9 +138,8 @@ export const SearchScreen = () => {
   useEffect(() => {
     if (token !== undefined && token !== null) {
       dispatch(getSavedSearch({ token: token, index: 0 }));
-
     }
-  }, [token,searchValue]);
+  }, [token, searchValue]);
 
   const [searchHistoryData, setSearchHistoryData] = useState([]);
   const historyData = useSelector((state) => state.search.data);
@@ -166,7 +165,7 @@ export const SearchScreen = () => {
     //   }
     // };
     // fetchData();
-    setSearchHistoryData(historyData.slice(0, 6))
+    setSearchHistoryData(historyData.slice(0, 20));
   }, [historyData]);
 
   return (
@@ -241,14 +240,41 @@ export const SearchScreen = () => {
 
       {searchState === STATE_ENUM.DEFAULT && (
         <View style={styles.bigBoardView}>
-          <FlatList
-            data={searchHistoryData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <SearchComponent searchInfo={item.keyword} />
-            )}
-            initialNumToRender={6}
-          />
+          {searchHistoryData.length > 0 && (
+            <FlatList
+              data={searchHistoryData}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <SearchComponent searchInfo={item.keyword} />
+              )}
+              initialNumToRender={6}
+            />
+          )}
+
+          {searchHistoryData.length <= 0 && (
+            <View
+              style={{
+                flex: 1,
+                // justifyContent: "center",
+                paddingTop:  80,
+                alignItems: "center",
+                backgroundColor: color.White,
+              }}
+            >
+              <Ionicons name="md-search-circle-sharp" size={200} color="#3B5999" />
+              <Text
+                style={{
+                  width:"70%",
+                  textAlign: "center",
+                  fontSize: 20,
+                  color: color.GrayText,
+                  paddingVertical: 0,
+                }}
+              >
+                Hãy nhập vài từ để tìm kiếm trong Facebook
+              </Text>
+            </View>
+          )}
         </View>
       )}
 

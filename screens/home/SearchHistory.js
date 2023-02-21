@@ -9,8 +9,12 @@ import {
 } from "react-native";
 import { Ionicons, EvilIcons, FontAwesome } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteSavedSearch, getSavedSearch } from "../../redux/features/search/searchSlice";
+import {
+  deleteSavedSearch,
+  getSavedSearch,
+} from "../../redux/features/search/searchSlice";
 import { useEffect, useState } from "react";
+import color from "../../constants/color/color";
 
 export const SearchHistory = ({ setHistoryModalVisible }) => {
   const dispatch = useDispatch();
@@ -21,6 +25,7 @@ export const SearchHistory = ({ setHistoryModalVisible }) => {
 
   useEffect(() => {
     if (token !== undefined && token !== null) {
+      // console.log(index);
       dispatch(getSavedSearch({ token: token, index: index }));
     }
   }, [index, token]);
@@ -30,7 +35,7 @@ export const SearchHistory = ({ setHistoryModalVisible }) => {
   };
 
   const onEndReached = () => {
-    setIndex((prev) => prev + 10);
+    // setIndex((prev) => prev + 10);
   };
 
   const renderItem = ({ item }) => (
@@ -44,25 +49,72 @@ export const SearchHistory = ({ setHistoryModalVisible }) => {
       {/* <View style={styles.mainView}>
         <SearchHistoryComponent searchInfo="Vn Express" />
       </View> */}
-      <ListHeader setHistoryModalVisible={setHistoryModalVisible} />
-      <FlatList
-        contentContainerStyle={{}}
-        showsVerticalScrollIndicator={false}
-        data={searchHistory}
-        renderItem={renderItem}
-        keyExtractor={(item) => "sh" + item.id}
-        // refreshing={loading}
-        // ListHeaderComponent={
+      {searchHistory.length > 0 && (
+        <>
+          <ListHeader setHistoryModalVisible={setHistoryModalVisible} />
+          <FlatList
+            contentContainerStyle={{}}
+            showsVerticalScrollIndicator={false}
+            data={searchHistory}
+            renderItem={renderItem}
+            keyExtractor={(item) => "sh" + item.id}
+            // refreshing={loading}
+            // ListHeaderComponent={
 
-        // }
-        // onRefresh={handleOnRefresh}
-        onEndReached={onEndReached}
-      />
+            // }
+            // onRefresh={handleOnRefresh}
+            onEndReached={onEndReached}
+          />
+        </>
+      )}
+
+      {searchHistory.length <= 0 && (
+        <EmptyScreen setHistoryModalVisible={setHistoryModalVisible} />
+      )}
+    </View>
+  );
+};
+
+const EmptyScreen = ({ setHistoryModalVisible }) => {
+  return (
+    <View style={{ flex: 1, backgroundColor: color.BackgroundGray }}>
+      <View style={styles.view1}>
+        <Ionicons
+          name="arrow-back-outline"
+          size={26}
+          color="black"
+          onPress={() => setHistoryModalVisible(false)}
+        />
+        <Text
+          style={{
+            fontSize: 20,
+            paddingLeft: 15,
+          }}
+        >
+          Nhật ký hoạt động
+        </Text>
+      </View>
+
+      <View style={styles.view2}>
+        <FontAwesome name="circle" size={14} color={color.BackgroundGray} />
+      </View>
     </View>
   );
 };
 
 const ListHeader = ({ setHistoryModalVisible }) => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.data.token);
+
+  const deleteAll = () => {
+    dispatch(
+      deleteSavedSearch({
+        token: token,
+        all: 1,
+        search_id: "id",
+      })
+    );
+  };
   return (
     <View style={{}}>
       <View style={styles.view1}>
@@ -83,14 +135,16 @@ const ListHeader = ({ setHistoryModalVisible }) => {
       </View>
 
       <View style={styles.view2}>
-        <Text
-          style={{
-            fontSize: 15,
-            color: "#3A75BE",
-          }}
-        >
-          Xóa các tìm kiếm
-        </Text>
+        <TouchableOpacity onPress={deleteAll}>
+          <Text
+            style={{
+              fontSize: 15,
+              color: "#3A75BE",
+            }}
+          >
+            Xóa các tìm kiếm
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -98,8 +152,8 @@ const ListHeader = ({ setHistoryModalVisible }) => {
 
 const SearchHistoryComponent = ({ searchInfo, search_id }) => {
   const [display, setDisplay] = useState(true);
-  const dispatch =  useDispatch()
-  const token  = useSelector((state) => state.auth.data.token)
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.data.token);
   return (
     <>
       {display === true && (
@@ -165,7 +219,13 @@ const SearchHistoryComponent = ({ searchInfo, search_id }) => {
           <TouchableOpacity
             onPress={() => {
               setDisplay(false);
-              dispatch(deleteSavedSearch({token: token, all: 0, search_id: search_id}))
+              dispatch(
+                deleteSavedSearch({
+                  token: token,
+                  all: 0,
+                  search_id: search_id,
+                })
+              );
             }}
           >
             <Ionicons
@@ -196,6 +256,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#d9dbda",
     paddingBottom: 15,
     paddingHorizontal: 15,
+    backgroundColor: color.White
   },
 
   view2: {
@@ -206,6 +267,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 0.5,
     borderBottomColor: "#d9dbda",
+    backgroundColor: color.White
   },
 
   mainView: {
