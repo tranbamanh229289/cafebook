@@ -19,7 +19,7 @@ export const getSavedSearch = createAsyncThunk(
           params: {
             token: params.token,
             index: params.index,
-            count: 10,
+            count: 40,
           },
         }
       );
@@ -98,6 +98,7 @@ const searchSlice = createSlice({
         })
         .addCase(getSavedSearch.fulfilled, (state, action) => {
           state.data = action.payload.data;
+          // console.log(state.data);
           state.loading = false;
         })
         .addCase(getSavedSearch.rejected, (state, action) => {
@@ -107,6 +108,12 @@ const searchSlice = createSlice({
           state.loading = true;
         })
         .addCase(deleteSavedSearch.fulfilled, (state, action) => {
+          if(action.payload.data === null){
+            state.data = []
+          }else{
+            const idToDelete = action.payload.data
+            state.data= state.data.filter(obj => obj.id !== idToDelete);
+          }
           state.loading = false;
         })
         .addCase(deleteSavedSearch.rejected, (state, action) => {
