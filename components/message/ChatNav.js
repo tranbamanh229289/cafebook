@@ -7,6 +7,9 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import axiosClient from "../../utils/axiosClient";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const SampleUser = {
   id: 1234,
@@ -17,16 +20,17 @@ const SampleUser = {
 
 export const ChatNav = (props) => {
   const navigation = useNavigation();
-  const [userData, setUserData] = useState({
-    id: "",
-    name: "",
-    avatar: "https://jes.edu.vn/wp-content/uploads/2017/10/h%C3%ACnh-%E1%BA%A3nh.jpg",
-  });
+  const [userData, setUserData] = useState({});
+
+  const token = useSelector((state) => state.auth.data.token);
 
   useEffect(() => {
     //get data with id
     console.log(props.userId);
-    setUserData(SampleUser);
+    axiosClient("POST", "user/get_user_info", {}, {
+      token: token,
+      user_id: props.userId
+    }).then((res) => setUserData(res.data.data)).catch((e) => console.log(e))
   }, [props.userId]);
 
   return (
@@ -44,7 +48,7 @@ export const ChatNav = (props) => {
         <TouchableOpacity>
           <Avatar source={userData.avatar} style={styles.avatar} />
         </TouchableOpacity>
-        <Text style={styles.header}>{userData.name}</Text>
+        <Text style={styles.header}>{userData.username}</Text>
       </View>
       <View style={styles.topBarRight}>
         <TouchableOpacity style={styles.btn}>

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseURL = 'http://192.168.0.101:5000/it4788/' 
+export const baseURL = 'http://192.168.1.207:5000/it4788/' 
 
 const axiosClient = (method, url, data, params) => {
     return axios({

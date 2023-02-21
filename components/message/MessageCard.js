@@ -11,29 +11,51 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar } from "../home-screen/Avatar";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+const Day = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+const Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
 export const MessageCard = ({
   id,
   name,
   avatar,
   lastMessage,
   lastMessageTime,
+  lastMessageSender
 }) => {
+  const userId = useSelector((state) => state.auth.data.id);
   const convertLastMessageTime = (lastMessageTime) => {
-    const time = new Date(lastMessageTime);
+    const last = new Date(lastMessageTime);
     const now = new Date();
-    if (now.getFullYear() - time.getFullYear() > 0) {
-      return time.toDateString().substring(4, time.toDateString().length);
+    const lastDate = {
+      date: last.getDate(),
+      day: Day[last.getDay()],
+      month: last.getMonth(),
+      year: last.getFullYear(),
+      hour: last.getHours(),
+      minute: last.getMinutes()
+    }
+    const nowDate = {
+      date: now.getDate(),
+      day: Day[last.getDay()],
+      month: now.getMonth(),
+      year: now.getFullYear(),
+      hour: now.getHours(),
+      minute: now.getMinutes()
+    }
+    if (nowDate.year - lastDate.year > 0) {
+      return `${Month[lastDate.month]} ${lastDate.date} ${lastDate.year}`
     } else {
-      if (now.getMonth() - time.getMonth() > 0) {
-        return time.toDateString().substring(4, 10);
+      if (nowDate.month - lastDate.month > 0) {
+        return `${Month[lastDate.month]} ${lastDate.date}`;
       } else {
-        if (now.getDate() - time.getDate() > 7) {
-          return time.toDateString().substring(4, 10);
+        if (nowDate.date - lastDate.date > 7) {
+          return `${Month[lastDate.month]} ${lastDate.date}`;
         } else {
-          if (now.getDate() - time.getDate() > 1) {
-            return time.toDateString().substring(0, 4);
+          if (nowDate.date - lastDate.date > 1) {
+            return lastDate.day;
           } else {
-            return time.toISOString().substring(11, 16);
+            return `${(lastDate.hour<10)?'0'+lastDate.hour:lastDate.hour}:${lastDate.minute<10?"0"+lastDate.minute:lastDate.minute}`;
           }
         }
       }
@@ -54,7 +76,7 @@ export const MessageCard = ({
         <Text style={styles.messageCardName}>{convertLastMessage(name)}</Text>
         <View style={styles.messageCardFooter}>
           <Text style={styles.lastMessage}>
-            {convertLastMessage(lastMessage)}
+            { (lastMessageSender===userId)?"You: "+ convertLastMessage(lastMessage):""+ convertLastMessage(lastMessage)}
           </Text>
           <Text style={styles.lastMessageTime}>
             {` • ${convertLastMessageTime(lastMessageTime)}`}
